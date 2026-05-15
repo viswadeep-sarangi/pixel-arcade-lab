@@ -12,6 +12,7 @@ A real-time multiplayer quiz game built with HTML, CSS, JavaScript, and Firebase
 - **Multiple Categories**: Art & Theatre, Geography, Nature, Music (20 questions total)
 - **Answer Review**: Host can review all answers after quiz ends
 - **Cross-device**: Works on desktop, tablet, and mobile
+- **🔒 Secure Credentials**: Firebase API keys stored locally, never exposed in code
 
 ---
 
@@ -26,9 +27,14 @@ games/quizbuzz/
 ├── player.js                           # Player logic
 ├── firebase-config.js                  # Firebase configuration (UPDATE THIS)
 ├── questions.json                      # Quiz questions database
+├── questions.json                      # Quiz questions database
 ├── styles.css                          # Shared styling
+├── config.example.js                   # Firebase config template
+├── firebase-config.js                  # Firebase configuration helper
 ├── FIREBASE_SETUP.md                   # Detailed Firebase setup guide
 ├── FIREBASE_INTEGRATION_CHECKLIST.md   # Code integration checklist
+├── SECRETS_MANAGEMENT.md               # Secure credential handling guide
+├── GETTING_STARTED.md                  # Quick start guide
 └── README.md                           # This file
 ```
 
@@ -41,14 +47,20 @@ Follow the detailed instructions in **[FIREBASE_SETUP.md](FIREBASE_SETUP.md)**:
 - Create a Firebase project
 - Create a Realtime Database
 - Get your Firebase credentials
-- Update `firebase-config.js`
 
-### 2. Enable Firebase API Calls
+### 2. Add Your Credentials Securely
+1. Copy `config.example.js` to `config.local.js`
+2. Add your Firebase credentials to `config.local.js`
+3. Your credentials stay on your machine (git-ignored) - never exposed in code!
+
+See **[SECRETS_MANAGEMENT.md](SECRETS_MANAGEMENT.md)** for detailed security practices.
+
+### 3. Enable Firebase API Calls
 Follow **[FIREBASE_INTEGRATION_CHECKLIST.md](FIREBASE_INTEGRATION_CHECKLIST.md)** to uncomment Firebase code in:
 - `host.js`
 - `player.js`
 
-### 3. Test the App
+### 4. Test the App
 - Open `index.html` to see the home page
 - Click "Host" to create a quiz room
 - Click "Player" in another tab/window to join the room
@@ -133,25 +145,28 @@ rooms/
 
 ---
 
-## 📝 Configuration
+---
 
-### Update Firebase Config
-Edit `firebase-config.js` and replace placeholders:
+## 🔐 Configuration
 
-```javascript
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY_HERE",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID_HERE",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID_HERE",
-  appId: "YOUR_APP_ID_HERE"
-};
+
 ```
 
 ---
 
-## 🔧 Development Guide
+## � Configuration
+
+### Secure Firebase Credentials
+Your Firebase credentials are stored in a local file that's **not committed to git**:
+
+1. Copy `config.example.js` to `config.local.js`
+2. Add your Firebase credentials to `config.local.js`
+3. `config.local.js` is automatically git-ignored (stays private on your machine)
+
+See [SECRETS_MANAGEMENT.md](SECRETS_MANAGEMENT.md) for detailed security practices.
+
+### Optional: Firebase Anonymous Authentication
+Edit `firebase-config.js` and uncomment the anonymous sign-in code if you set this up in Firebase Console.
 
 ### Key Files:
 
@@ -262,8 +277,10 @@ Upload all files to any web hosting service (GitHub Pages, Netlify, Vercel, etc.
 
 ## 📄 File References
 
+- **Getting Started**: [GETTING_STARTED.md](GETTING_STARTED.md)
 - **Setup Guide**: [FIREBASE_SETUP.md](FIREBASE_SETUP.md)
 - **Integration Checklist**: [FIREBASE_INTEGRATION_CHECKLIST.md](FIREBASE_INTEGRATION_CHECKLIST.md)
+- **Secrets Management**: [SECRETS_MANAGEMENT.md](SECRETS_MANAGEMENT.md)
 - **Questions Database**: [questions.json](questions.json)
 
 ---

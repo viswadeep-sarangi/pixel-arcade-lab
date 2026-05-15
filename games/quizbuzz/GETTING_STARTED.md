@@ -12,7 +12,8 @@ Your Quiz Buzz multiplayer game is ready! Here's what's been set up:
 - **player.js** - Player logic (with Firebase placeholders)
 - **questions.json** - All 20 quiz questions (5 per category)
 - **styles.css** - All styling for the game
-- **firebase-config.js** - Firebase configuration (UPDATE THIS!)
+- **firebase-config.js** - Firebase configuration helper
+- **config.example.js** - Firebase config template (CREATE YOUR OWN config.local.js from this)
 
 ### Documentation:
 - **README.md** - Full project documentation
@@ -31,20 +32,24 @@ Go to [FIREBASE_SETUP.md](FIREBASE_SETUP.md) and follow these sections:
 - Step 3: Set Up Security Rules
 - Step 4: Get Your Firebase Configuration
 
-### STEP 2️⃣: Add Your Firebase Credentials (5 minutes)
+### STEP 2️⃣: Add Your Firebase Credentials Securely (5 minutes)
 
-1. Open `firebase-config.js`
-2. Replace the placeholder values with your Firebase credentials:
+**⚠️ Important: Your credentials will NOT be committed to git!**
+
+1. Copy `config.example.js` and rename it to `config.local.js`
+2. Open `config.local.js` and replace the placeholder values with your Firebase credentials:
    ```javascript
-   const firebaseConfig = {
-     apiKey: "PASTE_YOUR_API_KEY_HERE",
-     authDomain: "PASTE_YOUR_AUTH_DOMAIN_HERE",
-     projectId: "PASTE_YOUR_PROJECT_ID_HERE",
-     storageBucket: "PASTE_YOUR_STORAGE_BUCKET_HERE",
-     messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID_HERE",
-     appId: "PASTE_YOUR_APP_ID_HERE"
+   const firebaseConfigLocal = {
+     apiKey: "YOUR_ACTUAL_API_KEY",
+     authDomain: "your-project.firebaseapp.com",
+     projectId: "your-project",
+     storageBucket: "your-project.appspot.com",
+     messagingSenderId: "123456789",
+     appId: "1:123456789:web:abc123def456"
    };
    ```
+3. Save `config.local.js` - it's automatically git-ignored, so your keys stay private
+4. See [SECRETS_MANAGEMENT.md](SECRETS_MANAGEMENT.md) for more details on secure credential handling
 
 ### STEP 3️⃣: Enable Firebase Calls (15 minutes)
 
@@ -213,8 +218,9 @@ A: Yes! Deploy to Firebase Hosting, Netlify, GitHub Pages, etc.
 
 1. **Setup Issues?** → See [FIREBASE_SETUP.md](FIREBASE_SETUP.md)
 2. **Code Integration?** → See [FIREBASE_INTEGRATION_CHECKLIST.md](FIREBASE_INTEGRATION_CHECKLIST.md)
-3. **General Questions?** → See [README.md](README.md)
-4. **Firebase Errors?** → Check browser console (F12) and Firebase Console
+3. **Security & Secrets?** → See [SECRETS_MANAGEMENT.md](SECRETS_MANAGEMENT.md)
+4. **General Questions?** → See [README.md](README.md)
+5. **Firebase Errors?** → Check browser console (F12) and Firebase Console
 
 ---
 
@@ -250,21 +256,28 @@ A: Yes! Deploy to Firebase Hosting, Netlify, GitHub Pages, etc.
 
 ```
 1. Get Firebase credentials from Firebase Console
-2. Paste them into firebase-config.js
-3. Search for "TODO: Firebase" in host.js and player.js
-4. Uncomment each Firebase code block
-5. Open index.html
-6. Test as Host and Player
-7. Deploy to Firebase Hosting (optional)
+2. Copy config.example.js to config.local.js
+3. Paste credentials into config.local.js (NOT firebase-config.js!)
+4. Verify config.local.js is in .gitignore
+5. Search for "TODO: Firebase" in host.js and player.js
+6. Uncomment each Firebase code block
+7. Open index.html
+8. Test as Host and Player
+9. Deploy to Firebase Hosting (optional)
 ```
 
 ---
 
 ## ✨ That's It!
 
-You now have a fully functional multiplayer quiz game infrastructure. Just add your Firebase credentials and uncomment the Firebase code!
+You now have a fully functional multiplayer quiz game infrastructure with secure credential handling.
 
-**Next Step**: Open [FIREBASE_SETUP.md](FIREBASE_SETUP.md) and start with Step 1 → Create a Firebase Project
+**Security Note**: Your Firebase credentials will be stored locally in `config.local.js` and will NOT be committed to git. This keeps your keys safe!
+
+**Next Steps**:
+1. Open [FIREBASE_SETUP.md](FIREBASE_SETUP.md) and start with Step 1 → Create a Firebase Project
+2. Follow Step 5 in that guide for the secure config.local.js approach
+3. See [SECRETS_MANAGEMENT.md](SECRETS_MANAGEMENT.md) for detailed security practices
 
 ---
 

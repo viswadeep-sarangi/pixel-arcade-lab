@@ -17,8 +17,10 @@
 - [ ] Create Firebase project at https://console.firebase.google.com/
 - [ ] Create Realtime Database (Test Mode for now)
 - [ ] Note your database URL
-- [ ] Get Firebase config credentials
-- [ ] Update `firebase-config.js` with your credentials
+- [ ] Get Firebase config credentials from Project Settings
+- [ ] Copy `config.example.js` to `config.local.js`
+- [ ] Add your credentials to `config.local.js` (NOT firebase-config.js!)
+- [ ] Verify `config.local.js` is in `.gitignore`
 - [ ] (Optional) Enable Anonymous Authentication
 - [ ] Set Database Rules (see FIREBASE_SETUP.md)
 
@@ -26,12 +28,15 @@
 
 ## Code Integration Checklist
 
-### In `firebase-config.js`
-- [ ] Replace `YOUR_API_KEY_HERE`
-- [ ] Replace `YOUR_PROJECT_ID` 
-- [ ] Replace `YOUR_MESSAGING_SENDER_ID_HERE`
-- [ ] Replace `YOUR_APP_ID_HERE`
-- [ ] (Optional) Uncomment anonymous sign-in code
+### In `config.local.js` (Your Secure Local Config)
+- [ ] Copy `config.example.js` to `config.local.js`
+- [ ] Replace `YOUR_API_KEY_HERE` with your actual API key
+- [ ] Replace `YOUR_PROJECT_ID` with your actual project ID
+- [ ] Replace `YOUR_MESSAGING_SENDER_ID_HERE` with your messaging sender ID
+- [ ] Replace `YOUR_APP_ID_HERE` with your actual app ID
+- [ ] Verify `config.local.js` is NOT listed when you run `git status`
+
+**Note**: `firebase-config.js` will automatically load your credentials from `config.local.js`. You don't need to edit `firebase-config.js`!
 
 ### In `host.js`
 

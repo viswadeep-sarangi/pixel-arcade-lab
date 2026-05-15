@@ -101,23 +101,59 @@ const firebaseConfig = {
 
 ---
 
-## Step 5: Update Firebase Config in Your Code
+## Step 5: Set Up Your Firebase Config Securely
 
-1. Open `games/quizbuzz/firebase-config.js`
-2. Replace the placeholder values with your actual Firebase credentials:
+**IMPORTANT**: To keep your Firebase credentials secure and out of version control, we use a local config file that's git-ignored.
+
+### Why This Approach?
+- Your API keys never get committed to GitHub
+- Each developer can have their own credentials
+- Credentials stay on your local machine only
+- Follows security best practices
+
+### How to Set Up:
+
+1. In `games/quizbuzz/` folder, **copy** `config.example.js`
+2. **Rename the copy** to `config.local.js`
+3. Open `config.local.js` and replace the placeholder values:
 
 ```javascript
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY_HERE",  // Replace with your apiKey
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",  // Replace
-  projectId: "YOUR_PROJECT_ID_HERE",  // Replace
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",  // Replace
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID_HERE",  // Replace
-  appId: "YOUR_APP_ID_HERE"  // Replace
+const firebaseConfigLocal = {
+  apiKey: "AIzaSyC...",  // Your actual API key
+  authDomain: "your-project.firebaseapp.com",  // Your actual auth domain
+  projectId: "your-project",  // Your actual project ID
+  storageBucket: "your-project.appspot.com",  // Your actual storage bucket
+  messagingSenderId: "123456789",  // Your actual messaging sender ID
+  appId: "1:123456789:web:abc123def456"  // Your actual app ID
 };
 ```
 
-3. Save the file
+4. Save `config.local.js`
+5. **That's it!** Your credentials are now secure and won't be committed to git
+
+### File Structure After Setup:
+```
+games/quizbuzz/
+├── config.example.js      ✅ (template - committed to GitHub)
+├── config.local.js        ❌ (YOUR credentials - NOT committed, git-ignored)
+├── firebase-config.js     ✅ (helper - automatically loads config.local.js)
+└── ... other files
+```
+
+### How It Works:
+- When you load `host.html` or `player.html`, it automatically loads `config.local.js`
+- Then `firebase-config.js` uses those credentials to initialize Firebase
+- Your keys stay on your machine and are never exposed
+
+### Verify It's Working:
+Open your browser's Developer Tools (F12), go to Console tab:
+- ✅ No warning about config.local.js → All good!
+- ❌ Warning about config.local.js → Make sure you created it and added credentials
+
+---
+
+## For More Details on Secure Credential Management:
+See [SECRETS_MANAGEMENT.md](SECRETS_MANAGEMENT.md) for complete security practices and troubleshooting.
 
 ---
 
