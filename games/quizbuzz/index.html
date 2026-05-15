@@ -65,9 +65,19 @@
             <h1>🎯 Quiz Buzz</h1>
             <button class="back-button" onclick="goBack()">← Back</button>
         </div>
-        <div class="content">
-            <p>Welcome to Quiz Buzz!</p>
-            <p>This is where your quiz game will be built.</p>
+        <div class="content" style="display: grid; gap: 2rem;">
+            <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <h2 style="color: #f5576c; margin-bottom: 1rem;">🎮 Quiz Buzz - Multiplayer Quiz Game</h2>
+                <p style="margin-bottom: 1.5rem;">Choose your role to get started:</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <a href="host.html" style="background: #667eea; color: white; padding: 1rem; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; transition: all 0.3s ease; display: block;">
+                        👨‍💼 Host
+                    </a>
+                    <a href="player.html" style="background: #28a745; color: white; padding: 1rem; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; transition: all 0.3s ease; display: block;">
+                        👤 Player
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 

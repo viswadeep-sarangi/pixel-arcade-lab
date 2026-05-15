@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Buzz - Host Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .host-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .room-creation {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .category-select {
+            margin: 1rem 0;
+        }
+        .category-select label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .category-select select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .room-info {
+            background: #667eea;
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            display: none;
+        }
+        .room-id {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .players-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .players-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .player-item {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .player-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        .player-progress {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .back-button {
+            background: #888;
+        }
+        .back-button:hover {
+            background: #666;
+        }
+        .start-button {
+            background: #28a745;
+        }
+        .start-button:hover {
+            background: #218838;
+        }
+        .end-button {
+            background: #dc3545;
+        }
+        .end-button:hover {
+            background: #c82333;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .status-waiting {
+            background: #ffc107;
+        }
+        .status-completed {
+            background: #28a745;
+        }
+        .no-players {
+            color: #999;
+            font-style: italic;
+            padding: 1rem;
+        }
+        .results-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+            margin-top: 2rem;
+        }
+        .question-review {
+            background: #f5f5f5;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .question-text {
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .answer-options {
+            margin: 1rem 0;
+        }
+        .answer-option {
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+            background: white;
+        }
+        .correct-answer {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="host-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1>🎮 Quiz Buzz - Host Dashboard</h1>
+            <button class="back-button" onclick="goBack()">← Back</button>
+        </div>
+
+        <!-- Room Creation Section -->
+        <div class="room-creation" id="creationSection">
+            <h2>Create a New Quiz Room</h2>
+            
+            <div class="category-select">
+                <label for="categorySelect">Select Quiz Category:</label>
+                <select id="categorySelect">
+                    <option value="">-- Choose a Category --</option>
+                    <option value="Art and Theatre">Art and Theatre</option>
+                    <option value="Geography">Geography</option>
+                    <option value="Nature">Nature</option>
+                    <option value="Music">Music</option>
+                </select>
+            </div>
+
+            <button onclick="createRoom()">Create Room</button>
+        </div>
+
+        <!-- Room Information Section -->
+        <div class="room-info" id="roomInfo">
+            <h3>Room Created Successfully!</h3>
+            <p>Share this Room ID with your team:</p>
+            <div class="room-id" id="roomIdDisplay"></div>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">Category: <span id="categoryDisplay"></span></p>
+        </div>
+
+        <!-- Players Section -->
+        <div class="players-section" id="playersSection" style="display: none;">
+            <h2>Players in Room</h2>
+            <div id="playersList" class="players-list">
+                <div class="no-players">Waiting for players to join...</div>
+            </div>
+
+            <div class="button-group">
+                <button class="start-button" id="startButton" onclick="startQuiz()" disabled>Start Quiz</button>
+                <button class="end-button" id="endButton" onclick="endSession()" disabled>End Session</button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <h2>Quiz Results</h2>
+            <div id="resultsContent"></div>
+            <div class="button-group">
+                <button onclick="resetRoom()">Create Another Room</button>
+                <button class="back-button" onclick="goBack()">Back to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+    
+    <!-- Local Firebase Config (contains your secret keys) -->
+    <script src="config.local.js"></script>
+    
+    <!-- Firebase Config Helper -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Host Logic -->
+    <script src="host.js"></script>
+</body>
+</html>
