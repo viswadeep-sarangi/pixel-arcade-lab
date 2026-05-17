@@ -223,7 +223,7 @@
 
             <div class="form-group">
                 <label for="playerName">Your Name:</label>
-                <input type="text" id="playerName" placeholder="Enter your name">
+                <input type="text" id="playerName" placeholder="ENTER YOUR NAME (A-Z only)" maxlength="20" oninput="formatPlayerName(this)">
             </div>
 
             <button onclick="joinRoom()">Join Room</button>
@@ -274,6 +274,14 @@
             <p style="color: #666; margin-top: 1rem;">The host will review the answers with everyone soon.</p>
         </div>
     </div>
+
+    <script>
+        function formatPlayerName(input) {
+            // Allow only A-Z characters and force uppercase
+            const cleaned = input.value.toUpperCase().replace(/[^A-Z]/g, '');
+            if (input.value !== cleaned) input.value = cleaned;
+        }
+    </script>
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>

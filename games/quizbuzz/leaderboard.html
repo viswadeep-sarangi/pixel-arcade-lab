@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Buzz - Leaderboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container { max-width: 900px; margin: 2rem auto; padding: 2rem; }
+        .leaderboard-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .leaderboard-list { margin-top: 1rem; }
+        .leaderboard-row { display:flex; justify-content:space-between; padding:0.5rem 0; border-bottom:1px solid #f0f0f0; }
+        .leaderboard-row:first-child { font-weight: bold; }
+        .refresh { background:#667eea; color:#fff; border:none; padding:0.5rem 1rem; border-radius:6px; cursor:pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <h1>🏆 Leaderboard</h1>
+            <button class="refresh" onclick="loadLeaderboard()">Refresh</button>
+        </div>
+        <div class="leaderboard-card">
+            <div id="leaderboardContent">Loading...</div>
+        </div>
+        <div style="margin-top:1rem;"><a href="index.html">← Back</a></div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <!-- Local Firebase Config -->
+    <script src="config.local.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script src="leaderboard.js"></script>
+</body>
+</html>
