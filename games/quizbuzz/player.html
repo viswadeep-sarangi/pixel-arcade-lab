@@ -258,16 +258,16 @@
             <div class="question-text" id="questionText"></div>
 
             <div class="options" id="optionsContainer"></div>
-
-            <button class="next-button" id="nextButton" onclick="submitAnswer()" disabled>
-                Next Question
+            <div id="playerStatusText" class="player-info-label" style="margin-bottom:1rem; color:#555; display:none;"></div>
+            <button class="next-button" id="submitButton" onclick="submitAnswer()" disabled>
+                Submit Answer
             </button>
         </div>
 
         <!-- Results Screen -->
         <div class="results-screen" id="resultsScreen">
             <h2>Quiz Completed!</h2>
-            <div class="results-message results-waiting">
+            <div id="resultsMessage" class="results-message results-waiting">
                 <div class="spinner"></div>
                 Waiting for all players to finish...
             </div>

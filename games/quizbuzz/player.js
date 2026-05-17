@@ -5,9 +5,10 @@ let playerId = null;
 let playerName = null;
 let currentQuestionIndex = 0;
 let selectedAnswer = null;
-let playerAnswers = [];
+let playerAnswers = {};
 let quizQuestions = [];
 let quizStarted = false;
+let currentRoomData = null;
 
 /**
  * Join a quiz room
@@ -25,27 +26,27 @@ function joinRoom() {
     playerName = name;
     playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
-    // TODO: Firebase - Verify room exists and add player to it
     database.ref('rooms/' + roomId).once('value', (snapshot) => {
       if (snapshot.exists()) {
-        const roomData = snapshot.val();
         const playerData = {
           name: playerName,
           joinedAt: new Date().toISOString(),
           completedQuestions: 0,
-          answers: []
+          currentAnswer: null,
+          hasSubmitted: false,
+          answers: {}
         };
         database.ref('rooms/' + roomId + '/players/' + playerId).set(playerData)
           .then(() => {
             showWaitingScreen();
-            listenForQuizStart();
+            listenForRoomUpdates();
           })
           .catch(error => {
-            console.error("Error joining room:", error);
-            alert("Error joining room. Please try again.");
+            console.error('Error joining room:', error);
+            alert('Error joining room. Please try again.');
           });
       } else {
-        alert("Room not found. Please check the Room ID.");
+        alert('Room not found. Please check the Room ID.');
       }
     });
 }
@@ -61,15 +62,37 @@ function showWaitingScreen() {
 }
 
 /**
- * Listen for quiz start signal from host
+ * Listen for room updates from host
  */
-function listenForQuizStart() {
-    // TODO: Firebase - Listen for room status change to "started"
+function listenForRoomUpdates() {
     database.ref('rooms/' + currentRoomId).on('value', (snapshot) => {
       const roomData = snapshot.val();
-      if (roomData && roomData.status === 'started' && !quizStarted) {
-        quizStarted = true;
-        loadQuizQuestions(roomData.category);
+      if (!roomData) return;
+
+      const previousPhase = currentRoomData?.questionPhase;
+      currentRoomData = roomData;
+
+      if (roomData.status === 'started') {
+          if (!quizStarted) {
+              quizStarted = true;
+              loadQuizQuestions(roomData.category).then(() => {
+                  currentQuestionIndex = roomData.currentQuestionIndex || 0;
+                  showQuizScreen();
+              });
+          } else {
+              const newIndex = roomData.currentQuestionIndex || 0;
+              const newPhase = roomData.questionPhase || 'open';
+              const indexChanged = newIndex !== currentQuestionIndex;
+              const phaseChanged = newPhase !== previousPhase;
+              currentQuestionIndex = newIndex;
+              if (indexChanged || phaseChanged) {
+                  displayCurrentQuestion();
+              }
+          }
+      }
+
+      if (roomData.status === 'ended') {
+          showEndScreen();
       }
     });
 }
@@ -78,21 +101,21 @@ function listenForQuizStart() {
  * Load quiz questions for the category
  */
 function loadQuizQuestions(category = null) {
-    fetch('questions.json')
+    return fetch('questions.json')
         .then(response => response.json())
         .then(data => {
-            // TODO: Firebase - Use category from room data
-            // For now, use a default category or passed category
             const selectedCategory = category || 'Geography';
-            
             const categoryData = data.categories.find(cat => cat.topic === selectedCategory);
             if (categoryData) {
                 quizQuestions = categoryData.questions;
-                playerAnswers = new Array(quizQuestions.length).fill(null);
-                showQuizScreen();
+            } else {
+                quizQuestions = [];
             }
         })
-        .catch(error => console.error('Error loading questions:', error));
+        .catch(error => {
+            console.error('Error loading questions:', error);
+            quizQuestions = [];
+        });
 }
 
 /**
@@ -105,82 +128,110 @@ function showQuizScreen() {
 }
 
 /**
- * Display current question
+ * Display current question and submission state
  */
 function displayCurrentQuestion() {
-    if (currentQuestionIndex >= quizQuestions.length) {
-        completeQuiz();
+    if (!currentRoomData || currentRoomData.status !== 'started') {
         return;
     }
 
     const question = quizQuestions[currentQuestionIndex];
-    
-    // Update progress
+    if (!question) {
+        document.getElementById('questionNumber').textContent = '';
+        document.getElementById('questionText').textContent = 'Waiting for the host to continue...';
+        document.getElementById('optionsContainer').innerHTML = '';
+        document.getElementById('submitButton').disabled = true;
+        document.getElementById('playerStatusText').style.display = 'block';
+        document.getElementById('playerStatusText').textContent = 'No active question yet.';
+        return;
+    }
+
     const progress = ((currentQuestionIndex + 1) / quizQuestions.length) * 100;
     document.getElementById('progressFill').style.width = progress + '%';
-    
-    // Display question number and text
     document.getElementById('questionNumber').textContent = `Question ${currentQuestionIndex + 1} of ${quizQuestions.length}`;
     document.getElementById('questionText').textContent = question.question;
 
-    // Display options
     const optionsContainer = document.getElementById('optionsContainer');
     optionsContainer.innerHTML = '';
-    
+
+    const playerData = currentRoomData.players?.[playerId] || {};
+    const hasSubmitted = playerData.hasSubmitted;
+    const currentAnswer = typeof playerData.currentAnswer === 'number' ? playerData.currentAnswer : null;
+    selectedAnswer = currentAnswer;
+
     question.options.forEach((option, index) => {
         const button = document.createElement('button');
         button.className = 'option-button';
         button.textContent = String.fromCharCode(65 + index) + '. ' + option;
-        button.onclick = () => selectAnswer(index);
-        
-        // Restore previously selected answer
-        if (playerAnswers[currentQuestionIndex] === index) {
-            button.classList.add('selected');
+
+        const phase = currentRoomData.questionPhase || 'open';
+        const isSelected = index === currentAnswer;
+        if (isSelected) button.classList.add('selected');
+
+        if (phase !== 'open' || hasSubmitted) {
+            button.disabled = true;
+        } else {
+            button.onclick = () => selectAnswer(index);
         }
-        
+
+        if (phase === 'revealed' && question.correctAnswer === index) {
+            button.style.background = '#d4edda';
+            button.style.borderColor = '#28a745';
+            button.style.color = '#1f3d2d';
+        }
+
         optionsContainer.appendChild(button);
     });
 
-    // Update next button state
-    const nextButton = document.getElementById('nextButton');
-    nextButton.disabled = playerAnswers[currentQuestionIndex] === null;
-    
-    if (currentQuestionIndex === quizQuestions.length - 1) {
-        nextButton.textContent = 'Submit Quiz';
-    } else {
-        nextButton.textContent = 'Next Question';
+    const submitButton = document.getElementById('submitButton');
+    const statusText = document.getElementById('playerStatusText');
+    const phase = currentRoomData.questionPhase || 'open';
+
+    if (phase === 'open') {
+        if (hasSubmitted) {
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitted – waiting for host';
+            statusText.textContent = 'Answer submitted. Please wait for the host to complete the question.';
+        } else {
+            submitButton.disabled = selectedAnswer === null;
+            submitButton.textContent = 'Submit Answer';
+            statusText.textContent = selectedAnswer === null ? 'Choose an option to submit.' : 'Ready to submit your answer.';
+        }
+    } else if (phase === 'complete') {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Waiting for reveal';
+        statusText.textContent = 'The host is moving answers to options. Please wait.';
+    } else if (phase === 'revealed') {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Waiting for next question';
+        statusText.textContent = 'Correct answer revealed. The next question will begin soon.';
     }
 
-    selectedAnswer = playerAnswers[currentQuestionIndex];
+    statusText.style.display = 'block';
 }
 
 /**
  * Select an answer option
  */
 function selectAnswer(optionIndex) {
+    const playerData = currentRoomData.players?.[playerId] || {};
+    if (playerData.hasSubmitted || currentRoomData.questionPhase !== 'open') {
+        return;
+    }
+
     selectedAnswer = optionIndex;
     playerAnswers[currentQuestionIndex] = optionIndex;
 
-    // Update UI
     const options = document.querySelectorAll('.option-button');
     options.forEach((btn, index) => {
-        if (index === optionIndex) {
-            btn.classList.add('selected');
-        } else {
-            btn.classList.remove('selected');
-        }
+        btn.classList.toggle('selected', index === optionIndex);
     });
 
-    // Enable next button
-    document.getElementById('nextButton').disabled = false;
-
-    // TODO: Firebase - Update progress on host dashboard
-    database.ref('rooms/' + currentRoomId + '/players/' + playerId + '/completedQuestions')
-      .set(Math.max(playerAnswers.filter(a => a !== null).length));
+    document.getElementById('submitButton').disabled = false;
 }
 
 /**
- * Submit answer and move to next question
+ * Submit answer to Firebase
  */
 function submitAnswer() {
     if (selectedAnswer === null) {
@@ -188,56 +239,35 @@ function submitAnswer() {
         return;
     }
 
-    if (currentQuestionIndex < quizQuestions.length - 1) {
-        currentQuestionIndex++;
-        displayCurrentQuestion();
-    } else {
-        completeQuiz();
-    }
+    const answerUpdate = {
+        currentAnswer: selectedAnswer,
+        hasSubmitted: true,
+        [`answers/${currentQuestionIndex}`]: selectedAnswer,
+        completedQuestions: currentQuestionIndex + 1
+    };
+
+    database.ref('rooms/' + currentRoomId + '/players/' + playerId).update(answerUpdate)
+      .then(() => {
+          displayCurrentQuestion();
+      })
+      .catch((error) => {
+          console.error('Error submitting answer:', error);
+      });
 }
 
 /**
- * Complete the quiz
+ * Show end screen when quiz is finished
  */
-function completeQuiz() {
-    // TODO: Firebase - Save all answers to database
-    database.ref('rooms/' + currentRoomId + '/players/' + playerId).update({
-      answers: playerAnswers,
-      completedQuestions: quizQuestions.length,
-      completedAt: new Date().toISOString()
-    })
-    .then(() => {
-      console.log("Answers saved");
-      showResultsScreen();
-    })
-    .catch(error => {
-      console.error("Error saving answers:", error);
-    });
-
-    showResultsScreen();
-}
-
-/**
- * Show results screen
- */
-function showResultsScreen() {
+function showEndScreen() {
     document.getElementById('quizScreen').style.display = 'none';
     document.getElementById('resultsScreen').style.display = 'block';
-
-    // TODO: Firebase - Listen for host to display results
-    database.ref('rooms/' + currentRoomId).on('value', (snapshot) => {
-      const roomData = snapshot.val();
-      if (roomData && roomData.status === 'ended') {
-        displayFinalResults();
-      }
-    });
+    document.getElementById('resultsMessage').textContent = 'Quiz completed! Waiting for host review...';
 }
 
 /**
  * Go back to main page
  */
 function goBack() {
-    // TODO: Firebase - Remove player from room
     if (currentRoomId && playerId) {
       database.ref('rooms/' + currentRoomId + '/players/' + playerId).remove();
     }
