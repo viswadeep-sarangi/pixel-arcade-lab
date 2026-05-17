@@ -22,20 +22,28 @@ function joinRoom() {
         return;
     }
 
+    // Validate name: only uppercase A-Z letters allowed
+    if (!/^[A-Z]+$/.test(name)) {
+        alert('Name must contain only uppercase letters A-Z (no numbers or lowercase)');
+        return;
+    }
+
     currentRoomId = roomId;
     playerName = name;
     playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
     database.ref('rooms/' + roomId).once('value', (snapshot) => {
       if (snapshot.exists()) {
-        const playerData = {
-          name: playerName,
-          joinedAt: new Date().toISOString(),
-          completedQuestions: 0,
-          currentAnswer: null,
-          hasSubmitted: false,
-          answers: {}
-        };
+                const playerData = {
+                    name: playerName,
+                    joinedAt: new Date().toISOString(),
+                    completedQuestions: 0,
+                    currentAnswer: null,
+                    hasSubmitted: false,
+                    answers: {},
+                    score: 0,
+                    scores: {}
+                };
         database.ref('rooms/' + roomId + '/players/' + playerId).set(playerData)
           .then(() => {
             showWaitingScreen();

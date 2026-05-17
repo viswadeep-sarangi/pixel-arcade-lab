@@ -309,9 +309,39 @@ function completeQuestion() {
  */
 function revealAnswer() {
     if (!currentRoomId) return;
-    database.ref('rooms/' + currentRoomId).update({
-        questionPhase: 'revealed'
-    }).catch((error) => console.error('Error revealing answer:', error));
+
+    // Fetch latest room data and ensure questions are loaded, then score answers
+    database.ref('rooms/' + currentRoomId).once('value').then((snapshot) => {
+        const roomData = snapshot.val();
+        const currentIndex = (roomData && roomData.currentQuestionIndex) || 0;
+        const category = (roomData && roomData.category) || currentCategory;
+
+        // ensure we have questions loaded
+        const ensureQuestions = quizQuestions.length ? Promise.resolve() : loadQuestionsForHost(category);
+
+        ensureQuestions.then(() => {
+            const question = quizQuestions[currentIndex];
+            const correctAnswerIndex = question ? question.correctAnswer : null;
+
+            const updates = {
+                questionPhase: 'revealed'
+            };
+
+            const players = (roomData && roomData.players) || {};
+            Object.keys(players).forEach((playerId) => {
+                const p = players[playerId] || {};
+                const alreadyScored = p.scores && (p.scores[currentIndex] !== undefined);
+                if (!alreadyScored) {
+                    const isCorrect = typeof p.currentAnswer === 'number' && p.currentAnswer === correctAnswerIndex;
+                    updates[`players/${playerId}/scores/${currentIndex}`] = isCorrect ? 1 : 0;
+                    updates[`players/${playerId}/score`] = (p.score || 0) + (isCorrect ? 1 : 0);
+                }
+            });
+
+            database.ref('rooms/' + currentRoomId).update(updates)
+              .catch((error) => console.error('Error revealing answer:', error));
+        }).catch((err) => console.error('Error loading questions for scoring:', err));
+    }).catch((error) => console.error('Error fetching room data for reveal:', error));
 }
 
 /**
