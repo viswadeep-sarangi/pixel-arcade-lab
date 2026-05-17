@@ -18,6 +18,7 @@
 const firebaseConfigLocal = {
   apiKey: "AIzaSyC...",  // Replace with your actual API key
   authDomain: "your-project-id.firebaseapp.com",  // Replace with your auth domain
+  databaseURL: "https://your-project-id-default-rtdb.firebaseio.com",  // Replace with your Realtime Database URL
   projectId: "your-project-id",  // Replace with your project ID
   storageBucket: "your-project-id.appspot.com",  // Replace with your storage bucket
   messagingSenderId: "123456789",  // Replace with your messaging sender ID

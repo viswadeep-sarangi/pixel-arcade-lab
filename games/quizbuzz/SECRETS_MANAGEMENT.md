@@ -47,6 +47,7 @@ Your Local Machine (NOT committed)
 const firebaseConfigLocal = {
   apiKey: "AIzaSyC...",  // Your actual API key
   authDomain: "your-project.firebaseapp.com",
+  databaseURL: "https://your-project-id-default-rtdb.firebaseio.com",
   projectId: "your-project",
   storageBucket: "your-project.appspot.com",
   messagingSenderId: "123456789",
@@ -226,6 +227,7 @@ If you want even more security, you can use environment variables:
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
   // ... etc
 };
 ```

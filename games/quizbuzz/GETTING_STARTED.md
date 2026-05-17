@@ -42,6 +42,7 @@ Go to [FIREBASE_SETUP.md](FIREBASE_SETUP.md) and follow these sections:
    const firebaseConfigLocal = {
      apiKey: "YOUR_ACTUAL_API_KEY",
      authDomain: "your-project.firebaseapp.com",
+     databaseURL: "https://your-project-id-default-rtdb.firebaseio.com",
      projectId: "your-project",
      storageBucket: "your-project.appspot.com",
      messagingSenderId: "123456789",

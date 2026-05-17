@@ -44,6 +44,8 @@ For Quiz Buzz, we primarily use the **Realtime Database** to:
 
 Your database URL will look like: `https://your-project-id.firebaseio.com`
 
+Copy this URL. You will need it as `databaseURL` in `config.local.js` and as the `FIREBASE_DATABASE_URL` GitHub Actions secret if you deploy with GitHub Pages.
+
 ---
 
 ## Step 3: Set Up Security Rules
@@ -90,6 +92,7 @@ Your database URL will look like: `https://your-project-id.firebaseio.com`
 const firebaseConfig = {
   apiKey: "AIzaSyC...",
   authDomain: "project-id.firebaseapp.com",
+  databaseURL: "https://project-id-default-rtdb.firebaseio.com",
   projectId: "project-id",
   storageBucket: "project-id.appspot.com",
   messagingSenderId: "123456789",
@@ -121,6 +124,7 @@ const firebaseConfig = {
 const firebaseConfigLocal = {
   apiKey: "AIzaSyC...",  // Your actual API key
   authDomain: "your-project.firebaseapp.com",  // Your actual auth domain
+  databaseURL: "https://your-project-id-default-rtdb.firebaseio.com",  // Your actual Realtime Database URL
   projectId: "your-project",  // Your actual project ID
   storageBucket: "your-project.appspot.com",  // Your actual storage bucket
   messagingSenderId: "123456789",  // Your actual messaging sender ID

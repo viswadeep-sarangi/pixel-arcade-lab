@@ -11,6 +11,8 @@
 // Get credentials from: Firebase Console > Project Settings > Your apps
 
 let firebaseConfig = null;
+window.database = null;
+window.auth = null;
 
 // Try to load from local config file first (keeps keys secret)
 if (typeof firebaseConfigLocal !== 'undefined') {
@@ -26,6 +28,7 @@ if (typeof firebaseConfigLocal !== 'undefined') {
   firebaseConfig = {
     apiKey: "",
     authDomain: "",
+    databaseURL: "",
     projectId: "",
     storageBucket: "",
     messagingSenderId: "",
@@ -34,11 +37,15 @@ if (typeof firebaseConfigLocal !== 'undefined') {
 }
 
 // Initialize Firebase
-window.firebase.initializeApp(firebaseConfig);
+if (window.firebase && firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.databaseURL) {
+  window.firebase.initializeApp(firebaseConfig);
 
-// Get references to Firebase services
-window.database = window.firebase.database();
-window.auth = window.firebase.auth();
+  // Get references to Firebase services
+  window.database = window.firebase.database();
+  window.auth = window.firebase.auth();
+} else {
+  console.error('Firebase is not configured. Add apiKey, projectId, and databaseURL to config.local.js.');
+}
 
 // Optional: Enable anonymous authentication
 // Uncomment the following to enable anonymous sign-in
