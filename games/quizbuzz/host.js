@@ -476,12 +476,8 @@ function resetRoom() {
  * Go back to main page
  */
 function goBack() {
-    if (currentRoomId && !confirm('Are you sure you want to leave? The room will be deleted.')) {
+    if (currentRoomId && !confirm('Are you sure you want to leave?')) {
         return;
-    }
-
-    if (currentRoomId) {
-      database.ref('rooms/' + currentRoomId).remove();
     }
 
     window.location.href = 'index.html';
