@@ -27,16 +27,6 @@ function createRoom() {
     currentCategory = category;
     quizStarted = false;
 
-    // TODO: Firebase - Create room entry in database
-    // Structure:
-    // rooms/{roomId} = {
-    //   hostId: hostId,
-    //   category: category,
-    //   status: "waiting",
-    //   createdAt: timestamp,
-    //   players: {}
-    // }
-
     const roomData = {
         hostId: hostId,
         category: category,
@@ -45,7 +35,6 @@ function createRoom() {
         players: {}
     };
 
-    // Firebase call placeholder:
     database.ref('rooms/' + currentRoomId).set(roomData)
       .then(() => {
         console.log("Room created successfully");
@@ -56,10 +45,6 @@ function createRoom() {
         console.error("Error creating room:", error);
         alert("Error creating room. Please try again.");
       });
-
-    // For now, simulate successful room creation
-    showRoomInfo();
-    listenForPlayers();
 }
 
 /**
