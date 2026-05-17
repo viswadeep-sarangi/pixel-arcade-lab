@@ -34,11 +34,11 @@ if (typeof firebaseConfigLocal !== 'undefined') {
 }
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+window.firebase.initializeApp(firebaseConfig);
 
 // Get references to Firebase services
-const database = firebase.database();
-const auth = firebase.auth();
+window.database = window.firebase.database();
+window.auth = window.firebase.auth();
 
 // Optional: Enable anonymous authentication
 // Uncomment the following to enable anonymous sign-in
