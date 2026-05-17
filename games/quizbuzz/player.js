@@ -84,6 +84,9 @@ function listenForRoomUpdates() {
               const newPhase = roomData.questionPhase || 'open';
               const indexChanged = newIndex !== currentQuestionIndex;
               const phaseChanged = newPhase !== previousPhase;
+              if (indexChanged) {
+                  selectedAnswer = null;
+              }
               currentQuestionIndex = newIndex;
               if (indexChanged || phaseChanged) {
                   displayCurrentQuestion();
