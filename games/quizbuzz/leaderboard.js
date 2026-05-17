@@ -46,7 +46,14 @@ function loadLeaderboard() {
         document.getElementById('leaderboardContent').innerHTML = html.join('\n');
     }).catch((err) => {
         console.error('Error loading leaderboard:', err);
-        document.getElementById('leaderboardContent').textContent = 'Error loading leaderboard.';
+        const msg = err && err.message ? err.message : String(err);
+        let userMsg = `Error loading leaderboard: ${msg}`;
+        if (err && err.code === 'PERMISSION_DENIED') {
+            userMsg += ' — Permission denied: check your Firebase Realtime Database rules.';
+        } else {
+            userMsg += ' — Check Firebase config and console for details.';
+        }
+        document.getElementById('leaderboardContent').textContent = userMsg;
     });
 }
 
