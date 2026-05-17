@@ -171,6 +171,115 @@
             background: #d4edda;
             border-left: 4px solid #28a745;
         }
+        .quiz-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+            display: none;
+        }
+        .host-players-top {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .host-player-chip {
+            background: #f5f5f5;
+            border-radius: 999px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .host-player-chip .tick {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ffc107;
+        }
+        .host-player-chip.submitted .tick {
+            background: #28a745;
+        }
+        .host-question-card {
+            display: grid;
+            gap: 1.5rem;
+        }
+        .host-question-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #333;
+        }
+        .host-options-grid {
+            display: grid;
+            gap: 1rem;
+        }
+        .host-option-tile {
+            background: #f8f9fc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1rem;
+            min-height: 120px;
+            position: relative;
+        }
+        .host-option-tile.correct {
+            border-color: #28a745;
+            background: #e9f8ee;
+        }
+        .host-option-title {
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            color: #333;
+        }
+        .host-player-list {
+            display: grid;
+            gap: 0.75rem;
+        }
+        .host-player-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        .host-player-card .player-name {
+            font-weight: 700;
+            color: #333;
+        }
+        .host-player-card .player-status {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .host-control-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .host-control-buttons button {
+            min-width: 180px;
+        }
+        .host-complete-button {
+            background: #28a745;
+        }
+        .host-reveal-button {
+            background: #17a2b8;
+        }
+        .host-next-button {
+            background: #ffc107;
+            color: #1f2937;
+        }
+        .host-submit-status {
+            margin-top: 1rem;
+            color: #555;
+            font-size: 0.95rem;
+        }
     </style>
 </head>
 <body>
@@ -216,6 +325,23 @@
             <div class="button-group">
                 <button class="start-button" id="startButton" onclick="startQuiz()" disabled>Start Quiz</button>
                 <button class="end-button" id="endButton" onclick="endSession()" disabled>End Session</button>
+            </div>
+        </div>
+
+        <!-- Quiz Control Section -->
+        <div class="quiz-section" id="quizSection">
+            <h2>Live Question</h2>
+            <div id="hostPlayersTop" class="host-players-top"></div>
+            <div class="host-question-card">
+                <div class="host-question-text" id="hostQuestionText">Waiting for the quiz to start...</div>
+                <div id="hostOptionsGrid" class="host-options-grid"></div>
+                <div id="playerCardsContainer" class="host-player-list"></div>
+                <div class="host-control-buttons">
+                    <button class="host-complete-button" id="completeQuestionButton" onclick="completeQuestion()" disabled>Complete Question</button>
+                    <button class="host-reveal-button" id="revealAnswerButton" onclick="revealAnswer()" disabled>Reveal Answer</button>
+                    <button class="host-next-button" id="nextQuestionButton" onclick="nextQuestion()" disabled>Next Question</button>
+                </div>
+                <div id="hostSubmitStatus" class="host-submit-status"></div>
             </div>
         </div>
 

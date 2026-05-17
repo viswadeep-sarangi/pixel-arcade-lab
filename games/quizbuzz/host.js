@@ -4,10 +4,10 @@ let currentRoomId = null;
 let currentCategory = null;
 let quizStarted = false;
 let hostId = null;
+let quizQuestions = [];
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
-    // Generate a unique host ID
     hostId = 'host_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 });
 
@@ -27,7 +27,6 @@ function createRoom() {
         return;
     }
 
-    // Generate Room ID
     currentRoomId = 'ROOM_' + Math.random().toString(36).substr(2, 8).toUpperCase();
     currentCategory = category;
     quizStarted = false;
@@ -35,20 +34,22 @@ function createRoom() {
     const roomData = {
         hostId: hostId,
         category: category,
-        status: "waiting",
+        status: 'waiting',
+        currentQuestionIndex: 0,
+        questionPhase: 'waiting',
         createdAt: new Date().toISOString(),
         players: {}
     };
 
     window.database.ref('rooms/' + currentRoomId).set(roomData)
       .then(() => {
-        console.log("Room created successfully");
+        console.log('Room created successfully');
         showRoomInfo();
-        listenForPlayers();
+        listenForRoomUpdates();
       })
       .catch((error) => {
-        console.error("Error creating room:", error);
-        alert("Error creating room. Please try again.");
+        console.error('Error creating room:', error);
+        alert('Error creating room. Please try again.');
       });
 }
 
@@ -59,25 +60,21 @@ function showRoomInfo() {
     document.getElementById('creationSection').style.display = 'none';
     document.getElementById('roomInfo').style.display = 'block';
     document.getElementById('playersSection').style.display = 'block';
+    document.getElementById('quizSection').style.display = 'none';
     document.getElementById('roomIdDisplay').textContent = currentRoomId;
     document.getElementById('categoryDisplay').textContent = currentCategory;
 }
 
 /**
- * Listen for players joining the room
+ * Listen for room updates including players and quiz state
  */
-function listenForPlayers() {
-    // TODO: Firebase - Set up real-time listener for players joining
-    database.ref('rooms/' + currentRoomId + '/players').on('value', (snapshot) => {
-      const players = snapshot.val() || {};
-      updatePlayersList(players);
+function listenForRoomUpdates() {
+    database.ref('rooms/' + currentRoomId).on('value', (snapshot) => {
+        const roomData = snapshot.val() || {};
+        const players = roomData.players || {};
+        updatePlayersList(players);
+        updateRoomUI(roomData, players);
     });
-
-    // Simulate players joining (for testing)
-    // Remove this in production
-    // setTimeout(() => {
-    //   simulatePlayerJoin('Player 1');
-    // }, 2000);
 }
 
 /**
@@ -85,31 +82,175 @@ function listenForPlayers() {
  */
 function updatePlayersList(players) {
     const playersList = document.getElementById('playersList');
-    
-    if (Object.keys(players).length === 0) {
+    const playerIds = Object.keys(players);
+
+    if (playerIds.length === 0) {
         playersList.innerHTML = '<div class="no-players">Waiting for players to join...</div>';
         document.getElementById('startButton').disabled = true;
     } else {
         let html = '';
-        Object.values(players).forEach(player => {
+        playerIds.forEach((playerId) => {
+            const player = players[playerId];
             const completedQuestions = player.completedQuestions || 0;
-            const status = player.completedQuestions === 5 ? 'completed' : 'waiting';
-            const statusText = player.completedQuestions === 5 ? 'Completed' : 'In Progress';
-            
             html += `
                 <div class="player-item">
                     <div class="player-name">
-                        <span class="status-indicator status-${status}"></span>
+                        <span class="status-indicator ${player.hasSubmitted ? 'status-completed' : 'status-waiting'}"></span>
                         ${player.name}
                     </div>
                     <div class="player-progress">
-                        Questions Completed: ${completedQuestions}/5
+                        Questions Completed: ${completedQuestions}/${quizQuestions.length || 5}
                     </div>
                 </div>
             `;
         });
         playersList.innerHTML = html;
         document.getElementById('startButton').disabled = false;
+    }
+}
+
+/**
+ * Update host UI based on room state
+ */
+function updateRoomUI(roomData, players) {
+    const quizSection = document.getElementById('quizSection');
+    const hostSubmitStatus = document.getElementById('hostSubmitStatus');
+    const startButton = document.getElementById('startButton');
+    const endButton = document.getElementById('endButton');
+
+    if (roomData.status !== 'started') {
+        quizSection.style.display = 'none';
+        startButton.disabled = Object.keys(players).length === 0;
+        endButton.disabled = true;
+        return;
+    }
+
+    quizSection.style.display = 'block';
+    startButton.disabled = true;
+    endButton.disabled = false;
+
+    if (quizQuestions.length === 0) {
+        loadQuestionsForHost(roomData.category).then(() => {
+            renderHostQuestion(roomData, players);
+        });
+        return;
+    }
+
+    renderHostQuestion(roomData, players);
+}
+
+/**
+ * Load questions for the host
+ */
+function loadQuestionsForHost(category) {
+    return fetch('questions.json')
+        .then(response => response.json())
+        .then(data => {
+            const categoryData = data.categories.find(cat => cat.topic === category);
+            if (categoryData) {
+                quizQuestions = categoryData.questions;
+            } else {
+                quizQuestions = [];
+            }
+        })
+        .catch(error => {
+            console.error('Error loading questions:', error);
+            quizQuestions = [];
+        });
+}
+
+/**
+ * Render host question and player answer status
+ */
+function renderHostQuestion(roomData, players) {
+    const currentIndex = roomData.currentQuestionIndex || 0;
+    const phase = roomData.questionPhase || 'waiting';
+    const question = quizQuestions[currentIndex];
+    const hostQuestionText = document.getElementById('hostQuestionText');
+    const hostOptionsGrid = document.getElementById('hostOptionsGrid');
+    const playerCardsContainer = document.getElementById('playerCardsContainer');
+    const hostPlayersTop = document.getElementById('hostPlayersTop');
+    const completeBtn = document.getElementById('completeQuestionButton');
+    const revealBtn = document.getElementById('revealAnswerButton');
+    const nextBtn = document.getElementById('nextQuestionButton');
+
+    if (!question) {
+        hostQuestionText.textContent = 'No questions loaded yet.';
+        hostOptionsGrid.innerHTML = '';
+        playerCardsContainer.innerHTML = '';
+        return;
+    }
+
+    hostQuestionText.textContent = `Q${currentIndex + 1}: ${question.question}`;
+
+    const optionHtml = question.options.map((option, index) => {
+        const isCorrect = roomData.questionPhase === 'revealed' && question.correctAnswer === index;
+        const classes = ['host-option-tile'];
+        if (isCorrect) classes.push('correct');
+        return `
+            <div class="${classes.join(' ')}" id="hostOption${index}">
+                <div class="host-option-title">${String.fromCharCode(65 + index)}. ${option}</div>
+                <div class="host-option-players" id="hostOptionPlayers${index}"></div>
+            </div>
+        `;
+    }).join('');
+
+    hostOptionsGrid.innerHTML = optionHtml;
+
+    const playerIds = Object.keys(players);
+    hostPlayersTop.innerHTML = playerIds.map((playerId) => {
+        const player = players[playerId];
+        return `<div class="host-player-chip ${player.hasSubmitted ? 'submitted' : ''}"><span class="tick"></span>${player.name}</div>`;
+    }).join('');
+
+    const allAnswered = playerIds.length > 0 && playerIds.every((playerId) => players[playerId].hasSubmitted);
+    completeBtn.disabled = !(allAnswered && phase === 'open');
+    revealBtn.disabled = phase !== 'complete';
+
+    const lastQuestion = currentIndex >= quizQuestions.length - 1;
+    nextBtn.disabled = phase !== 'revealed';
+    nextBtn.textContent = lastQuestion ? 'Finish Quiz' : 'Next Question';
+
+    const playerCards = playerIds.map((playerId) => {
+        const player = players[playerId];
+        const statusText = player.hasSubmitted ? 'Submitted' : 'Waiting';
+        const answerText = typeof player.currentAnswer === 'number' ? `Option ${String.fromCharCode(65 + player.currentAnswer)}` : 'No answer yet';
+        return `
+            <div class="host-player-card ${player.hasSubmitted ? 'submitted' : ''}">
+                <div>
+                    <div class="player-name">${player.name}</div>
+                    <div class="player-status">${statusText}</div>
+                </div>
+                <div>${phase === 'open' ? answerText : answerText}</div>
+            </div>
+        `;
+    }).join('');
+    playerCardsContainer.innerHTML = playerCards;
+
+    if (phase !== 'open') {
+        Object.values(players).forEach((player) => {
+            if (typeof player.currentAnswer === 'number') {
+                const target = document.getElementById(`hostOptionPlayers${player.currentAnswer}`);
+                if (target) {
+                    const card = document.createElement('div');
+                    card.textContent = player.name;
+                    card.style.padding = '0.35rem 0.5rem';
+                    card.style.borderRadius = '4px';
+                    card.style.background = '#fff';
+                    card.style.marginTop = '0.35rem';
+                    card.style.fontSize = '0.9rem';
+                    target.appendChild(card);
+                }
+            }
+        });
+    }
+
+    if (phase === 'open') {
+        hostSubmitStatus.textContent = `Waiting for players to submit their answers. ${playerIds.filter(id => players[id].hasSubmitted).length}/${playerIds.length} submitted.`;
+    } else if (phase === 'complete') {
+        hostSubmitStatus.textContent = 'All players have submitted. Click Complete Question to move cards to the selected answers.';
+    } else if (phase === 'revealed') {
+        hostSubmitStatus.textContent = 'Answer revealed. Click Next Question to continue.';
     }
 }
 
@@ -122,25 +263,100 @@ function startQuiz() {
         return;
     }
 
-    quizStarted = true;
-    
-    // TODO: Firebase - Update room status to "started"
-    database.ref('rooms/' + currentRoomId).update({
-      status: "started",
-      startedAt: new Date().toISOString()
-    })
-    .then(() => {
-      console.log("Quiz started");
-      document.getElementById('startButton').disabled = true;
-      document.getElementById('endButton').disabled = false;
-    })
-    .catch((error) => {
-      console.error("Error starting quiz:", error);
-    });
+    if (!currentCategory) {
+        alert('Missing category');
+        return;
+    }
 
-    alert('Quiz has started! Players will now see the first question.');
-    document.getElementById('startButton').disabled = true;
-    document.getElementById('endButton').disabled = false;
+    loadQuestionsForHost(currentCategory)
+      .then(() => {
+          if (!quizQuestions.length) {
+              alert('Could not load questions for this category.');
+              return;
+          }
+
+          database.ref('rooms/' + currentRoomId).update({
+              status: 'started',
+              startedAt: new Date().toISOString(),
+              currentQuestionIndex: 0,
+              questionPhase: 'open'
+          })
+          .then(() => {
+              console.log('Quiz started');
+              document.getElementById('startButton').disabled = true;
+              document.getElementById('endButton').disabled = false;
+          })
+          .catch((error) => {
+              console.error('Error starting quiz:', error);
+          });
+      });
+}
+
+/**
+ * Complete the current question by moving player cards to options
+ */
+function completeQuestion() {
+    if (!currentRoomId) return;
+    database.ref('rooms/' + currentRoomId).update({
+        questionPhase: 'complete'
+    }).catch((error) => console.error('Error completing question:', error));
+}
+
+/**
+ * Reveal the correct answer
+ */
+function revealAnswer() {
+    if (!currentRoomId) return;
+    database.ref('rooms/' + currentRoomId).update({
+        questionPhase: 'revealed'
+    }).catch((error) => console.error('Error revealing answer:', error));
+}
+
+/**
+ * Advance to the next question or finish quiz
+ */
+function nextQuestion() {
+    if (!currentRoomId) return;
+    database.ref('rooms/' + currentRoomId).once('value').then((snapshot) => {
+        const roomData = snapshot.val();
+        if (!roomData) return;
+
+        const nextIndex = (roomData.currentQuestionIndex || 0) + 1;
+        const isLastQuestion = nextIndex >= quizQuestions.length;
+
+        if (isLastQuestion) {
+            endSession();
+            return;
+        }
+
+        const updates = {
+            currentQuestionIndex: nextIndex,
+            questionPhase: 'open'
+        };
+
+        database.ref('rooms/' + currentRoomId).update(updates)
+          .then(() => {
+              resetPlayerSubmissionState();
+          })
+          .catch((error) => console.error('Error advancing question:', error));
+    });
+}
+
+/**
+ * Reset submission state for all players when next question begins
+ */
+function resetPlayerSubmissionState() {
+    database.ref('rooms/' + currentRoomId + '/players').once('value').then((snapshot) => {
+        const players = snapshot.val() || {};
+        const updates = {};
+        Object.keys(players).forEach(playerId => {
+            updates[`players/${playerId}/hasSubmitted`] = false;
+            updates[`players/${playerId}/currentAnswer`] = null;
+        });
+        if (Object.keys(updates).length > 0) {
+            database.ref('rooms/' + currentRoomId).update(updates);
+        }
+    });
 }
 
 /**
@@ -152,36 +368,26 @@ function endSession() {
         return;
     }
 
-    // TODO: Firebase - Update room status to "ended"
     database.ref('rooms/' + currentRoomId).update({
-      status: "ended",
+      status: 'ended',
       endedAt: new Date().toISOString()
     })
     .then(() => {
-      console.log("Quiz ended");
+      console.log('Quiz ended');
       displayResults();
     })
     .catch((error) => {
-      console.error("Error ending quiz:", error);
+      console.error('Error ending quiz:', error);
     });
-
-    displayResults();
 }
 
 /**
  * Display quiz results and answers
  */
 function displayResults() {
-    // TODO: Firebase - Fetch all player answers and compile results
-    database.ref('rooms/' + currentRoomId + '/players').once('value', (snapshot) => {
-      const players = snapshot.val() || {};
-      // Process and display results
-    });
-
     document.getElementById('playersSection').style.display = 'none';
+    document.getElementById('quizSection').style.display = 'none';
     document.getElementById('resultsSection').style.display = 'block';
-    
-    // Load questions
     loadQuestionsForReview();
 }
 
@@ -189,9 +395,6 @@ function displayResults() {
  * Load questions for review
  */
 function loadQuestionsForReview() {
-    // TODO: Firebase - Fetch questions for the current category from database
-    // or use the local questions.json
-    
     fetch('questions.json')
         .then(response => response.json())
         .then(data => {
@@ -233,16 +436,17 @@ function displayQuestionsReview(questions) {
  * Reset the room to create a new one
  */
 function resetRoom() {
-    // TODO: Firebase - Clean up current room or mark as archived
     database.ref('rooms/' + currentRoomId).remove();
 
     currentRoomId = null;
     currentCategory = null;
     quizStarted = false;
+    quizQuestions = [];
 
     document.getElementById('creationSection').style.display = 'block';
     document.getElementById('roomInfo').style.display = 'none';
     document.getElementById('playersSection').style.display = 'none';
+    document.getElementById('quizSection').style.display = 'none';
     document.getElementById('resultsSection').style.display = 'none';
     document.getElementById('categorySelect').value = '';
     document.getElementById('playersList').innerHTML = '<div class="no-players">Waiting for players to join...</div>';
@@ -255,8 +459,7 @@ function goBack() {
     if (currentRoomId && !confirm('Are you sure you want to leave? The room will be deleted.')) {
         return;
     }
-    
-    // TODO: Firebase - Delete the room if leaving early
+
     if (currentRoomId) {
       database.ref('rooms/' + currentRoomId).remove();
     }
@@ -278,6 +481,5 @@ function simulatePlayerJoin(playerName) {
         answers: []
     };
 
-    // TODO: Remove this in production - only for testing
     // database.ref('rooms/' + currentRoomId + '/players/' + playerId).set(playerData);
 }
