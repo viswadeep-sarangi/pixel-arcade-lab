@@ -26,28 +26,28 @@ function joinRoom() {
     playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
     // TODO: Firebase - Verify room exists and add player to it
-    // database.ref('rooms/' + roomId).once('value', (snapshot) => {
-    //   if (snapshot.exists()) {
-    //     const roomData = snapshot.val();
-    //     const playerData = {
-    //       name: playerName,
-    //       joinedAt: new Date().toISOString(),
-    //       completedQuestions: 0,
-    //       answers: []
-    //     };
-    //     database.ref('rooms/' + roomId + '/players/' + playerId).set(playerData)
-    //       .then(() => {
-    //         showWaitingScreen();
-    //         listenForQuizStart();
-    //       })
-    //       .catch(error => {
-    //         console.error("Error joining room:", error);
-    //         alert("Error joining room. Please try again.");
-    //       });
-    //   } else {
-    //     alert("Room not found. Please check the Room ID.");
-    //   }
-    // });
+    database.ref('rooms/' + roomId).once('value', (snapshot) => {
+      if (snapshot.exists()) {
+        const roomData = snapshot.val();
+        const playerData = {
+          name: playerName,
+          joinedAt: new Date().toISOString(),
+          completedQuestions: 0,
+          answers: []
+        };
+        database.ref('rooms/' + roomId + '/players/' + playerId).set(playerData)
+          .then(() => {
+            showWaitingScreen();
+            listenForQuizStart();
+          })
+          .catch(error => {
+            console.error("Error joining room:", error);
+            alert("Error joining room. Please try again.");
+          });
+      } else {
+        alert("Room not found. Please check the Room ID.");
+      }
+    });
 
     // For testing: simulate successful room join
     showWaitingScreen();
@@ -69,13 +69,13 @@ function showWaitingScreen() {
  */
 function listenForQuizStart() {
     // TODO: Firebase - Listen for room status change to "started"
-    // database.ref('rooms/' + currentRoomId).on('value', (snapshot) => {
-    //   const roomData = snapshot.val();
-    //   if (roomData && roomData.status === 'started' && !quizStarted) {
-    //     quizStarted = true;
-    //     loadQuizQuestions(roomData.category);
-    //   }
-    // });
+    database.ref('rooms/' + currentRoomId).on('value', (snapshot) => {
+      const roomData = snapshot.val();
+      if (roomData && roomData.status === 'started' && !quizStarted) {
+        quizStarted = true;
+        loadQuizQuestions(roomData.category);
+      }
+    });
 
     // For testing: automatically start after 2 seconds
     setTimeout(() => {
@@ -185,8 +185,8 @@ function selectAnswer(optionIndex) {
     document.getElementById('nextButton').disabled = false;
 
     // TODO: Firebase - Update progress on host dashboard
-    // database.ref('rooms/' + currentRoomId + '/players/' + playerId + '/completedQuestions')
-    //   .set(Math.max(playerAnswers.filter(a => a !== null).length));
+    database.ref('rooms/' + currentRoomId + '/players/' + playerId + '/completedQuestions')
+      .set(Math.max(playerAnswers.filter(a => a !== null).length));
 }
 
 /**
@@ -211,18 +211,18 @@ function submitAnswer() {
  */
 function completeQuiz() {
     // TODO: Firebase - Save all answers to database
-    // database.ref('rooms/' + currentRoomId + '/players/' + playerId).update({
-    //   answers: playerAnswers,
-    //   completedQuestions: quizQuestions.length,
-    //   completedAt: new Date().toISOString()
-    // })
-    // .then(() => {
-    //   console.log("Answers saved");
-    //   showResultsScreen();
-    // })
-    // .catch(error => {
-    //   console.error("Error saving answers:", error);
-    // });
+    database.ref('rooms/' + currentRoomId + '/players/' + playerId).update({
+      answers: playerAnswers,
+      completedQuestions: quizQuestions.length,
+      completedAt: new Date().toISOString()
+    })
+    .then(() => {
+      console.log("Answers saved");
+      showResultsScreen();
+    })
+    .catch(error => {
+      console.error("Error saving answers:", error);
+    });
 
     showResultsScreen();
 }
@@ -235,12 +235,12 @@ function showResultsScreen() {
     document.getElementById('resultsScreen').style.display = 'block';
 
     // TODO: Firebase - Listen for host to display results
-    // database.ref('rooms/' + currentRoomId).on('value', (snapshot) => {
-    //   const roomData = snapshot.val();
-    //   if (roomData && roomData.status === 'ended') {
-    //     displayFinalResults();
-    //   }
-    // });
+    database.ref('rooms/' + currentRoomId).on('value', (snapshot) => {
+      const roomData = snapshot.val();
+      if (roomData && roomData.status === 'ended') {
+        displayFinalResults();
+      }
+    });
 }
 
 /**
@@ -248,9 +248,9 @@ function showResultsScreen() {
  */
 function goBack() {
     // TODO: Firebase - Remove player from room
-    // if (currentRoomId && playerId) {
-    //   database.ref('rooms/' + currentRoomId + '/players/' + playerId).remove();
-    // }
+    if (currentRoomId && playerId) {
+      database.ref('rooms/' + currentRoomId + '/players/' + playerId).remove();
+    }
 
     window.location.href = 'index.html';
 }
