@@ -61,6 +61,18 @@ if (missingFirebaseConfigKeys.length === 0) {
   window.auth = window.firebase.auth();
 } else {
   console.error('Firebase is not configured. Missing: ' + missingFirebaseConfigKeys.join(', '));
+  console.error('Config source:', typeof firebaseConfigLocal !== 'undefined' ? 'config.local.js' : 'fallback');
+  if (typeof firebaseConfigLocal === 'undefined') {
+    console.error('firebaseConfigLocal is undefined. The generated config.local.js may not have loaded or may not exist in deployment.');
+  }
+  console.error('Firebase config values:');
+  console.error('  apiKey:', firebaseConfig.apiKey);
+  console.error('  authDomain:', firebaseConfig.authDomain);
+  console.error('  databaseURL:', firebaseConfig.databaseURL);
+  console.error('  projectId:', firebaseConfig.projectId);
+  console.error('  storageBucket:', firebaseConfig.storageBucket);
+  console.error('  messagingSenderId:', firebaseConfig.messagingSenderId);
+  console.error('  appId:', firebaseConfig.appId);
   console.error('If this is a deployed GitHub Pages site, make sure your GitHub Action secrets include every FIREBASE_* value, especially FIREBASE_DATABASE_URL.');
 }
 
