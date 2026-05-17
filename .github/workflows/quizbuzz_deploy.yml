@@ -32,6 +32,13 @@ jobs:
           };
           EOF
 
+      - name: Debug: show generated config
+        run: |
+          echo "--- games/quizbuzz contents ---"
+          ls -la games/quizbuzz || true
+          echo "--- config.local.js content ---"
+          sed -n '1,120p' games/quizbuzz/config.local.js || true
+
       - name: Verify generated config.local.js
         run: |
           if [ ! -f games/quizbuzz/config.local.js ]; then
