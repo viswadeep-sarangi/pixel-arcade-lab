@@ -53,6 +53,31 @@
             text-align: center;
             color: #333;
         }
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            align-items: stretch;
+        }
+        .role-button {
+            color: white;
+            padding: 1.25rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            font-size: 1.05rem;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+        .role-button:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.12); }
+        .role-host { background: #667eea; }
+        .role-player { background: #28a745; }
+        .role-leader { background: #ff9800; }
         p {
             margin-bottom: 1rem;
             font-size: 1.1rem;
@@ -69,15 +94,15 @@
             <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                 <h2 style="color: #f5576c; margin-bottom: 1rem;">🎮 Quiz Buzz - Multiplayer Quiz Game</h2>
                 <p style="margin-bottom: 1.5rem;">Choose your role to get started:</p>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
-                    <a href="host.html" style="background: #667eea; color: white; padding: 1rem; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; transition: all 0.3s ease; display: block;">
-                        👨‍💼 Host
+                <div class="role-grid">
+                    <a href="host.html" class="role-button role-host">
+                        <span>👨‍💼</span><span>Host</span>
                     </a>
-                    <a href="player.html" style="background: #28a745; color: white; padding: 1rem; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; transition: all 0.3s ease; display: block;">
-                        👤 Player
+                    <a href="player.html" class="role-button role-player">
+                        <span>👤</span><span>Player</span>
                     </a>
-                    <a href="leaderboard.html" style="background: #ff9800; color: white; padding: 1rem; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; transition: all 0.3s ease; display: block;">
-                        🏆 Leaderboard
+                    <a href="leaderboard.html" class="role-button role-leader">
+                        <span>🏆</span><span>Leaderboard</span>
                     </a>
                 </div>
             </div>
