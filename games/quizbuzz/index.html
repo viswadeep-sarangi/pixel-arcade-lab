@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Buzz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 90%;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        h1 {
+            color: #f5576c;
+            font-size: 2rem;
+        }
+        .back-button {
+            background: #f5576c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .back-button:hover {
+            opacity: 0.9;
+        }
+        .content {
+            text-align: center;
+            color: #333;
+        }
+        p {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Quiz Buzz</h1>
+            <button class="back-button" onclick="goBack()">← Back</button>
+        </div>
+        <div class="content" style="display: grid; gap: 2rem;">
+            <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <h2 style="color: #f5576c; margin-bottom: 1rem;">🎮 Quiz Buzz - Multiplayer Quiz Game</h2>
+                <p style="margin-bottom: 1.5rem;">Choose your role to get started:</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <a href="host.html" style="background: #667eea; color: white; padding: 1rem; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; transition: all 0.3s ease; display: block;">
+                        👨‍💼 Host
+                    </a>
+                    <a href="player.html" style="background: #28a745; color: white; padding: 1rem; border-radius: 8px; text-decoration: none; font-weight: bold; text-align: center; transition: all 0.3s ease; display: block;">
+                        👤 Player
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = '../../index.html';
+        }
+    </script>
+</body>
+</html>

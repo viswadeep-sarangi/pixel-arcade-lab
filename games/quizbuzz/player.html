@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Buzz - Player</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .player-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .join-room {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #5568d3;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .back-button {
+            background: #888;
+            width: auto;
+            margin-top: 1rem;
+        }
+        .back-button:hover {
+            background: #666;
+        }
+
+        /* Waiting Screen */
+        .waiting-screen {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: none;
+        }
+        .waiting-message {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin: 2rem 0;
+            font-weight: bold;
+        }
+        .player-info {
+            background: #f5f5f5;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .player-info-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .player-info-value {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.2rem;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Quiz Screen */
+        .quiz-screen {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            transition: width 0.3s ease;
+        }
+        .question-number {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 2rem;
+        }
+        .options {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .option-button {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            color: #333;
+        }
+        .option-button:hover {
+            border-color: #667eea;
+            background: #f5f5f5;
+        }
+        .option-button.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .next-button {
+            width: 100%;
+            background: #28a745;
+        }
+        .next-button:hover {
+            background: #218838;
+        }
+        .next-button:disabled {
+            background: #ccc;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: none;
+        }
+        .results-message {
+            font-size: 1.5rem;
+            margin: 1rem 0;
+        }
+        .results-waiting {
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="player-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1>🎮 Quiz Buzz</h1>
+            <button class="back-button" onclick="goBack()">← Back</button>
+        </div>
+
+        <!-- Join Room Screen -->
+        <div class="join-room" id="joinScreen">
+            <h2>Join a Quiz Room</h2>
+            
+            <div class="form-group">
+                <label for="roomId">Room ID:</label>
+                <input type="text" id="roomId" placeholder="Enter Room ID (e.g., ROOM_ABC123)" maxlength="20">
+            </div>
+
+            <div class="form-group">
+                <label for="playerName">Your Name:</label>
+                <input type="text" id="playerName" placeholder="Enter your name">
+            </div>
+
+            <button onclick="joinRoom()">Join Room</button>
+        </div>
+
+        <!-- Waiting Screen -->
+        <div class="waiting-screen" id="waitingScreen">
+            <h2>Waiting for Quiz to Start</h2>
+            <div class="player-info">
+                <div class="player-info-label">Room ID</div>
+                <div class="player-info-value" id="displayRoomId"></div>
+            </div>
+            <div class="player-info">
+                <div class="player-info-label">Your Name</div>
+                <div class="player-info-value" id="displayPlayerName"></div>
+            </div>
+            <div class="waiting-message">
+                <div class="spinner"></div>
+                The host will start the quiz soon...
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div class="quiz-screen" id="quizScreen">
+            <div class="quiz-header">
+                <div class="question-number" id="questionNumber"></div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="question-text" id="questionText"></div>
+
+            <div class="options" id="optionsContainer"></div>
+
+            <button class="next-button" id="nextButton" onclick="submitAnswer()" disabled>
+                Next Question
+            </button>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="resultsScreen">
+            <h2>Quiz Completed!</h2>
+            <div class="results-message results-waiting">
+                <div class="spinner"></div>
+                Waiting for all players to finish...
+            </div>
+            <p style="color: #666; margin-top: 1rem;">The host will review the answers with everyone soon.</p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+    
+    <!-- Local Firebase Config (contains your secret keys) -->
+    <script src="config.local.js"></script>
+    
+    <!-- Firebase Config Helper -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Player Logic -->
+    <script src="player.js"></script>
+</body>
+</html>
