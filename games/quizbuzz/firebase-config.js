@@ -45,6 +45,15 @@ if (window.firebase && firebaseConfig.apiKey && firebaseConfig.projectId && fire
   window.auth = window.firebase.auth();
 } else {
   console.error('Firebase is not configured. Add apiKey, projectId, and databaseURL to config.local.js.');
+  console.error('If this is a deployed GitHub Pages site, make sure your GitHub Action secrets include FIREBASE_DATABASE_URL.');
+  console.error('Firebase config values:');
+  console.error('  apiKey:', firebaseConfig.apiKey);
+  console.error('  authDomain:', firebaseConfig.authDomain);
+  console.error('  databaseURL:', firebaseConfig.databaseURL);
+  console.error('  projectId:', firebaseConfig.projectId);
+  console.error('  storageBucket:', firebaseConfig.storageBucket);
+  console.error('  messagingSenderId:', firebaseConfig.messagingSenderId);
+  console.error('  appId:', firebaseConfig.appId);
 }
 
 // Optional: Enable anonymous authentication
