@@ -48,10 +48,6 @@ function joinRoom() {
         alert("Room not found. Please check the Room ID.");
       }
     });
-
-    // For testing: simulate successful room join
-    showWaitingScreen();
-    listenForQuizStart();
 }
 
 /**
@@ -76,12 +72,6 @@ function listenForQuizStart() {
         loadQuizQuestions(roomData.category);
       }
     });
-
-    // For testing: automatically start after 2 seconds
-    setTimeout(() => {
-        quizStarted = true;
-        loadQuizQuestions();
-    }, 2000);
 }
 
 /**
