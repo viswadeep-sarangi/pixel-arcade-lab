@@ -50,7 +50,7 @@ Follow the detailed instructions in **[FIREBASE_SETUP.md](FIREBASE_SETUP.md)**:
 
 ### 2. Add Your Credentials Securely
 1. Copy `config.example.js` to `config.local.js`
-2. Add your Firebase credentials to `config.local.js`
+2. Add your Firebase credentials to `config.local.js`, including `databaseURL`
 3. Your credentials stay on your machine (git-ignored) - never exposed in code!
 
 See **[SECRETS_MANAGEMENT.md](SECRETS_MANAGEMENT.md)** for detailed security practices.
@@ -160,7 +160,7 @@ rooms/
 Your Firebase credentials are stored in a local file that's **not committed to git**:
 
 1. Copy `config.example.js` to `config.local.js`
-2. Add your Firebase credentials to `config.local.js`
+2. Add your Firebase credentials to `config.local.js`, including the Realtime Database URL as `databaseURL`
 3. `config.local.js` is automatically git-ignored (stays private on your machine)
 
 See [SECRETS_MANAGEMENT.md](SECRETS_MANAGEMENT.md) for detailed security practices.
@@ -280,7 +280,7 @@ firebase deploy
 - Automatic deployment on push
 
 **GitHub Pages + GitHub Actions** (Most secure static hosting):
-- See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for GitHub Actions setup
+- See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for GitHub Actions setup, including the `FIREBASE_DATABASE_URL` repository secret
 
 **Other Platforms**:
 - See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed options

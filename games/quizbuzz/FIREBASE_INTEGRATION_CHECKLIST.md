@@ -19,7 +19,8 @@
 - [ ] Note your database URL
 - [ ] Get Firebase config credentials from Project Settings
 - [ ] Copy `config.example.js` to `config.local.js`
-- [ ] Add your credentials to `config.local.js` (NOT firebase-config.js!)
+- [ ] Add your credentials to `config.local.js`, including `databaseURL` (NOT firebase-config.js!)
+- [ ] If deploying with GitHub Actions, add `FIREBASE_DATABASE_URL` as a repository secret
 - [ ] Verify `config.local.js` is in `.gitignore`
 - [ ] (Optional) Enable Anonymous Authentication
 - [ ] Set Database Rules (see FIREBASE_SETUP.md)
@@ -32,6 +33,7 @@
 - [ ] Copy `config.example.js` to `config.local.js`
 - [ ] Replace `YOUR_API_KEY_HERE` with your actual API key
 - [ ] Replace `YOUR_PROJECT_ID` with your actual project ID
+- [ ] Replace `databaseURL` with your actual Realtime Database URL
 - [ ] Replace `YOUR_MESSAGING_SENDER_ID_HERE` with your messaging sender ID
 - [ ] Replace `YOUR_APP_ID_HERE` with your actual app ID
 - [ ] Verify `config.local.js` is NOT listed when you run `git status`

@@ -15,6 +15,11 @@ document.addEventListener('DOMContentLoaded', function() {
  * Create a new quiz room
  */
 function createRoom() {
+    if (!window.database) {
+        alert('Firebase is not configured. Please add your Firebase project settings, including databaseURL, to config.local.js.');
+        return;
+    }
+
     const category = document.getElementById('categorySelect').value;
 
     if (!category) {
@@ -35,7 +40,7 @@ function createRoom() {
         players: {}
     };
 
-    database.ref('rooms/' + currentRoomId).set(roomData)
+    window.database.ref('rooms/' + currentRoomId).set(roomData)
       .then(() => {
         console.log("Room created successfully");
         showRoomInfo();

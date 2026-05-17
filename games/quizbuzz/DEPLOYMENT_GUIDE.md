@@ -42,6 +42,7 @@ firebase init hosting
 const firebaseConfig = {
   apiKey: "YOUR_PUBLIC_API_KEY",  // Can be public with security rules
   authDomain: "your-project.firebaseapp.com",
+  databaseURL: "https://your-project-id-default-rtdb.firebaseio.com",
   projectId: "your-project",
   storageBucket: "your-project.appspot.com",
   messagingSenderId: "123456789",
@@ -68,6 +69,7 @@ Netlify supports environment variables through `.netlify/functions` or build-tim
    ```
    FIREBASE_API_KEY = your-api-key
    FIREBASE_PROJECT_ID = your-project-id
+   FIREBASE_DATABASE_URL = https://your-project-id-default-rtdb.firebaseio.com
    (... etc for all fields)
    ```
 
@@ -76,6 +78,7 @@ Netlify supports environment variables through `.netlify/functions` or build-tim
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
   projectId: process.env.FIREBASE_PROJECT_ID,
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
@@ -134,6 +137,7 @@ jobs:
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
           FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
           FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
           FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
@@ -142,6 +146,7 @@ jobs:
           const firebaseConfigLocal = {
             apiKey: "${{ env.FIREBASE_API_KEY }}",
             authDomain: "${{ env.FIREBASE_AUTH_DOMAIN }}",
+            databaseURL: "${{ env.FIREBASE_DATABASE_URL }}",
             projectId: "${{ env.FIREBASE_PROJECT_ID }}",
             storageBucket: "${{ env.FIREBASE_STORAGE_BUCKET }}",
             messagingSenderId: "${{ env.FIREBASE_MESSAGING_SENDER_ID }}",
@@ -176,6 +181,7 @@ If you run your own server, you can:
 app.get('/api/config', (req, res) => {
   res.json({
     apiKey: process.env.FIREBASE_API_KEY,
+    databaseURL: process.env.FIREBASE_DATABASE_URL,
     projectId: process.env.FIREBASE_PROJECT_ID,
     // ... etc
   });
@@ -261,7 +267,7 @@ games/quizbuzz/
 ### For GitHub Pages + GitHub Actions
 ```
 1. Create .github/workflows/deploy.yml (see above)
-2. Add GitHub Secrets for each Firebase credential
+2. Add GitHub Secrets for each Firebase credential, including `FIREBASE_DATABASE_URL`
 3. Push code → GitHub Actions creates config.local.js and deploys
 ```
 
