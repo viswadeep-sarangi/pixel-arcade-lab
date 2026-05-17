@@ -46,16 +46,16 @@ function createRoom() {
     };
 
     // Firebase call placeholder:
-    // database.ref('rooms/' + currentRoomId).set(roomData)
-    //   .then(() => {
-    //     console.log("Room created successfully");
-    //     showRoomInfo();
-    //     listenForPlayers();
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error creating room:", error);
-    //     alert("Error creating room. Please try again.");
-    //   });
+    database.ref('rooms/' + currentRoomId).set(roomData)
+      .then(() => {
+        console.log("Room created successfully");
+        showRoomInfo();
+        listenForPlayers();
+      })
+      .catch((error) => {
+        console.error("Error creating room:", error);
+        alert("Error creating room. Please try again.");
+      });
 
     // For now, simulate successful room creation
     showRoomInfo();
@@ -78,10 +78,10 @@ function showRoomInfo() {
  */
 function listenForPlayers() {
     // TODO: Firebase - Set up real-time listener for players joining
-    // database.ref('rooms/' + currentRoomId + '/players').on('value', (snapshot) => {
-    //   const players = snapshot.val() || {};
-    //   updatePlayersList(players);
-    // });
+    database.ref('rooms/' + currentRoomId + '/players').on('value', (snapshot) => {
+      const players = snapshot.val() || {};
+      updatePlayersList(players);
+    });
 
     // Simulate players joining (for testing)
     // Remove this in production
@@ -135,18 +135,18 @@ function startQuiz() {
     quizStarted = true;
     
     // TODO: Firebase - Update room status to "started"
-    // database.ref('rooms/' + currentRoomId).update({
-    //   status: "started",
-    //   startedAt: new Date().toISOString()
-    // })
-    // .then(() => {
-    //   console.log("Quiz started");
-    //   document.getElementById('startButton').disabled = true;
-    //   document.getElementById('endButton').disabled = false;
-    // })
-    // .catch((error) => {
-    //   console.error("Error starting quiz:", error);
-    // });
+    database.ref('rooms/' + currentRoomId).update({
+      status: "started",
+      startedAt: new Date().toISOString()
+    })
+    .then(() => {
+      console.log("Quiz started");
+      document.getElementById('startButton').disabled = true;
+      document.getElementById('endButton').disabled = false;
+    })
+    .catch((error) => {
+      console.error("Error starting quiz:", error);
+    });
 
     alert('Quiz has started! Players will now see the first question.');
     document.getElementById('startButton').disabled = true;
@@ -163,17 +163,17 @@ function endSession() {
     }
 
     // TODO: Firebase - Update room status to "ended"
-    // database.ref('rooms/' + currentRoomId).update({
-    //   status: "ended",
-    //   endedAt: new Date().toISOString()
-    // })
-    // .then(() => {
-    //   console.log("Quiz ended");
-    //   displayResults();
-    // })
-    // .catch((error) => {
-    //   console.error("Error ending quiz:", error);
-    // });
+    database.ref('rooms/' + currentRoomId).update({
+      status: "ended",
+      endedAt: new Date().toISOString()
+    })
+    .then(() => {
+      console.log("Quiz ended");
+      displayResults();
+    })
+    .catch((error) => {
+      console.error("Error ending quiz:", error);
+    });
 
     displayResults();
 }
@@ -183,10 +183,10 @@ function endSession() {
  */
 function displayResults() {
     // TODO: Firebase - Fetch all player answers and compile results
-    // database.ref('rooms/' + currentRoomId + '/players').once('value', (snapshot) => {
-    //   const players = snapshot.val() || {};
-    //   // Process and display results
-    // });
+    database.ref('rooms/' + currentRoomId + '/players').once('value', (snapshot) => {
+      const players = snapshot.val() || {};
+      // Process and display results
+    });
 
     document.getElementById('playersSection').style.display = 'none';
     document.getElementById('resultsSection').style.display = 'block';
@@ -244,7 +244,7 @@ function displayQuestionsReview(questions) {
  */
 function resetRoom() {
     // TODO: Firebase - Clean up current room or mark as archived
-    // database.ref('rooms/' + currentRoomId).remove();
+    database.ref('rooms/' + currentRoomId).remove();
 
     currentRoomId = null;
     currentCategory = null;
@@ -267,9 +267,9 @@ function goBack() {
     }
     
     // TODO: Firebase - Delete the room if leaving early
-    // if (currentRoomId) {
-    //   database.ref('rooms/' + currentRoomId).remove();
-    // }
+    if (currentRoomId) {
+      database.ref('rooms/' + currentRoomId).remove();
+    }
 
     window.location.href = 'index.html';
 }
