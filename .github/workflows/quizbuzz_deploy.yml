@@ -52,6 +52,8 @@ jobs:
           rm -rf deploy
           mkdir deploy
           rsync -a --exclude='.git' --exclude='.github' ./ deploy
+          # Remove copied .gitignore so generated secret files are not ignored during git add
+          rm -f deploy/.gitignore || true
           ls -la deploy/games/quizbuzz | sed -n '1,20p'
 
       - name: Deploy
