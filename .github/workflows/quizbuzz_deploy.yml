@@ -32,7 +32,7 @@ jobs:
           };
           EOF
 
-      - name: Debug: show generated config
+      - name: Debug show generated config
         run: |
           echo "--- games/quizbuzz contents ---"
           ls -la games/quizbuzz || true
