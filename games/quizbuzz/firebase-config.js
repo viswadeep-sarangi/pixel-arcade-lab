@@ -76,11 +76,11 @@ if (missingFirebaseConfigKeys.length === 0) {
   console.error('If this is a deployed GitHub Pages site, make sure your GitHub Action secrets include every FIREBASE_* value, especially FIREBASE_DATABASE_URL.');
 }
 
-// Enable anonymous authentication
-if (window.auth) {
-  window.auth.signInAnonymously()
-    .then(() => console.log('✓ Signed in anonymously'))
-    .catch((error) => {
-      console.warn("Anonymous sign-in not available (check Firebase config and rules):", error.message);
-    });
-}
+// Optional: Enable anonymous authentication
+// Uncomment the following to enable anonymous sign-in
+/*
+auth.signInAnonymously()
+  .catch((error) => {
+    console.error("Error signing in anonymously:", error);
+  });
+*/
