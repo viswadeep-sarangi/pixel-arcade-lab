@@ -263,15 +263,27 @@ Add to the appropriate category in `questions.json` following the structure:
 
 ## 🚀 Deployment
 
-### Deploy to Firebase Hosting:
+**Important**: Before deploying, read [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) to understand how to handle Firebase credentials securely in production.
+
+### Quick Deploy Options:
+
+**Firebase Hosting** (Easiest for Firebase):
 ```bash
 npm install -g firebase-tools
 firebase login
 firebase deploy
 ```
 
-### Deploy Elsewhere:
-Upload all files to any web hosting service (GitHub Pages, Netlify, Vercel, etc.)
+**Netlify/Vercel** (For GitHub-hosted repos):
+- Connect your GitHub repo
+- Add Firebase credentials as environment variables
+- Automatic deployment on push
+
+**GitHub Pages + GitHub Actions** (Most secure static hosting):
+- See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for GitHub Actions setup
+
+**Other Platforms**:
+- See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed options
 
 ---
 
@@ -281,6 +293,7 @@ Upload all files to any web hosting service (GitHub Pages, Netlify, Vercel, etc.
 - **Setup Guide**: [FIREBASE_SETUP.md](FIREBASE_SETUP.md)
 - **Integration Checklist**: [FIREBASE_INTEGRATION_CHECKLIST.md](FIREBASE_INTEGRATION_CHECKLIST.md)
 - **Secrets Management**: [SECRETS_MANAGEMENT.md](SECRETS_MANAGEMENT.md)
+- **Deployment Guide**: [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) ⭐ Read this before deploying!
 - **Questions Database**: [questions.json](questions.json)
 
 ---

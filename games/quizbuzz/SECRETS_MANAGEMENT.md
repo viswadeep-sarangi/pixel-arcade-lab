@@ -22,6 +22,18 @@ Your Local Machine (NOT committed)
 
 ---
 
+## ⚠️ Important: This is for Development Only
+
+`config.local.js` only exists on your local machine and won't be deployed to production servers. 
+
+**Before deploying to production**, see [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for how to:
+- Handle credentials on Firebase Hosting
+- Use environment variables on Netlify/Vercel  
+- Set up GitHub Actions for GitHub Pages
+- Deploy securely on other platforms
+
+---
+
 ## Setup Instructions
 
 ### Step 1: Create Your Local Config File
@@ -248,6 +260,20 @@ git status  # Should NOT show config.local.js
 # 4. Open host.html or player.html in browser
 # Firebase should load successfully!
 ```
+
+---
+
+## 🚀 Ready to Deploy?
+
+Remember: `config.local.js` **will NOT be deployed** because it's git-ignored!
+
+For production deployment, see [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) which covers:
+- ✅ Firebase Hosting (easiest, native integration)
+- ✅ Netlify/Vercel (with environment variables)
+- ✅ GitHub Pages (with GitHub Actions & Secrets)
+- ✅ Custom servers and other platforms
+
+Choose the right approach for your hosting platform **before you deploy**.
 
 ---
 

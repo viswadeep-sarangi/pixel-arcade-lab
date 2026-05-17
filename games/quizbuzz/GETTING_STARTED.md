@@ -268,6 +268,20 @@ A: Yes! Deploy to Firebase Hosting, Netlify, GitHub Pages, etc.
 
 ---
 
+## 🌍 Going Live? Important!
+
+Before deploying to production (GitHub Pages, Netlify, Firebase Hosting, etc.), read **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)**.
+
+It explains:
+- ❌ Why `config.local.js` won't be in your deployed version
+- ✅ How to safely handle credentials in production
+- 🚀 Best practices for different hosting platforms
+- 🔐 How to keep your keys secure while deployed
+
+**TL;DR**: Development uses `config.local.js`, production needs a different approach (see the guide).
+
+---
+
 ## ✨ That's It!
 
 You now have a fully functional multiplayer quiz game infrastructure with secure credential handling.
