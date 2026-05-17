@@ -36,24 +36,32 @@ if (typeof firebaseConfigLocal !== 'undefined') {
   };
 }
 
+const requiredFirebaseConfigKeys = [
+  'apiKey',
+  'authDomain',
+  'databaseURL',
+  'projectId',
+  'storageBucket',
+  'messagingSenderId',
+  'appId'
+];
+
+const missingFirebaseConfigKeys = requiredFirebaseConfigKeys.filter((key) => !firebaseConfig[key]);
+
+if (!window.firebase) {
+  missingFirebaseConfigKeys.push('Firebase SDK scripts');
+}
+
 // Initialize Firebase
-if (window.firebase && firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.databaseURL) {
+if (missingFirebaseConfigKeys.length === 0) {
   window.firebase.initializeApp(firebaseConfig);
 
   // Get references to Firebase services
   window.database = window.firebase.database();
   window.auth = window.firebase.auth();
 } else {
-  console.error('Firebase is not configured. Add apiKey, projectId, and databaseURL to config.local.js.');
-  console.error('If this is a deployed GitHub Pages site, make sure your GitHub Action secrets include FIREBASE_DATABASE_URL.');
-  console.error('Firebase config values:');
-  console.error('  apiKey:', firebaseConfig.apiKey);
-  console.error('  authDomain:', firebaseConfig.authDomain);
-  console.error('  databaseURL:', firebaseConfig.databaseURL);
-  console.error('  projectId:', firebaseConfig.projectId);
-  console.error('  storageBucket:', firebaseConfig.storageBucket);
-  console.error('  messagingSenderId:', firebaseConfig.messagingSenderId);
-  console.error('  appId:', firebaseConfig.appId);
+  console.error('Firebase is not configured. Missing: ' + missingFirebaseConfigKeys.join(', '));
+  console.error('If this is a deployed GitHub Pages site, make sure your GitHub Action secrets include every FIREBASE_* value, especially FIREBASE_DATABASE_URL.');
 }
 
 // Optional: Enable anonymous authentication
