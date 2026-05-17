@@ -166,7 +166,8 @@ function displayCurrentQuestion() {
 
         const phase = currentRoomData.questionPhase || 'open';
         const isSelected = index === currentAnswer;
-        if (isSelected) button.classList.add('selected');
+        const shouldShowSelection = !hasSubmitted && phase === 'open' && isSelected;
+        if (shouldShowSelection) button.classList.add('selected');
 
         if (phase !== 'open' || hasSubmitted) {
             button.disabled = true;
@@ -248,6 +249,10 @@ function submitAnswer() {
 
     database.ref('rooms/' + currentRoomId + '/players/' + playerId).update(answerUpdate)
       .then(() => {
+          selectedAnswer = null;
+          playerAnswers[currentQuestionIndex] = answerUpdate.currentAnswer;
+          const optionButtons = document.querySelectorAll('.option-button');
+          optionButtons.forEach((btn) => btn.classList.remove('selected'));
           displayCurrentQuestion();
       })
       .catch((error) => {

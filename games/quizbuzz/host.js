@@ -329,33 +329,21 @@ function nextQuestion() {
             return;
         }
 
+        const playerResets = {};
+        const players = roomData.players || {};
+        Object.keys(players).forEach((playerId) => {
+            playerResets[`players/${playerId}/hasSubmitted`] = false;
+            playerResets[`players/${playerId}/currentAnswer`] = null;
+        });
+
         const updates = {
             currentQuestionIndex: nextIndex,
-            questionPhase: 'open'
+            questionPhase: 'open',
+            ...playerResets
         };
 
         database.ref('rooms/' + currentRoomId).update(updates)
-          .then(() => {
-              resetPlayerSubmissionState();
-          })
           .catch((error) => console.error('Error advancing question:', error));
-    });
-}
-
-/**
- * Reset submission state for all players when next question begins
- */
-function resetPlayerSubmissionState() {
-    database.ref('rooms/' + currentRoomId + '/players').once('value').then((snapshot) => {
-        const players = snapshot.val() || {};
-        const updates = {};
-        Object.keys(players).forEach(playerId => {
-            updates[`players/${playerId}/hasSubmitted`] = false;
-            updates[`players/${playerId}/currentAnswer`] = null;
-        });
-        if (Object.keys(updates).length > 0) {
-            database.ref('rooms/' + currentRoomId).update(updates);
-        }
     });
 }
 
