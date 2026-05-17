@@ -214,14 +214,16 @@ function renderHostQuestion(roomData, players) {
     const playerCards = playerIds.map((playerId) => {
         const player = players[playerId];
         const statusText = player.hasSubmitted ? 'Submitted' : 'Waiting';
-        const answerText = typeof player.currentAnswer === 'number' ? `Option ${String.fromCharCode(65 + player.currentAnswer)}` : 'No answer yet';
+        const answerText = player.hasSubmitted && phase !== 'open'
+            ? (typeof player.currentAnswer === 'number' ? `Option ${String.fromCharCode(65 + player.currentAnswer)}` : 'No answer yet')
+            : (player.hasSubmitted ? 'Submitted' : 'No answer yet');
         return `
             <div class="host-player-card ${player.hasSubmitted ? 'submitted' : ''}">
                 <div>
                     <div class="player-name">${player.name}</div>
                     <div class="player-status">${statusText}</div>
                 </div>
-                <div>${phase === 'open' ? answerText : answerText}</div>
+                <div>${answerText}</div>
             </div>
         `;
     }).join('');
