@@ -31,9 +31,24 @@ jobs:
             appId: "${{ env.FIREBASE_APP_ID }}"
           };
           EOF
-      
+
+      - name: Verify generated config.local.js
+        run: |
+          if [ ! -f games/quizbuzz/config.local.js ]; then
+            echo "ERROR: games/quizbuzz/config.local.js was not created" >&2
+            exit 1
+          fi
+          grep -q '^const firebaseConfigLocal' games/quizbuzz/config.local.js
+
+      - name: Prepare publish directory
+        run: |
+          rm -rf deploy
+          mkdir deploy
+          rsync -a --exclude='.git' --exclude='.github' ./ deploy
+          ls -la deploy/games/quizbuzz | sed -n '1,20p'
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GH_PAGE_DEPLOY_GITHUB_TOKEN }}
-          publish_dir: ./
+          publish_dir: deploy/
