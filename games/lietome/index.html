@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lie To Me</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="home-page">
+    <main class="home-shell">
+        <header class="top-bar">
+            <div>
+                <p class="eyebrow">Pixel Arcade Lab</p>
+                <h1>Lie To Me</h1>
+            </div>
+            <button class="ghost-button" onclick="goBack()">Back</button>
+        </header>
+
+        <section class="hero-panel">
+            <div class="pixel-stage" aria-hidden="true">
+                <div class="truth-card card-a">TRUE?</div>
+                <div class="truth-card card-b">NOPE</div>
+                <div class="truth-card card-c">MAYBE</div>
+                <div class="spark spark-one"></div>
+                <div class="spark spark-two"></div>
+                <div class="spark spark-three"></div>
+            </div>
+            <div class="role-grid">
+                <a href="host.html" class="role-button host-role">
+                    <span class="role-icon">H</span>
+                    <span>Host</span>
+                </a>
+                <a href="player.html" class="role-button player-role">
+                    <span class="role-icon">P</span>
+                    <span>Player</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function goBack() {
+            window.location.href = '../../index.html';
+        }
+    </script>
+</body>
+</html>

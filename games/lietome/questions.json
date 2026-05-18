@@ -1,0 +1,64 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "question": "What was the best-selling color of toilet paper in the UK during the 1970s bathroom boom?",
+      "answer": "Avocado green",
+      "note": "Colored bathroom suites were fashionable, and toilet paper brands sold matching shades."
+    },
+    {
+      "id": 2,
+      "question": "Which food was once used as a movie theater seat-cleaning test because it left such stubborn stains?",
+      "answer": "Nacho cheese",
+      "note": "Its oil and color made it a practical stain challenge for upholstery."
+    },
+    {
+      "id": 3,
+      "question": "What did Victorian etiquette books warn guests not to do with asparagus at formal dinners?",
+      "answer": "Eat it with a knife and fork",
+      "note": "Asparagus was often considered acceptable finger food when served whole."
+    },
+    {
+      "id": 4,
+      "question": "Which everyday office object was patented with a design inspired by a bent hairpin?",
+      "answer": "The paper clip",
+      "note": "Many early clip designs relied on bent wire loops."
+    },
+    {
+      "id": 5,
+      "question": "What was the first product to be scanned with a retail barcode in a real shop?",
+      "answer": "A pack of Wrigley's chewing gum",
+      "note": "The scan happened in Ohio in 1974."
+    },
+    {
+      "id": 6,
+      "question": "Which animal was briefly used by the US military in a 1960s project to deliver listening devices?",
+      "answer": "A cat",
+      "note": "The project is often referred to as Acoustic Kitty."
+    },
+    {
+      "id": 7,
+      "question": "What strange item did some 18th-century Europeans wear in tall hairstyles to keep the shape overnight?",
+      "answer": "Wire cages",
+      "note": "Elaborate hairstyles could include structural frames and padding."
+    },
+    {
+      "id": 8,
+      "question": "Which soft drink was originally marketed as a brain and nerve tonic?",
+      "answer": "Coca-Cola",
+      "note": "Early advertising leaned heavily on medicinal-sounding claims."
+    },
+    {
+      "id": 9,
+      "question": "What was the original purpose of bubble wrap before it became packaging material?",
+      "answer": "Textured wallpaper",
+      "note": "It failed as decor before finding its calling as protective packaging."
+    },
+    {
+      "id": 10,
+      "question": "Which household appliance had an early model nicknamed the Puffing Billy?",
+      "answer": "The vacuum cleaner",
+      "note": "Early powered cleaners could be large, loud, and engine-like."
+    }
+  ]
+}
