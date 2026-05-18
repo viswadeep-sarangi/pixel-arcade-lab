@@ -227,7 +227,7 @@ function renderHostQuestion(roomData, players) {
     const playerIds = Object.keys(players);
     hostPlayersTop.innerHTML = playerIds.map((playerId) => {
         const player = players[playerId];
-        return `<div class="host-player-chip ${player.hasSubmitted ? 'submitted' : ''}"><span class="tick"></span>${player.name}</div>`;
+        return `<div class="host-player-chip ${player.hasSubmitted ? 'submitted' : ''}"><span class="tick"></span>${escapeHtml(player.name)}</div>`;
     }).join('');
 
     const allAnswered = playerIds.length > 0 && playerIds.every((playerId) => players[playerId].hasSubmitted);
@@ -261,14 +261,10 @@ function renderHostQuestion(roomData, players) {
             if (typeof player.currentAnswer === 'number') {
                 const target = document.getElementById(`hostOptionPlayers${player.currentAnswer}`);
                 if (target) {
-                    const card = document.createElement('div');
-                    card.textContent = player.name;
-                    card.style.padding = '0.35rem 0.5rem';
-                    card.style.borderRadius = '4px';
-                    card.style.background = '#fff';
-                    card.style.marginTop = '0.35rem';
-                    card.style.fontSize = '0.9rem';
-                    target.appendChild(card);
+                    const chip = document.createElement('span');
+                    chip.className = 'host-vote-chip';
+                    chip.textContent = player.name;
+                    target.appendChild(chip);
                 }
             }
         });
@@ -525,4 +521,13 @@ function simulatePlayerJoin(playerName) {
     };
 
     // database.ref('rooms/' + currentRoomId + '/players/' + playerId).set(playerData);
+}
+
+function escapeHtml(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 }
