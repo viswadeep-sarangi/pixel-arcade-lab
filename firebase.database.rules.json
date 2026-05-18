@@ -1,0 +1,36 @@
+{
+  "rules": {
+    "rooms": {
+      "$roomId": {
+        ".read": true,
+        ".write": true,
+        "players": {
+          "$playerId": {
+            ".read": true,
+            ".write": true
+          }
+        }
+      }
+    },
+    "lietome": {
+      "rooms": {
+        "$roomId": {
+          ".read": true,
+          ".write": true,
+          "players": {
+            "$playerId": {
+              ".read": true,
+              ".write": true
+            }
+          },
+          "rounds": {
+            "$roundId": {
+              ".read": true,
+              ".write": true
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -24,9 +24,43 @@ body {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     color: var(--ink);
     background:
+        radial-gradient(circle at 10% 20%, rgba(245, 87, 108, 0.34), transparent 28%),
+        radial-gradient(circle at 88% 72%, rgba(23, 162, 184, 0.28), transparent 30%),
         linear-gradient(135deg, rgba(102, 126, 234, 0.94), rgba(118, 75, 162, 0.96)),
         repeating-linear-gradient(0deg, transparent 0 11px, rgba(255,255,255,0.08) 11px 12px);
+    background-size: 150% 150%, 160% 160%, 220% 220%, auto;
+    animation: lieToMeSweep 22s ease-in-out infinite alternate;
     padding: 1rem;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(255,255,255,0.055) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,0.055) 1px, transparent 1px);
+    background-size: 42px 42px;
+    opacity: 0.72;
+    animation: lieToMeGrid 34s linear infinite;
+}
+
+@keyframes lieToMeSweep {
+    0% { background-position: 0% 20%, 100% 85%, 0% 50%, 0 0; }
+    100% { background-position: 75% 42%, 18% 35%, 100% 50%, 0 0; }
+}
+
+@keyframes lieToMeGrid {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(42px, 42px, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body,
+    body::before {
+        animation: none;
+    }
 }
 
 button,
@@ -65,6 +99,8 @@ button:disabled {
 
 .home-shell,
 .game-shell {
+    position: relative;
+    z-index: 1;
     width: min(1100px, 100%);
     margin: 0 auto;
 }
@@ -132,6 +168,12 @@ button:disabled {
         linear-gradient(135deg, #f093fb, #f5576c);
     background-size: 24px 24px, 24px 24px, auto;
     border: 4px solid #202235;
+    animation: stageGlow 12s ease-in-out infinite alternate;
+}
+
+@keyframes stageGlow {
+    from { filter: saturate(1); }
+    to { filter: saturate(1.14) brightness(1.03); }
 }
 
 .truth-card {
