@@ -186,14 +186,16 @@
             margin-bottom: 1.5rem;
         }
         .host-player-chip {
-            background: #f5f5f5;
+            background: #f8f9fc;
+            border: 1px solid #e2e8f0;
             border-radius: 999px;
-            padding: 0.75rem 1rem;
+            padding: 0.55rem 0.85rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-weight: 600;
+            font-weight: 700;
             color: #333;
+            box-shadow: inset 0 -3px 0 rgba(32, 34, 53, 0.06), 0 2px 5px rgba(32, 34, 53, 0.06);
         }
         .host-player-chip .tick {
             width: 12px;
@@ -203,6 +205,10 @@
         }
         .host-player-chip.submitted .tick {
             background: #28a745;
+        }
+        .host-player-chip.submitted {
+            border-color: #cfeeda;
+            background: #f1fbf4;
         }
         .host-question-card {
             display: grid;
@@ -233,6 +239,41 @@
             margin-bottom: 0.75rem;
             font-weight: 700;
             color: #333;
+        }
+        .host-option-players {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            min-height: 34px;
+            align-items: flex-start;
+        }
+        .host-vote-chip {
+            display: inline-flex;
+            align-items: center;
+            min-height: 32px;
+            border-radius: 999px;
+            padding: 0.35rem 0.75rem;
+            background: white;
+            border: 1px solid #d7def0;
+            color: #202235;
+            font-size: 0.92rem;
+            font-weight: 800;
+            box-shadow: inset 0 -3px 0 rgba(32, 34, 53, 0.08), 0 3px 8px rgba(32, 34, 53, 0.08);
+        }
+        .host-vote-chip::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            margin-right: 0.45rem;
+        }
+        .host-option-tile.correct .host-vote-chip {
+            border-color: #bde8c9;
+            background: #ffffff;
+        }
+        .host-option-tile.correct .host-vote-chip::before {
+            background: #28a745;
         }
         .host-player-list {
             display: grid;
