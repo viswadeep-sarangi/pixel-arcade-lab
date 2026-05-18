@@ -5,11 +5,37 @@ let currentCategory = null;
 let quizStarted = false;
 let hostId = null;
 let quizQuestions = [];
+let categoryAuthors = {};
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     hostId = 'host_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    populateCategorySelect();
 });
+
+/**
+ * Populate category select with topic and author from questions.json
+ */
+function populateCategorySelect() {
+    fetch('questions.json')
+        .then(response => response.json())
+        .then(data => {
+            const select = document.getElementById('categorySelect');
+            if (!select) return;
+            select.innerHTML = '<option value="">-- Choose a Category --</option>';
+            const cats = data.categories || [];
+            cats.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat.topic;
+                opt.textContent = `${cat.topic} by ${cat.author || 'Unknown'}`;
+                select.appendChild(opt);
+                categoryAuthors[cat.topic] = cat.author || '';
+            });
+        })
+        .catch(err => {
+            console.error('Error loading categories:', err);
+        });
+}
 
 /**
  * Create a new quiz room
@@ -62,7 +88,8 @@ function showRoomInfo() {
     document.getElementById('playersSection').style.display = 'block';
     document.getElementById('quizSection').style.display = 'none';
     document.getElementById('roomIdDisplay').textContent = currentRoomId;
-    document.getElementById('categoryDisplay').textContent = currentCategory;
+    const author = categoryAuthors[currentCategory] || '';
+    document.getElementById('categoryDisplay').textContent = author ? `${currentCategory} by ${author}` : currentCategory;
 }
 
 /**
