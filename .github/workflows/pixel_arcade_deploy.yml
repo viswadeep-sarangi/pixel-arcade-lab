@@ -1,4 +1,4 @@
-name: Deploy QuizBuzz to GitHub Pages
+name: Deploy Pixel Arcade Lab to GitHub Pages
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - name: Create config.local.js
+      - name: Create Firebase config.local.js files
         env:
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
@@ -20,7 +20,8 @@ jobs:
           FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
         run: |
-          cat > games/quizbuzz/config.local.js << EOF
+          for game_dir in games/quizbuzz games/lietome; do
+            cat > "$game_dir/config.local.js" << EOF
           const firebaseConfigLocal = {
             apiKey: "${{ env.FIREBASE_API_KEY }}",
             authDomain: "${{ env.FIREBASE_AUTH_DOMAIN }}",
@@ -31,21 +32,26 @@ jobs:
             appId: "${{ env.FIREBASE_APP_ID }}"
           };
           EOF
+          done
 
       - name: Debug show generated config
         run: |
           echo "--- games/quizbuzz contents ---"
           ls -la games/quizbuzz || true
-          echo "--- config.local.js content ---"
-          sed -n '1,120p' games/quizbuzz/config.local.js || true
+          echo "--- games/lietome contents ---"
+          ls -la games/lietome || true
+          echo "--- generated config files ---"
+          ls -la games/quizbuzz/config.local.js games/lietome/config.local.js || true
 
-      - name: Verify generated config.local.js
+      - name: Verify generated config.local.js files
         run: |
-          if [ ! -f games/quizbuzz/config.local.js ]; then
-            echo "ERROR: games/quizbuzz/config.local.js was not created" >&2
-            exit 1
-          fi
-          grep -q '^const firebaseConfigLocal' games/quizbuzz/config.local.js
+          for config_file in games/quizbuzz/config.local.js games/lietome/config.local.js; do
+            if [ ! -f "$config_file" ]; then
+              echo "ERROR: $config_file was not created" >&2
+              exit 1
+            fi
+            grep -q '^const firebaseConfigLocal' "$config_file"
+          done
 
       - name: Prepare publish directory
         run: |
@@ -55,6 +61,7 @@ jobs:
           # Remove copied .gitignore so generated secret files are not ignored during git add
           rm -f deploy/.gitignore || true
           ls -la deploy/games/quizbuzz | sed -n '1,20p'
+          ls -la deploy/games/lietome | sed -n '1,20p'
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
