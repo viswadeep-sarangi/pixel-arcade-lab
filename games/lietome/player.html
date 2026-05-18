@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lie To Me - Player</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="game-shell">
+        <header class="top-bar">
+            <div>
+                <p class="eyebrow">Lie To Me</p>
+                <h1>Player</h1>
+            </div>
+            <button class="ghost-button" onclick="goBack()">Back</button>
+        </header>
+
+        <section class="panel" id="joinSection">
+            <h2>Join Room</h2>
+            <div class="field">
+                <label for="roomId">Room ID</label>
+                <input id="roomId" maxlength="24" placeholder="ROOM_ABC123" oninput="formatRoomId(this)">
+            </div>
+            <div class="field">
+                <label for="playerName">Your Name</label>
+                <input id="playerName" maxlength="20" placeholder="ENTER YOUR NAME" oninput="formatPlayerName(this)">
+            </div>
+            <button class="primary-button" onclick="joinRoom()">Join Room</button>
+        </section>
+
+        <section class="panel waiting-section" id="waitingSection">
+            <h2>Waiting For Host</h2>
+            <div class="player-row">
+                <span>Room</span>
+                <strong id="displayRoomId"></strong>
+            </div>
+            <div class="player-row">
+                <span>Name</span>
+                <strong id="displayPlayerName"></strong>
+            </div>
+            <p class="muted" style="margin-top: 1rem;">The host will start the round soon.</p>
+        </section>
+
+        <section class="panel live-section" id="liveSection">
+            <div class="question-card">
+                <div>
+                    <div class="question-count" id="questionCount"></div>
+                    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                </div>
+                <div class="question-text" id="questionText"></div>
+
+                <div id="answerEntry">
+                    <div class="field">
+                        <label for="lieAnswer">Your very convincing answer</label>
+                        <textarea id="lieAnswer" maxlength="180" placeholder="Write a believable lie..."></textarea>
+                    </div>
+                    <button class="success-button" id="submitLieButton" onclick="submitLie()">Submit Answer</button>
+                </div>
+
+                <div class="answer-grid" id="answersGrid"></div>
+                <div class="host-status" id="playerStatus"></div>
+            </div>
+        </section>
+
+        <section class="panel results-section" id="resultsSection">
+            <h2>Game Over</h2>
+            <div class="score-list" id="scoreList"></div>
+            <p class="muted" style="margin-top: 1rem;">Thanks for playing.</p>
+        </section>
+    </main>
+
+    <script>
+        function formatRoomId(input) {
+            input.value = input.value.toUpperCase().replace(/[^A-Z0-9_]/g, '');
+        }
+
+        function formatPlayerName(input) {
+            input.value = input.value.toUpperCase().replace(/[^A-Z]/g, '');
+        }
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="config.local.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="player.js"></script>
+</body>
+</html>

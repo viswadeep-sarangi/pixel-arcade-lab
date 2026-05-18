@@ -1,5 +1,6 @@
 # Local configuration files with secrets
 games/quizbuzz/config.local.js
+games/lietome/config.local.js
 
 # Dependencies
 node_modules/

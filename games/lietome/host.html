@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lie To Me - Host</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="game-shell">
+        <header class="top-bar">
+            <div>
+                <p class="eyebrow">Lie To Me</p>
+                <h1>Host Dashboard</h1>
+            </div>
+            <button class="ghost-button" onclick="goBack()">Back</button>
+        </header>
+
+        <section class="two-column">
+            <div class="grid">
+                <section class="panel" id="creationSection">
+                    <h2>Create Room</h2>
+                    <button class="primary-button" onclick="createRoom()">Create Room</button>
+                </section>
+
+                <section class="panel room-banner" id="roomInfo">
+                    <h2>Room Ready</h2>
+                    <p>Share this room ID with players:</p>
+                    <div class="room-code" id="roomIdDisplay"></div>
+                    <p class="muted" style="color: rgba(255,255,255,0.82);">Firebase path: lietome/rooms</p>
+                </section>
+
+                <section class="panel waiting-section" id="playersSection">
+                    <h2>Players</h2>
+                    <div class="player-list" id="playersList">
+                        <div class="muted">Waiting for players to join...</div>
+                    </div>
+                    <div class="grid" style="margin-top: 1rem;">
+                        <button class="success-button" id="startButton" onclick="startGame()" disabled>Start Game</button>
+                        <button class="danger-button" id="endButton" onclick="endGame()" disabled>End Game</button>
+                    </div>
+                </section>
+            </div>
+
+            <div class="grid">
+                <section class="panel live-section" id="liveSection">
+                    <div class="question-card">
+                        <div>
+                            <div class="question-count" id="questionCount"></div>
+                            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                        </div>
+                        <div class="question-text" id="questionText"></div>
+                        <div class="host-status" id="hostStatus"></div>
+                        <div class="answer-grid" id="answersGrid"></div>
+                        <div class="button-row">
+                            <button class="info-button" id="showAnswersButton" onclick="showAnswers()" disabled>Show Answers</button>
+                            <button class="warning-button" id="showVotesButton" onclick="showVotes()" disabled>Show Votes</button>
+                            <button class="success-button" id="revealButton" onclick="revealAnswer()" disabled>Reveal Answer</button>
+                        </div>
+                        <button class="primary-button" id="nextButton" onclick="nextQuestion()" disabled>Next Question</button>
+                    </div>
+                </section>
+
+                <section class="panel results-section" id="resultsSection">
+                    <h2>Final Scores</h2>
+                    <div class="score-list" id="scoreList"></div>
+                    <div class="grid" style="margin-top: 1rem;">
+                        <button class="primary-button" onclick="resetRoom()">Create Another Room</button>
+                        <button class="ghost-button" onclick="goBack()">Home</button>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="config.local.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="host.js"></script>
+</body>
+</html>
