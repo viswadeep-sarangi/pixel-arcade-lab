@@ -1,61 +1,122 @@
 {
   "categories": [
     {
-      "topic": "Art and Theatre",
-      "author": "Elena Rossi",
+      "topic": "Art and Theater",
+      "author": "Sam T",
       "questions": [
         {
           "id": 1,
-          "question": "Who painted the Mona Lisa?",
+          "question": "What is the longest running show on the west end",
           "options": [
-            "Michelangelo",
-            "Leonardo da Vinci",
-            "Raphael",
-            "Donatello"
+            "Phantom of the Opera",
+            "The Mousetrap",
+            "Les Miserables",
+            "Witness for the Prosecution"
           ],
           "correctAnswer": 1
         },
         {
           "id": 2,
-          "question": "Which famous sculpture is Michelangelo's masterpiece?",
+          "question": "How many potential dads does Sophie have in Mamma Mia?",
           "options": [
-            "Venus de Milo",
-            "Nike of Samothrace",
-            "David",
-            "The Thinker"
+            "1",
+            "2",
+            "3",
+            "4"
           ],
           "correctAnswer": 2
         },
         {
           "id": 3,
-          "question": "Which playwright wrote the tragedy 'Hamlet'?",
+          "question": "What was Andrew Lloyd Webber’s first musical?",
           "options": [
-            "Christopher Marlowe",
-            "Ben Jonson",
-            "William Shakespeare",
-            "Thomas Kyd"
+            "Phantom of the Opera",
+            "Starlight Express",
+            "Cats",
+            "Joseph and the Amazing Technicolor Dreamcoat"
           ],
-          "correctAnswer": 2
+          "correctAnswer": 3
         },
         {
           "id": 4,
-          "question": "What artistic movement is Pablo Picasso famous for pioneering?",
+          "question": "How many times has the London Globe theatre been (re)built?",
           "options": [
-            "Surrealism",
-            "Cubism",
-            "Impressionism",
-            "Fauvism"
+            "1",
+            "3",
+            "5",
+            "8"
           ],
           "correctAnswer": 1
         },
         {
           "id": 5,
-          "question": "Which artist cut off part of his ear?",
+          "question": "What is Jean Valjean’s prisoner number in Les Miserables?",
           "options": [
-            "Pablo Picasso",
-            "Paul Klee",
-            "Vincent van Gogh",
-            "Henri Matisse"
+            "24601",
+            "72893",
+            "18430",
+            "37842"
+          ],
+          "correctAnswer": 0
+        }
+      ]
+    },
+    {
+      "topic": "World Cup",
+      "author": "Ben M",
+      "questions": [
+        {
+          "id": 6,
+          "question": "How many teams are in the FIFA world cup 2026?",
+          "options": [
+            "42",
+            "48",
+            "52",
+            "56"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "id": 7,
+          "question": "What is the probability of scoring from a penalty in the world cup?",
+          "options": [
+            "43%",
+            "57%",
+            "65%",
+            "74%"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "id": 8,
+          "question": "How many times has the England mens team reached the world cup final?",
+          "options": [
+            "0",
+            "1",
+            "2",
+            "3"
+          ],
+          "correctAnswer": 1
+        },
+        {
+          "id": 9,
+          "question": "How many goals has the England mens football team scored across the world cup tournament (not qualifiers), from their first appearance in 1950 to today?",
+          "options": [
+            "68",
+            "89",
+            "104",
+            "123"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "id": 10,
+          "question": "Who has been in more world cup semi-finals? The England mens, or womens team?",
+          "options": [
+            "England mens team",
+            "England womens team",
+            "They've been in an equal number",
+            "N/A"
           ],
           "correctAnswer": 2
         }
@@ -63,184 +124,245 @@
     },
     {
       "topic": "Geography",
-      "author": "Marcus Chen",
-      "questions": [
-        {
-          "id": 6,
-          "question": "What is the capital of Japan?",
-          "options": [
-            "Osaka",
-            "Tokyo",
-            "Kyoto",
-            "Nagoya"
-          ],
-          "correctAnswer": 1
-        },
-        {
-          "id": 7,
-          "question": "Which is the largest country in the world by area?",
-          "options": [
-            "Canada",
-            "China",
-            "United States",
-            "Russia"
-          ],
-          "correctAnswer": 3
-        },
-        {
-          "id": 8,
-          "question": "What is the longest river in the world?",
-          "options": [
-            "Amazon River",
-            "Yangtze River",
-            "Mississippi River",
-            "Nile River"
-          ],
-          "correctAnswer": 3
-        },
-        {
-          "id": 9,
-          "question": "Which mountain range contains Mount Everest?",
-          "options": [
-            "Andes Mountains",
-            "Rocky Mountains",
-            "Himalayas",
-            "Alps"
-          ],
-          "correctAnswer": 2
-        },
-        {
-          "id": 10,
-          "question": "What is the smallest continent by area?",
-          "options": [
-            "Europe",
-            "South America",
-            "Australia",
-            "Antarctica"
-          ],
-          "correctAnswer": 2
-        }
-      ]
-    },
-    {
-      "topic": "Nature",
-      "author": "Dr. Sarah Thompson",
+      "author": "Andrea S",
       "questions": [
         {
           "id": 11,
-          "question": "What is the largest mammal on Earth?",
+          "question": "Which country has the MOST neighbouring countries in the world?",
           "options": [
-            "African Elephant",
-            "Giraffe",
-            "Blue Whale",
-            "Hippopotamus"
+            "Russia",
+            "China",
+            "Brazil",
+            "Germany"
           ],
-          "correctAnswer": 2
+          "correctAnswer": 1
         },
         {
           "id": 12,
-          "question": "How many legs does a typical insect have?",
+          "question": "How many times bigger is Alaska than the entire UK?",
           "options": [
-            "4",
-            "6",
-            "8",
-            "10"
-          ],
-          "correctAnswer": 1
-        },
-        {
-          "id": 13,
-          "question": "What gas do plants primarily absorb from the atmosphere?",
-          "options": [
-            "Oxygen",
-            "Nitrogen",
-            "Carbon Dioxide",
-            "Helium"
+            "About 2x",
+            "About 4x",
+            "About 7x",
+            "About 10x"
           ],
           "correctAnswer": 2
         },
         {
-          "id": 14,
-          "question": "Which animal is famous for changing its skin color?",
+          "id": 13,
+          "question": "Which country receives the most international tourists each year?",
           "options": [
-            "Poison Dart Frog",
-            "Chameleon",
-            "Green Tree Snake",
-            "Peacock"
+            "Spain",
+            "United States",
+            "Italy",
+            "France"
           ],
-          "correctAnswer": 1
+          "correctAnswer": 3
+        },
+        {
+          "id": 14,
+          "question": "Which country has only ONE official airport, and currently receives no commercial flights?",
+          "options": [
+            "Luxembourg",
+            "Monaco",
+            "Liechtenstein",
+            "San Marino"
+          ],
+          "correctAnswer": 3
         },
         {
           "id": 15,
-          "question": "What is the process by which plants make their own food using sunlight?",
+          "question": "Which country consumes the most pizza per person in the world per year?",
           "options": [
-            "Fermentation",
-            "Photosynthesis",
-            "Cellular Respiration",
-            "Decomposition"
+            "Italy",
+            "United States",
+            "France",
+            "Norway"
           ],
-          "correctAnswer": 1
+          "correctAnswer": 3
         }
       ]
     },
     {
-      "topic": "Music",
-      "author": "James Mitchell",
+      "topic": "Wildlife",
+      "author": "Holly J",
       "questions": [
         {
           "id": 16,
-          "question": "How many strings does a standard violin have?",
+          "question": "Which plant is considered a carnivorous species?",
           "options": [
-            "4",
-            "6",
-            "8",
-            "10"
+            "Venus flytrap",
+            "Baobab tree",
+            "Bamboo",
+            "Water lily"
           ],
           "correctAnswer": 0
         },
         {
           "id": 17,
-          "question": "Which famous composer became completely deaf yet continued composing?",
+          "question": "Which mammal is known to have the most powerful bite force relative to its body size?",
           "options": [
-            "Wolfgang Amadeus Mozart",
-            "Ludwig van Beethoven",
-            "Johann Sebastian Bach",
-            "Antonio Vivaldi"
+            "Lion",
+            "Hippopotamus",
+            "Tasmanian devil",
+            "Jaguar"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "id": 18,
+          "question": "What is the primary reason mangrove forests are important to coastal ecosystems?",
+          "options": [
+            "They produce more oxygen than rainforests",
+            "They prevent coastal erosion and provide nursery habitats",
+            "They are the main food source for whales",
+            "They turn saltwater into freshwater"
           ],
           "correctAnswer": 1
         },
         {
-          "id": 18,
-          "question": "How many keys does a standard piano have?",
-          "options": [
-            "60",
-            "76",
-            "88",
-            "100"
-          ],
-          "correctAnswer": 2
-        },
-        {
           "id": 19,
-          "question": "Which country is credited as the birthplace of jazz music?",
+          "question": "What is a group of flamingos commonly called?",
           "options": [
-            "France",
-            "United Kingdom",
-            "United States",
-            "Germany"
+            "A colony",
+            "A flamboyance",
+            "A parliament",
+            "A murmur"
           ],
-          "correctAnswer": 2
+          "correctAnswer": 1
         },
         {
           "id": 20,
-          "question": "What is the fastest musical tempo marking?",
+          "question": "Which animal has fingerprints so similar to humans that they can confuse forensic investigators?",
           "options": [
-            "Adagio",
-            "Allegro",
-            "Presto",
-            "Largo"
+            "Gorilla",
+            "Chimpanzee",
+            "Koala",
+            "Orangutan"
           ],
           "correctAnswer": 2
+        }
+      ]
+    },
+    {
+      "topic": "Pop Culture",
+      "author": "Kate C",
+      "questions": [
+        {
+          "id": 21,
+          "question": "Which reality show featured in a Panorama most recently?",
+          "options": [
+            "Jeremy Kyle",
+            "Married at First Sight UK",
+            "Virgin Islands",
+            "Rich House Poor House"
+          ],
+          "correctAnswer": 1
+        },
+        {
+          "id": 22,
+          "question": "Which celebrity's husband 'disappeared' this week?",
+          "options": [
+            "Katy Perry",
+            "Kerry Katona",
+            "Kendall Jenner",
+            "Katie Price"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "id": 23,
+          "question": "Which Fury child got married this week?",
+          "options": [
+            "Adonis",
+            "Venezuela",
+            "John James",
+            "Rico"
+          ],
+          "correctAnswer": 1
+        },
+        {
+          "id": 24,
+          "question": "Which Kardashian was robbed at gunpoint in Paris",
+          "options": [
+            "Kim",
+            "Kylie",
+            "Kourtney",
+            "Khloe"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "id": 25,
+          "question": "Which country won Eurovision this year?",
+          "options": [
+            "Bulgaria",
+            "United Kingdom",
+            "France",
+            "Sweden"
+          ],
+          "correctAnswer": 0
+        }
+      ]
+    },
+    {
+      "topic": "Brains",
+      "author": "Beth I",
+      "questions": [
+        {
+          "id": 26,
+          "question": "What does the Jennifer Aniston neuron refer to?",
+          "options": [
+            "A neuron involved in memory loss",
+            "A neuron that responds to a specific concept or person",
+            "A pattern of brain function that is observed in stalkers",
+            "Damage linked to hallucinations"
+          ],
+          "correctAnswer": 1
+        },
+        {
+          "id": 27,
+          "question": "In Capgras syndrome, a person believes:",
+          "options": [
+            "They are invisible",
+            "They can hear other peoples thoughts",
+            "A loved one has been replaced by an impostor",
+            "They are dead"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "id": 28,
+          "question": "What is your cochlea shaped like?",
+          "options": [
+            "A snail shell",
+            "A helix",
+            "An infinity symbol",
+            "A walnut"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "id": 29,
+          "question": "Cells that fire together",
+          "options": [
+            "Wire together",
+            "Die together",
+            "Duplicate",
+            "Oscillate at the same frequency"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "id": 30,
+          "question": "In bilingual people, making important decisions in your second language can lead to",
+          "options": [
+            "More emotional reactions",
+            "More logical thinking",
+            "Faster responses",
+            "Slower responses"
+          ],
+          "correctAnswer": 1
         }
       ]
     }
