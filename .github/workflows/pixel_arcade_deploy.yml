@@ -68,3 +68,4 @@ jobs:
         with:
           github_token: ${{ secrets.GH_PAGE_DEPLOY_GITHUB_TOKEN }}
           publish_dir: deploy/
+          cname: pixel.deepundeep.com
