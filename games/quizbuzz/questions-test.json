@@ -1,0 +1,248 @@
+{
+  "categories": [
+    {
+      "topic": "Art and Theatre",
+      "author": "Elena Rossi",
+      "questions": [
+        {
+          "id": 1,
+          "question": "Who painted the Mona Lisa?",
+          "options": [
+            "Michelangelo",
+            "Leonardo da Vinci",
+            "Raphael",
+            "Donatello"
+          ],
+          "correctAnswer": 1
+        },
+        {
+          "id": 2,
+          "question": "Which famous sculpture is Michelangelo's masterpiece?",
+          "options": [
+            "Venus de Milo",
+            "Nike of Samothrace",
+            "David",
+            "The Thinker"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "id": 3,
+          "question": "Which playwright wrote the tragedy 'Hamlet'?",
+          "options": [
+            "Christopher Marlowe",
+            "Ben Jonson",
+            "William Shakespeare",
+            "Thomas Kyd"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "id": 4,
+          "question": "What artistic movement is Pablo Picasso famous for pioneering?",
+          "options": [
+            "Surrealism",
+            "Cubism",
+            "Impressionism",
+            "Fauvism"
+          ],
+          "correctAnswer": 1
+        },
+        {
+          "id": 5,
+          "question": "Which artist cut off part of his ear?",
+          "options": [
+            "Pablo Picasso",
+            "Paul Klee",
+            "Vincent van Gogh",
+            "Henri Matisse"
+          ],
+          "correctAnswer": 2
+        }
+      ]
+    },
+    {
+      "topic": "Geography",
+      "author": "Marcus Chen",
+      "questions": [
+        {
+          "id": 6,
+          "question": "What is the capital of Japan?",
+          "options": [
+            "Osaka",
+            "Tokyo",
+            "Kyoto",
+            "Nagoya"
+          ],
+          "correctAnswer": 1
+        },
+        {
+          "id": 7,
+          "question": "Which is the largest country in the world by area?",
+          "options": [
+            "Canada",
+            "China",
+            "United States",
+            "Russia"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "id": 8,
+          "question": "What is the longest river in the world?",
+          "options": [
+            "Amazon River",
+            "Yangtze River",
+            "Mississippi River",
+            "Nile River"
+          ],
+          "correctAnswer": 3
+        },
+        {
+          "id": 9,
+          "question": "Which mountain range contains Mount Everest?",
+          "options": [
+            "Andes Mountains",
+            "Rocky Mountains",
+            "Himalayas",
+            "Alps"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "id": 10,
+          "question": "What is the smallest continent by area?",
+          "options": [
+            "Europe",
+            "South America",
+            "Australia",
+            "Antarctica"
+          ],
+          "correctAnswer": 2
+        }
+      ]
+    },
+    {
+      "topic": "Nature",
+      "author": "Dr. Sarah Thompson",
+      "questions": [
+        {
+          "id": 11,
+          "question": "What is the largest mammal on Earth?",
+          "options": [
+            "African Elephant",
+            "Giraffe",
+            "Blue Whale",
+            "Hippopotamus"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "id": 12,
+          "question": "How many legs does a typical insect have?",
+          "options": [
+            "4",
+            "6",
+            "8",
+            "10"
+          ],
+          "correctAnswer": 1
+        },
+        {
+          "id": 13,
+          "question": "What gas do plants primarily absorb from the atmosphere?",
+          "options": [
+            "Oxygen",
+            "Nitrogen",
+            "Carbon Dioxide",
+            "Helium"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "id": 14,
+          "question": "Which animal is famous for changing its skin color?",
+          "options": [
+            "Poison Dart Frog",
+            "Chameleon",
+            "Green Tree Snake",
+            "Peacock"
+          ],
+          "correctAnswer": 1
+        },
+        {
+          "id": 15,
+          "question": "What is the process by which plants make their own food using sunlight?",
+          "options": [
+            "Fermentation",
+            "Photosynthesis",
+            "Cellular Respiration",
+            "Decomposition"
+          ],
+          "correctAnswer": 1
+        }
+      ]
+    },
+    {
+      "topic": "Music",
+      "author": "James Mitchell",
+      "questions": [
+        {
+          "id": 16,
+          "question": "How many strings does a standard violin have?",
+          "options": [
+            "4",
+            "6",
+            "8",
+            "10"
+          ],
+          "correctAnswer": 0
+        },
+        {
+          "id": 17,
+          "question": "Which famous composer became completely deaf yet continued composing?",
+          "options": [
+            "Wolfgang Amadeus Mozart",
+            "Ludwig van Beethoven",
+            "Johann Sebastian Bach",
+            "Antonio Vivaldi"
+          ],
+          "correctAnswer": 1
+        },
+        {
+          "id": 18,
+          "question": "How many keys does a standard piano have?",
+          "options": [
+            "60",
+            "76",
+            "88",
+            "100"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "id": 19,
+          "question": "Which country is credited as the birthplace of jazz music?",
+          "options": [
+            "France",
+            "United Kingdom",
+            "United States",
+            "Germany"
+          ],
+          "correctAnswer": 2
+        },
+        {
+          "id": 20,
+          "question": "What is the fastest musical tempo marking?",
+          "options": [
+            "Adagio",
+            "Allegro",
+            "Presto",
+            "Largo"
+          ],
+          "correctAnswer": 2
+        }
+      ]
+    }
+  ]
+}
