@@ -195,8 +195,8 @@ function renderHostQuestion(roomData, players) {
     const question = quizQuestions[currentIndex];
     const hostQuestionText = document.getElementById('hostQuestionText');
     const hostOptionsGrid = document.getElementById('hostOptionsGrid');
-    const playerCardsContainer = document.getElementById('playerCardsContainer');
     const hostPlayersTop = document.getElementById('hostPlayersTop');
+    const hostSubmitStatus = document.getElementById('hostSubmitStatus');
     const completeBtn = document.getElementById('completeQuestionButton');
     const revealBtn = document.getElementById('revealAnswerButton');
     const nextBtn = document.getElementById('nextQuestionButton');
@@ -204,7 +204,9 @@ function renderHostQuestion(roomData, players) {
     if (!question) {
         hostQuestionText.textContent = 'No questions loaded yet.';
         hostOptionsGrid.innerHTML = '';
-        playerCardsContainer.innerHTML = '';
+        hostPlayersTop.innerHTML = '';
+        hostSubmitStatus.textContent = '';
+        hostSubmitStatus.classList.remove('all-answered');
         return;
     }
 
@@ -225,36 +227,20 @@ function renderHostQuestion(roomData, players) {
     hostOptionsGrid.innerHTML = optionHtml;
 
     const playerIds = Object.keys(players);
+    const submittedCount = playerIds.filter(id => players[id].hasSubmitted).length;
+    const allAnswered = playerIds.length > 0 && submittedCount === playerIds.length;
+
     hostPlayersTop.innerHTML = playerIds.map((playerId) => {
         const player = players[playerId];
         return `<div class="host-player-chip ${player.hasSubmitted ? 'submitted' : ''}"><span class="tick"></span>${escapeHtml(player.name)}</div>`;
     }).join('');
 
-    const allAnswered = playerIds.length > 0 && playerIds.every((playerId) => players[playerId].hasSubmitted);
     completeBtn.disabled = !(allAnswered && phase === 'open');
     revealBtn.disabled = phase !== 'complete';
 
     const lastQuestion = currentIndex >= quizQuestions.length - 1;
     nextBtn.disabled = phase !== 'revealed';
     nextBtn.textContent = lastQuestion ? 'Finish Quiz' : 'Next Question';
-
-    const playerCards = playerIds.map((playerId) => {
-        const player = players[playerId];
-        const statusText = player.hasSubmitted ? 'Submitted' : 'Waiting';
-        const answerText = player.hasSubmitted && phase !== 'open'
-            ? (typeof player.currentAnswer === 'number' ? `Option ${String.fromCharCode(65 + player.currentAnswer)}` : 'No answer yet')
-            : (player.hasSubmitted ? 'Submitted' : 'No answer yet');
-        return `
-            <div class="host-player-card ${player.hasSubmitted ? 'submitted' : ''}">
-                <div>
-                    <div class="player-name">${player.name}</div>
-                    <div class="player-status">${statusText}</div>
-                </div>
-                <div>${answerText}</div>
-            </div>
-        `;
-    }).join('');
-    playerCardsContainer.innerHTML = playerCards;
 
     if (phase !== 'open') {
         Object.values(players).forEach((player) => {
@@ -270,10 +256,13 @@ function renderHostQuestion(roomData, players) {
         });
     }
 
+    hostSubmitStatus.classList.toggle('all-answered', phase === 'open' && allAnswered);
     if (phase === 'open') {
-        hostSubmitStatus.textContent = `Waiting for players to submit their answers. ${playerIds.filter(id => players[id].hasSubmitted).length}/${playerIds.length} submitted.`;
+        hostSubmitStatus.textContent = allAnswered
+            ? 'All players have answered. Complete the question when you are ready.'
+            : `Waiting for players to submit their answers. ${submittedCount}/${playerIds.length} submitted.`;
     } else if (phase === 'complete') {
-        hostSubmitStatus.textContent = 'All players have submitted. Click Complete Question to move cards to the selected answers.';
+        hostSubmitStatus.textContent = 'Answers are locked in. Reveal the correct answer when ready.';
     } else if (phase === 'revealed') {
         hostSubmitStatus.textContent = 'Answer revealed. Click Next Question to continue.';
     }
