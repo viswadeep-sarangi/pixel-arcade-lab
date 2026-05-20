@@ -133,6 +133,7 @@ function renderRound(room, players) {
     document.getElementById('questionCount').textContent = `Question ${index + 1} of ${activeQuestions.length}`;
     document.getElementById('progressFill').style.width = `${((index + 1) / activeQuestions.length) * 100}%`;
     document.getElementById('questionText').textContent = question.question;
+    const hostStatus = document.getElementById('hostStatus');
 
     const allAnswered = playerIds.length > 0 && playerIds.every((id) => players[id]?.hasSubmitted);
     const allVoted = playerIds.length > 0 && playerIds.every((id) => players[id]?.hasVoted);
@@ -145,18 +146,22 @@ function renderRound(room, players) {
 
     if (phase === 'answer') {
         const submitted = playerIds.filter((id) => players[id]?.hasSubmitted).length;
-        document.getElementById('hostStatus').textContent = `Waiting for answers: ${submitted}/${playerIds.length} submitted.`;
+        hostStatus.classList.toggle('all-submitted', allAnswered);
+        hostStatus.textContent = allAnswered
+            ? 'All players have submitted their answers. Show Answers when you are ready.'
+            : `Waiting for answers: ${submitted}/${playerIds.length} submitted.`;
         document.getElementById('answersGrid').innerHTML = '';
         return;
     }
 
+    hostStatus.classList.remove('all-submitted');
     if (phase === 'voting') {
         const voted = playerIds.filter((id) => players[id]?.hasVoted).length;
-        document.getElementById('hostStatus').textContent = `Players are guessing the truth: ${voted}/${playerIds.length} voted.`;
+        hostStatus.textContent = `Players are guessing the truth: ${voted}/${playerIds.length} voted.`;
     } else if (phase === 'votes') {
-        document.getElementById('hostStatus').textContent = 'Votes are in. Reveal the real answer when ready.';
+        hostStatus.textContent = 'Votes are in. Reveal the real answer when ready.';
     } else if (phase === 'revealed') {
-        document.getElementById('hostStatus').textContent = 'Real answer revealed. Scores have been recorded.';
+        hostStatus.textContent = 'Real answer revealed. Scores have been recorded.';
     }
 
     renderAnswers(round, players, phase);
