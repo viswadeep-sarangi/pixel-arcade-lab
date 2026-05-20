@@ -1,4 +1,5 @@
 const GAME_ROOT = 'lietome/rooms';
+const QUESTIONS_PER_GAME = 3;
 
 let currentRoomId = null;
 let hostId = null;
@@ -118,7 +119,8 @@ function getPlayerDoneState(player, phase) {
 
 function renderRound(room, players) {
     const index = room.currentQuestionIndex || 0;
-    const question = questions[index];
+    const activeQuestions = getActiveQuestions(room);
+    const question = activeQuestions[index];
     const phase = room.phase || 'answer';
     const round = getCurrentRound(room);
     const playerIds = Object.keys(players);
@@ -128,8 +130,8 @@ function renderRound(room, players) {
         return;
     }
 
-    document.getElementById('questionCount').textContent = `Question ${index + 1} of ${questions.length}`;
-    document.getElementById('progressFill').style.width = `${((index + 1) / questions.length) * 100}%`;
+    document.getElementById('questionCount').textContent = `Question ${index + 1} of ${activeQuestions.length}`;
+    document.getElementById('progressFill').style.width = `${((index + 1) / activeQuestions.length) * 100}%`;
     document.getElementById('questionText').textContent = question.question;
 
     const allAnswered = playerIds.length > 0 && playerIds.every((id) => players[id]?.hasSubmitted);
@@ -139,7 +141,7 @@ function renderRound(room, players) {
     document.getElementById('showVotesButton').disabled = !(phase === 'voting' && allVoted);
     document.getElementById('revealButton').disabled = phase !== 'votes';
     document.getElementById('nextButton').disabled = phase !== 'revealed';
-    document.getElementById('nextButton').textContent = index >= questions.length - 1 ? 'Finish Game' : 'Next Question';
+    document.getElementById('nextButton').textContent = index >= activeQuestions.length - 1 ? 'Finish Game' : 'Next Question';
 
     if (phase === 'answer') {
         const submitted = playerIds.filter((id) => players[id]?.hasSubmitted).length;
@@ -165,6 +167,16 @@ function getCurrentRound(room = latestRoom) {
     return room?.rounds?.[index] || {};
 }
 
+function getActiveQuestions(room = latestRoom) {
+    const selectedIds = room?.selectedQuestionIds || [];
+    if (!selectedIds.length) return questions;
+
+    const questionsById = new Map(questions.map((question) => [String(question.id), question]));
+    return selectedIds
+        .map((id) => questionsById.get(String(id)))
+        .filter(Boolean);
+}
+
 function startGame() {
     if (!currentRoomId) return;
 
@@ -176,11 +188,15 @@ function startGame() {
 
         roomRef().once('value').then((snapshot) => {
             const room = snapshot.val() || {};
+            const selectedQuestionIds = shuffle(questions)
+                .slice(0, Math.min(QUESTIONS_PER_GAME, questions.length))
+                .map((question) => question.id);
             const updates = {
                 status: 'started',
                 phase: 'answer',
                 startedAt: new Date().toISOString(),
-                currentQuestionIndex: 0
+                currentQuestionIndex: 0,
+                selectedQuestionIds
             };
             Object.keys(room.players || {}).forEach((playerId) => {
                 updates[`players/${playerId}/hasSubmitted`] = false;
@@ -197,7 +213,7 @@ function startGame() {
 function showAnswers() {
     if (!latestRoom) return;
     const index = latestRoom.currentQuestionIndex || 0;
-    const question = questions[index];
+    const question = getActiveQuestions()[index];
     const players = latestRoom.players || {};
     const answerBank = buildAnswerBank(question, players);
     const updates = {
@@ -289,8 +305,9 @@ function revealAnswer() {
 function nextQuestion() {
     if (!latestRoom) return;
 
+    const activeQuestions = getActiveQuestions();
     const nextIndex = (latestRoom.currentQuestionIndex || 0) + 1;
-    if (nextIndex >= questions.length) {
+    if (nextIndex >= activeQuestions.length) {
         endGame();
         return;
     }

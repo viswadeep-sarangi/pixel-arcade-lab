@@ -118,7 +118,8 @@ function listenForRoomUpdates() {
 
 function renderRound() {
     const index = latestRoom.currentQuestionIndex || 0;
-    const question = questions[index];
+    const activeQuestions = getActiveQuestions();
+    const question = activeQuestions[index];
     const phase = latestRoom.phase || 'answer';
     const player = latestRoom.players?.[playerId] || {};
 
@@ -127,8 +128,8 @@ function renderRound() {
         return;
     }
 
-    document.getElementById('questionCount').textContent = `Question ${index + 1} of ${questions.length}`;
-    document.getElementById('progressFill').style.width = `${((index + 1) / questions.length) * 100}%`;
+    document.getElementById('questionCount').textContent = `Question ${index + 1} of ${activeQuestions.length}`;
+    document.getElementById('progressFill').style.width = `${((index + 1) / activeQuestions.length) * 100}%`;
     document.getElementById('questionText').textContent = question.question;
 
     const answerEntry = document.getElementById('answerEntry');
@@ -149,6 +150,16 @@ function renderRound() {
     document.getElementById('lieAnswer').disabled = false;
     document.getElementById('lieAnswer').value = '';
     renderAnswers(phase, player);
+}
+
+function getActiveQuestions() {
+    const selectedIds = latestRoom?.selectedQuestionIds || [];
+    if (!selectedIds.length) return questions;
+
+    const questionsById = new Map(questions.map((question) => [String(question.id), question]));
+    return selectedIds
+        .map((id) => questionsById.get(String(id)))
+        .filter(Boolean);
 }
 
 function submitLie() {
