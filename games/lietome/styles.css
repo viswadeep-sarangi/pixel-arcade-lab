@@ -465,8 +465,18 @@ button:disabled {
 }
 
 .host-status {
+    padding: 0.85rem 1rem;
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    background: #f8f9ff;
     color: var(--muted);
-    font-weight: 700;
+    font-weight: 800;
+}
+
+.host-status.all-submitted {
+    border-color: var(--green);
+    background: #e9f8ee;
+    color: #155724;
 }
 
 .score-row {
