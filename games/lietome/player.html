@@ -70,6 +70,17 @@
         </section>
     </main>
 
+    <div class="support-popup" id="supportPopup">
+        <div class="support-popup-card">
+            <h3>What a round!</h3>
+            <p>Awesome finish — if you’d like, a tiny tip helps keep the lights on and the next round ready.</p>
+            <div class="support-popup-actions">
+                <a class="support-popup-button" href="https://buy.stripe.com/4gMbJ1aIt6RQ7xj2AYc3m00" target="_blank" rel="noopener noreferrer">Keep the lights on</a>
+                <button class="support-popup-dismiss" onclick="hideSupportPopup()">No worries, I’m good</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function formatRoomId(input) {
             input.value = input.value.toUpperCase().replace(/[^A-Z0-9_]/g, '');

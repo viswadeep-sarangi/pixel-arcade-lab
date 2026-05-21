@@ -164,6 +164,47 @@
             transform: translateY(0);
         }
 
+        .support-button {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ff6ec4 0%, #ff9a56 45%, #ffe066 100%);
+            color: #1a1a1a;
+            border: 2px solid rgba(255, 255, 255, 0.95);
+            border-radius: 999px;
+            padding: 0.95rem 1.2rem;
+            font-size: 1rem;
+            font-weight: 900;
+            text-decoration: none;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.55);
+            box-shadow: 0 18px 40px rgba(255, 102, 146, 0.36), 0 0 24px rgba(255, 255, 255, 0.2);
+            transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
+            animation: coffeeGlow 4s ease-in-out infinite;
+        }
+
+        .support-button:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 26px 44px rgba(255, 108, 152, 0.46), 0 0 36px rgba(255, 255, 255, 0.28);
+            filter: brightness(1.06);
+        }
+
+        @keyframes coffeeGlow {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                filter: brightness(1);
+                box-shadow: 0 18px 40px rgba(255, 102, 146, 0.36), 0 0 24px rgba(255, 255, 255, 0.2);
+            }
+            50% {
+                transform: translateY(-3px) scale(1.02);
+                filter: brightness(1.08);
+                box-shadow: 0 22px 48px rgba(255, 118, 160, 0.5), 0 0 36px rgba(255, 255, 255, 0.28);
+            }
+        }
+
         .game-icon {
             display: grid;
             place-items: center;
@@ -268,6 +309,9 @@
                 <span class="play-mark">&gt;</span>
             </button>
         </div>
+        <a class="support-button" href="https://buy.stripe.com/4gMbJ1aIt6RQ7xj2AYc3m00" target="_blank" rel="noopener noreferrer">
+            🎮 Help Continue the Chaos
+        </a>
     </div>
 
     <script>
