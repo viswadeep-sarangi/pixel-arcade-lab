@@ -421,6 +421,17 @@ function displayResults() {
     document.getElementById('quizSection').style.display = 'none';
     document.getElementById('resultsSection').style.display = 'block';
     loadQuestionsForReview();
+    showSupportPopup();
+}
+
+function showSupportPopup() {
+    const popup = document.getElementById('supportPopup');
+    if (popup) popup.classList.add('visible');
+}
+
+function hideSupportPopup() {
+    const popup = document.getElementById('supportPopup');
+    if (popup) popup.classList.remove('visible');
 }
 
 /**

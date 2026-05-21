@@ -278,6 +278,17 @@ function showEndScreen() {
     document.getElementById('quizScreen').style.display = 'none';
     document.getElementById('resultsScreen').style.display = 'block';
     document.getElementById('resultsMessage').textContent = 'Quiz completed! Waiting for host review...';
+    showSupportPopup();
+}
+
+function showSupportPopup() {
+    const popup = document.getElementById('supportPopup');
+    if (popup) popup.classList.add('visible');
+}
+
+function hideSupportPopup() {
+    const popup = document.getElementById('supportPopup');
+    if (popup) popup.classList.remove('visible');
 }
 
 /**

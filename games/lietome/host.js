@@ -79,8 +79,19 @@ function listenForRoomUpdates() {
             document.getElementById('liveSection').style.display = 'none';
             document.getElementById('resultsSection').style.display = 'block';
             renderScores(players);
+            showSupportPopup();
         }
     });
+}
+
+function showSupportPopup() {
+    const popup = document.getElementById('supportPopup');
+    if (popup) popup.classList.add('visible');
+}
+
+function hideSupportPopup() {
+    const popup = document.getElementById('supportPopup');
+    if (popup) popup.classList.remove('visible');
 }
 
 function renderPlayers(players) {
