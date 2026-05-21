@@ -86,12 +86,18 @@ function listenForRoomUpdates() {
 
 function showSupportPopup() {
     const popup = document.getElementById('supportPopup');
-    if (popup) popup.classList.add('visible');
+    if (popup) {
+        popup.style.display = 'grid';
+        popup.classList.add('visible');
+    }
 }
 
 function hideSupportPopup() {
     const popup = document.getElementById('supportPopup');
-    if (popup) popup.classList.remove('visible');
+    if (popup) {
+        popup.style.display = 'none';
+        popup.classList.remove('visible');
+    }
 }
 
 function renderPlayers(players) {
