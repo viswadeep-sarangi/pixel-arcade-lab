@@ -261,7 +261,7 @@
         },
         {
           "id": 22,
-          "question": "Which celebrity's husband 'disappeared' this week?",
+          "question": "Which celebrity's husband 'disappeared' recently?",
           "options": [
             "Katy Perry",
             "Kerry Katona",
@@ -272,7 +272,7 @@
         },
         {
           "id": 23,
-          "question": "Which Fury child got married this week?",
+          "question": "Which Fury child got married recently?",
           "options": [
             "Adonis",
             "Venezuela",
@@ -363,128 +363,6 @@
             "Slower responses"
           ],
           "correctAnswer": 1
-        }
-      ]
-    },
-    {
-      "topic": "Chocolate",
-      "author": "Andrea S",
-      "questions": [
-        {
-          "id": 31,
-          "question": "Under international food standards, what minimum cocoa butter content is required for white chocolate?",
-          "options": [
-            "0",
-            "0.05",
-            "0.2",
-            "0.5"
-          ],
-          "correctAnswer": 2
-        },
-        {
-          "id": 32,
-          "question": "According to a Cochrane review of scientific literature, what is the best-supported short-term cardiovascular effect of flavanol-rich cocoa products?",
-          "options": [
-            "They cure hypertension",
-            "They cause a small reduction in blood pressure",
-            "They prevent heart attacks",
-            "They eliminate cholesterol from the bloodstream"
-          ],
-          "correctAnswer": 1
-        },
-        {
-          "id": 33,
-          "question": "Which now-famous chocolate brand was first launched in the UK in 1935 under the name “Chocolate Crisp”?",
-          "options": [
-            "Twix",
-            "Wispa",
-            "KitKat",
-            "Aero"
-          ],
-          "correctAnswer": 3
-        },
-        {
-          "id": 34,
-          "question": "Which country consumes the most chocolate per person?",
-          "options": [
-            "Belgium",
-            "Switzerland",
-            "USA",
-            "UK"
-          ],
-          "correctAnswer": 1
-        },
-        {
-          "id": 35,
-          "question": "Roughly what proportion of people choose white chocolate as their favourite type of chocolate?",
-          "options": [
-            "1 in 10",
-            "1 in 4",
-            "1 in 3",
-            "1 in 2"
-          ],
-          "correctAnswer": 0
-        }
-      ]
-    },
-    {
-      "topic": "Fun Science",
-      "author": "Diana",
-      "questions": [
-        {
-          "id": 36,
-          "question": "Which part of the human body contains roughly the same number of bacterial cells as human cells?",
-          "options": [
-            "The skin",
-            "The gut",
-            "The lungs",
-            "The liver"
-          ],
-          "correctAnswer": 1
-        },
-        {
-          "id": 37,
-          "question": "What percentage of the DNA in your body is identical to that of a banana?",
-          "options": [
-            "about 20%",
-            "about 40%",
-            "about 60%",
-            "about 80%"
-          ],
-          "correctAnswer": 2
-        },
-        {
-          "id": 38,
-          "question": "Which animal has the longest recorded lifespan?",
-          "options": [
-            "Greenland shark",
-            "Galápagos giant tortoise",
-            "Bowhead whale",
-            "Red sea urchin"
-          ],
-          "correctAnswer": 0
-        },
-        {
-          "id": 39,
-          "question": "Which of these public health interventions is estimated to have saved the most lives globally?",
-          "options": [
-            "Antibiotics",
-            "Vaccination",
-            "Clean drinking water and sanitation",
-            "Tobacco control"
-          ],
-          "correctAnswer": 1
-        },
-        {
-          "id": 40,
-          "question": "What percentage of the universe is made up of ordinary matter (the stuff that makes stars, planets and people)?",
-          "options": [
-            "5%",
-            "20%",
-            "50%",
-            "75%"
-          ],
-          "correctAnswer": 0
         }
       ]
     }
