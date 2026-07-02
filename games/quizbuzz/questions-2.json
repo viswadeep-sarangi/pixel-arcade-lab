@@ -487,67 +487,6 @@
           "correctAnswer": 0
         }
       ]
-    },
-    {
-      "topic": "QD Quiz Template",
-      "author": "Falak R",
-      "questions": [
-        {
-          "id": 41,
-          "question": "Which animal does Sir David Attenborough not like",
-          "options": [
-            "Goblin Shark",
-            "Rat",
-            "Platypus",
-            "Koala"
-          ],
-          "correctAnswer": 1
-        },
-        {
-          "id": 42,
-          "question": "In The Godfather , who famously said ”This character said: \"Leave the gun. Take the cannoli.\"",
-          "options": [
-            "Vito Corleone",
-            "Peter Clemenza",
-            "Sonny Corleone",
-            "Michael Corleone"
-          ],
-          "correctAnswer": 1
-        },
-        {
-          "id": 43,
-          "question": "In 1967, Sir David Attenborough made a suggestion to change an aspect of a sport that was later adopted. What was this?",
-          "options": [
-            "Changing tennis balls to fluorescent yellow",
-            "Adding a shot clock to snooker",
-            "Using a red ball for night cricket",
-            "Introducing goal-line technology in football"
-          ],
-          "correctAnswer": 0
-        },
-        {
-          "id": 44,
-          "question": "What does Richard Hammond have in common with Falak",
-          "options": [
-            "Both Brummie",
-            "Both can yodel",
-            "Both have a kiwi allergy",
-            "Both can drive really well"
-          ],
-          "correctAnswer": 0
-        },
-        {
-          "id": 45,
-          "question": "Maggie Smith won her first Academy Award in 1970 for playing the lead role in which of these films?",
-          "options": [
-            "Othello",
-            "The Honey Pot",
-            "Travels with My Aunt",
-            "The Prime of Miss Jean Brody"
-          ],
-          "correctAnswer": 3
-        }
-      ]
     }
   ]
 }
