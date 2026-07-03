@@ -9,11 +9,46 @@ let playerAnswers = {};
 let quizQuestions = [];
 let quizStarted = false;
 let currentRoomData = null;
+let roomSubscription = null;
+
+function getSupabaseClient() {
+    return window.supabaseClient || null;
+}
+
+function ensureSupabaseReady() {
+    const client = getSupabaseClient();
+    if (!client) {
+        alert('Supabase is not configured. Please add your Supabase URL and anon key to config.local.js.');
+        return false;
+    }
+    return true;
+}
+
+function normalizeRoomData(roomData) {
+    if (!roomData) return null;
+    return {
+        ...roomData,
+        hostId: roomData.host_id || roomData.hostId || null,
+        category: roomData.category || '',
+        status: roomData.status || 'waiting',
+        currentQuestionIndex: roomData.current_question_index ?? roomData.currentQuestionIndex ?? 0,
+        questionPhase: roomData.question_phase || roomData.questionPhase || 'waiting',
+        createdAt: roomData.created_at || roomData.createdAt || null,
+        startedAt: roomData.started_at || roomData.startedAt || null,
+        endedAt: roomData.ended_at || roomData.endedAt || null,
+        players: roomData.players || {}
+    };
+}
+
+function getPlayersFromRoom(roomData) {
+    const normalized = normalizeRoomData(roomData);
+    return normalized ? normalized.players || {} : {};
+}
 
 /**
  * Join a quiz room
  */
-function joinRoom() {
+async function joinRoom() {
     const roomId = document.getElementById('roomId').value.trim().toUpperCase();
     const name = document.getElementById('playerName').value.trim();
 
@@ -22,41 +57,51 @@ function joinRoom() {
         return;
     }
 
-    // Validate name: only uppercase A-Z letters allowed
     if (!/^[A-Z]+$/.test(name)) {
         alert('Name must contain only uppercase letters A-Z (no numbers or lowercase)');
         return;
     }
 
+    if (!ensureSupabaseReady()) return;
+
     currentRoomId = roomId;
     playerName = name;
     playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
-    database.ref('rooms/' + roomId).once('value', (snapshot) => {
-      if (snapshot.exists()) {
-                const playerData = {
-                    name: playerName,
-                    joinedAt: new Date().toISOString(),
-                    completedQuestions: 0,
-                    currentAnswer: null,
-                    hasSubmitted: false,
-                    answers: {},
-                    score: 0,
-                    scores: {}
-                };
-        database.ref('rooms/' + roomId + '/players/' + playerId).set(playerData)
-          .then(() => {
-            showWaitingScreen();
-            listenForRoomUpdates();
-          })
-          .catch(error => {
-            console.error('Error joining room:', error);
-            alert('Error joining room. Please try again.');
-          });
-      } else {
+    const client = getSupabaseClient();
+    const { data: roomRow, error } = await client.from('quiz_rooms').select('*').eq('id', roomId).maybeSingle();
+    if (error || !roomRow) {
+        console.error('Error joining room:', error);
         alert('Room not found. Please check the Room ID.');
-      }
-    });
+        return;
+    }
+
+    const playerData = {
+        name: playerName,
+        joinedAt: new Date().toISOString(),
+        completedQuestions: 0,
+        currentAnswer: null,
+        hasSubmitted: false,
+        answers: {},
+        score: 0,
+        scores: {}
+    };
+
+    const players = getPlayersFromRoom(roomRow);
+    const nextPlayers = {
+        ...players,
+        [playerId]: playerData
+    };
+
+    const { updateError } = await client.from('quiz_rooms').update({ players: nextPlayers }).eq('id', roomId);
+    if (updateError) {
+        console.error('Error joining room:', updateError);
+        alert('Error joining room. Please try again.');
+        return;
+    }
+
+    showWaitingScreen();
+    listenForRoomUpdates();
 }
 
 /**
@@ -72,40 +117,69 @@ function showWaitingScreen() {
 /**
  * Listen for room updates from host
  */
-function listenForRoomUpdates() {
-    database.ref('rooms/' + currentRoomId).on('value', (snapshot) => {
-      const roomData = snapshot.val();
-      if (!roomData) return;
+async function listenForRoomUpdates() {
+    if (roomSubscription) {
+        getSupabaseClient().removeChannel(roomSubscription);
+        roomSubscription = null;
+    }
 
-      const previousPhase = currentRoomData?.questionPhase;
-      currentRoomData = roomData;
+    const client = getSupabaseClient();
+    if (!client) return;
 
-      if (roomData.status === 'started') {
-          if (!quizStarted) {
-              quizStarted = true;
-              loadQuizQuestions(roomData.category).then(() => {
-                  currentQuestionIndex = roomData.currentQuestionIndex || 0;
-                  showQuizScreen();
-              });
-          } else {
-              const newIndex = roomData.currentQuestionIndex || 0;
-              const newPhase = roomData.questionPhase || 'open';
-              const indexChanged = newIndex !== currentQuestionIndex;
-              const phaseChanged = newPhase !== previousPhase;
-              if (indexChanged) {
-                  selectedAnswer = null;
-              }
-              currentQuestionIndex = newIndex;
-              if (indexChanged || phaseChanged) {
-                  displayCurrentQuestion();
-              }
-          }
-      }
-
-      if (roomData.status === 'ended') {
-          showEndScreen();
-      }
+    roomSubscription = client.channel(`room:${currentRoomId}`);
+    roomSubscription.on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'quiz_rooms',
+        filter: `id=eq.${currentRoomId}`
+    }, (payload) => {
+        const roomData = normalizeRoomData(payload.new || payload.old || {});
+        if (!roomData) return;
+        handleRoomUpdate(roomData);
     });
+
+    roomSubscription.subscribe();
+
+    const { data, error } = await client.from('quiz_rooms').select('*').eq('id', currentRoomId).maybeSingle();
+    if (error || !data) {
+        console.error('Error loading room data:', error);
+        return;
+    }
+
+    handleRoomUpdate(normalizeRoomData(data));
+}
+
+function handleRoomUpdate(roomData) {
+    if (!roomData) return;
+
+    const previousPhase = currentRoomData?.questionPhase;
+    currentRoomData = roomData;
+
+    if (roomData.status === 'started') {
+        if (!quizStarted) {
+            quizStarted = true;
+            loadQuizQuestions(roomData.category).then(() => {
+                currentQuestionIndex = roomData.currentQuestionIndex || 0;
+                showQuizScreen();
+            });
+        } else {
+            const newIndex = roomData.currentQuestionIndex || 0;
+            const newPhase = roomData.questionPhase || 'open';
+            const indexChanged = newIndex !== currentQuestionIndex;
+            const phaseChanged = newPhase !== previousPhase;
+            if (indexChanged) {
+                selectedAnswer = null;
+            }
+            currentQuestionIndex = newIndex;
+            if (indexChanged || phaseChanged) {
+                displayCurrentQuestion();
+            }
+        }
+    }
+
+    if (roomData.status === 'ended') {
+        showEndScreen();
+    }
 }
 
 /**
@@ -243,32 +317,40 @@ function selectAnswer(optionIndex) {
 }
 
 /**
- * Submit answer to Firebase
+ * Submit answer to Supabase
  */
-function submitAnswer() {
+async function submitAnswer() {
     if (selectedAnswer === null) {
         alert('Please select an answer');
         return;
     }
 
-    const answerUpdate = {
+    const nextPlayers = { ...(currentRoomData?.players || {}) };
+    const currentPlayer = nextPlayers[playerId] || {};
+
+    nextPlayers[playerId] = {
+        ...currentPlayer,
         currentAnswer: selectedAnswer,
         hasSubmitted: true,
-        [`answers/${currentQuestionIndex}`]: selectedAnswer,
+        answers: {
+            ...(currentPlayer.answers || {}),
+            [currentQuestionIndex]: selectedAnswer
+        },
         completedQuestions: currentQuestionIndex + 1
     };
 
-    database.ref('rooms/' + currentRoomId + '/players/' + playerId).update(answerUpdate)
-      .then(() => {
-          selectedAnswer = null;
-          playerAnswers[currentQuestionIndex] = answerUpdate.currentAnswer;
-          const optionButtons = document.querySelectorAll('.option-button');
-          optionButtons.forEach((btn) => btn.classList.remove('selected'));
-          displayCurrentQuestion();
-      })
-      .catch((error) => {
-          console.error('Error submitting answer:', error);
-      });
+    const { error } = await getSupabaseClient().from('quiz_rooms').update({ players: nextPlayers }).eq('id', currentRoomId);
+    if (error) {
+        console.error('Error submitting answer:', error);
+        return;
+    }
+
+    const submittedAnswer = selectedAnswer;
+    selectedAnswer = null;
+    playerAnswers[currentQuestionIndex] = submittedAnswer;
+    const optionButtons = document.querySelectorAll('.option-button');
+    optionButtons.forEach((btn) => btn.classList.remove('selected'));
+    displayCurrentQuestion();
 }
 
 /**
@@ -278,25 +360,16 @@ function showEndScreen() {
     document.getElementById('quizScreen').style.display = 'none';
     document.getElementById('resultsScreen').style.display = 'block';
     document.getElementById('resultsMessage').textContent = 'Quiz completed! Waiting for host review...';
-    showSupportPopup();
-}
-
-function showSupportPopup() {
-    const popup = document.getElementById('supportPopup');
-    if (popup) popup.classList.add('visible');
-}
-
-function hideSupportPopup() {
-    const popup = document.getElementById('supportPopup');
-    if (popup) popup.classList.remove('visible');
 }
 
 /**
  * Go back to main page
  */
-function goBack() {
+async function goBack() {
     if (currentRoomId && playerId) {
-      database.ref('rooms/' + currentRoomId + '/players/' + playerId).remove();
+        const nextPlayers = { ...(currentRoomData?.players || {}) };
+        delete nextPlayers[playerId];
+        await getSupabaseClient().from('quiz_rooms').update({ players: nextPlayers }).eq('id', currentRoomId);
     }
 
     window.location.href = 'index.html';

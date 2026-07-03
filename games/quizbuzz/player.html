@@ -203,73 +203,6 @@
             color: #667eea;
             font-weight: bold;
         }
-        .support-popup {
-            position: fixed;
-            inset: 0;
-            display: none;
-            place-items: center;
-            background: rgba(11, 12, 34, 0.72);
-            padding: 1.5rem;
-            z-index: 999;
-        }
-        .support-popup.visible {
-            display: grid;
-        }
-        .support-popup-card {
-            max-width: 420px;
-            width: 100%;
-            background: radial-gradient(circle at top left, #ffe2a0, #ffb1c4 45%, #ff6ec4 100%);
-            border-radius: 28px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
-            padding: 2rem;
-            color: #1f142d;
-            text-align: center;
-            border: 2px solid rgba(255,255,255,0.55);
-            animation: popupBounce 0.5s ease;
-        }
-        .support-popup-card h3 {
-            margin-bottom: 0.75rem;
-            font-size: 1.55rem;
-        }
-        .support-popup-card p {
-            margin-bottom: 1.6rem;
-            color: #312146;
-            line-height: 1.5;
-        }
-        .support-popup-actions {
-            display: grid;
-            gap: 0.9rem;
-        }
-        .support-popup-button,
-        .support-popup-dismiss {
-            width: 100%;
-            border: none;
-            border-radius: 999px;
-            padding: 0.95rem 1rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .support-popup-button {
-            background: #1f142d;
-            color: #fff;
-            box-shadow: 0 12px 26px rgba(0, 0, 0, 0.22);
-        }
-        .support-popup-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.28);
-        }
-        .support-popup-dismiss {
-            background: rgba(255, 255, 255, 0.9);
-            color: #1f142d;
-        }
-        .support-popup-dismiss:hover {
-            transform: translateY(-2px);
-        }
-        @keyframes popupBounce {
-            from { transform: translateY(18px) scale(0.96); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
-        }
     </style>
 </head>
 <body>
@@ -341,15 +274,6 @@
             <p style="color: #666; margin-top: 1rem;">The host will review the answers with everyone soon.</p>
         </div>
 
-        <div class="support-popup" id="supportPopup">
-            <div class="support-popup-card">
-                <h3>Quiz Complete!</h3>
-                <p>Great job! You've finished the quiz. The host will now review all the answers.</p>
-                <div class="support-popup-actions">
-                    <button class="support-popup-dismiss" onclick="hideSupportPopup()">Continue</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -359,29 +283,11 @@
             if (input.value !== cleaned) input.value = cleaned;
         }
 
-        function showSupportPopup() {
-            const popup = document.getElementById('supportPopup');
-            if (popup) popup.classList.add('visible');
-        }
-
-        function hideSupportPopup() {
-            const popup = document.getElementById('supportPopup');
-            if (popup) popup.classList.remove('visible');
-        }
     </script>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    
-    <!-- Local Firebase Config (contains your secret keys) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.local.js"></script>
-    
-    <!-- Firebase Config Helper -->
-    <script src="firebase-config.js"></script>
-    
-    <!-- Player Logic -->
+    <script src="supabase-config.js"></script>
     <script src="player.js"></script>
 </body>
 </html>

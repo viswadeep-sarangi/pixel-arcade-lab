@@ -6,12 +6,47 @@ let quizStarted = false;
 let hostId = null;
 let quizQuestions = [];
 let categoryAuthors = {};
+let roomSubscription = null;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     hostId = 'host_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     populateCategorySelect();
 });
+
+function getSupabaseClient() {
+    return window.supabaseClient || null;
+}
+
+function ensureSupabaseReady() {
+    const client = getSupabaseClient();
+    if (!client) {
+        alert('Supabase is not configured. Please add your Supabase URL and anon key to config.local.js.');
+        return false;
+    }
+    return true;
+}
+
+function normalizeRoomData(roomData) {
+    if (!roomData) return null;
+    return {
+        ...roomData,
+        hostId: roomData.host_id || roomData.hostId || null,
+        category: roomData.category || '',
+        status: roomData.status || 'waiting',
+        currentQuestionIndex: roomData.current_question_index ?? roomData.currentQuestionIndex ?? 0,
+        questionPhase: roomData.question_phase || roomData.questionPhase || 'waiting',
+        createdAt: roomData.created_at || roomData.createdAt || null,
+        startedAt: roomData.started_at || roomData.startedAt || null,
+        endedAt: roomData.ended_at || roomData.endedAt || null,
+        players: roomData.players || {}
+    };
+}
+
+function getPlayersFromRoom(roomData) {
+    const normalized = normalizeRoomData(roomData);
+    return normalized ? normalized.players || {} : {};
+}
 
 /**
  * Populate category select with topic and author from questions.json
@@ -40,11 +75,8 @@ function populateCategorySelect() {
 /**
  * Create a new quiz room
  */
-function createRoom() {
-    if (!window.database) {
-        alert('Firebase is not configured. Please add your Firebase project settings, including databaseURL, to config.local.js.');
-        return;
-    }
+async function createRoom() {
+    if (!ensureSupabaseReady()) return;
 
     const category = document.getElementById('categorySelect').value;
 
@@ -58,25 +90,26 @@ function createRoom() {
     quizStarted = false;
 
     const roomData = {
-        hostId: hostId,
+        id: currentRoomId,
+        host_id: hostId,
         category: category,
         status: 'waiting',
-        currentQuestionIndex: 0,
-        questionPhase: 'waiting',
-        createdAt: new Date().toISOString(),
+        current_question_index: 0,
+        question_phase: 'waiting',
+        created_at: new Date().toISOString(),
         players: {}
     };
 
-    window.database.ref('rooms/' + currentRoomId).set(roomData)
-      .then(() => {
-        console.log('Room created successfully');
-        showRoomInfo();
-        listenForRoomUpdates();
-      })
-      .catch((error) => {
+    const { error } = await getSupabaseClient().from('quiz_rooms').upsert(roomData, { onConflict: 'id' });
+    if (error) {
         console.error('Error creating room:', error);
         alert('Error creating room. Please try again.');
-      });
+        return;
+    }
+
+    console.log('Room created successfully');
+    showRoomInfo();
+    listenForRoomUpdates();
 }
 
 /**
@@ -95,13 +128,46 @@ function showRoomInfo() {
 /**
  * Listen for room updates including players and quiz state
  */
-function listenForRoomUpdates() {
-    database.ref('rooms/' + currentRoomId).on('value', (snapshot) => {
-        const roomData = snapshot.val() || {};
-        const players = roomData.players || {};
+async function listenForRoomUpdates() {
+    if (roomSubscription) {
+        getSupabaseClient().removeChannel(roomSubscription);
+        roomSubscription = null;
+    }
+
+    const client = getSupabaseClient();
+    if (!client) return;
+
+    roomSubscription = client.channel(`room:${currentRoomId}`);
+    roomSubscription.on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'quiz_rooms',
+        filter: `id=eq.${currentRoomId}`
+    }, (payload) => {
+        const roomData = normalizeRoomData(payload.new || payload.old || {});
+        if (!roomData) {
+            updatePlayersList({});
+            updateRoomUI({ status: 'waiting' }, {});
+            return;
+        }
+        const players = getPlayersFromRoom(roomData);
         updatePlayersList(players);
         updateRoomUI(roomData, players);
     });
+
+    roomSubscription.subscribe();
+
+    const { data, error } = await client.from('quiz_rooms').select('*').eq('id', currentRoomId).maybeSingle();
+    if (error) {
+        console.error('Error loading room data:', error);
+        return;
+    }
+
+    const roomData = normalizeRoomData(data);
+    if (!roomData) return;
+    const players = getPlayersFromRoom(roomData);
+    updatePlayersList(players);
+    updateRoomUI(roomData, players);
 }
 
 /**
@@ -141,11 +207,10 @@ function updatePlayersList(players) {
  */
 function updateRoomUI(roomData, players) {
     const quizSection = document.getElementById('quizSection');
-    const hostSubmitStatus = document.getElementById('hostSubmitStatus');
     const startButton = document.getElementById('startButton');
     const endButton = document.getElementById('endButton');
 
-    if (roomData.status !== 'started') {
+    if (!roomData || roomData.status !== 'started') {
         quizSection.style.display = 'none';
         startButton.disabled = Object.keys(players).length === 0;
         endButton.disabled = true;
@@ -227,7 +292,7 @@ function renderHostQuestion(roomData, players) {
     hostOptionsGrid.innerHTML = optionHtml;
 
     const playerIds = Object.keys(players);
-    const submittedCount = playerIds.filter(id => players[id].hasSubmitted).length;
+    const submittedCount = playerIds.filter((id) => players[id].hasSubmitted).length;
     const allAnswered = playerIds.length > 0 && submittedCount === playerIds.length;
 
     hostPlayersTop.innerHTML = playerIds.map((playerId) => {
@@ -243,6 +308,9 @@ function renderHostQuestion(roomData, players) {
     nextBtn.textContent = lastQuestion ? 'Finish Quiz' : 'Next Question';
 
     if (phase !== 'open') {
+        document.querySelectorAll('.host-option-players').forEach((container) => {
+            container.innerHTML = '';
+        });
         Object.values(players).forEach((player) => {
             if (typeof player.currentAnswer === 'number') {
                 const target = document.getElementById(`hostOptionPlayers${player.currentAnswer}`);
@@ -271,7 +339,7 @@ function renderHostQuestion(roomData, players) {
 /**
  * Start the quiz
  */
-function startQuiz() {
+async function startQuiz() {
     if (!currentRoomId) {
         alert('No room created');
         return;
@@ -282,135 +350,151 @@ function startQuiz() {
         return;
     }
 
-    loadQuestionsForHost(currentCategory)
-      .then(() => {
-          if (!quizQuestions.length) {
-              alert('Could not load questions for this category.');
-              return;
-          }
+    await loadQuestionsForHost(currentCategory);
+    if (!quizQuestions.length) {
+        alert('Could not load questions for this category.');
+        return;
+    }
 
-          database.ref('rooms/' + currentRoomId).update({
-              status: 'started',
-              startedAt: new Date().toISOString(),
-              currentQuestionIndex: 0,
-              questionPhase: 'open'
-          })
-          .then(() => {
-              console.log('Quiz started');
-              document.getElementById('startButton').disabled = true;
-              document.getElementById('endButton').disabled = false;
-          })
-          .catch((error) => {
-              console.error('Error starting quiz:', error);
-          });
-      });
+    const { error } = await getSupabaseClient().from('quiz_rooms').update({
+        status: 'started',
+        started_at: new Date().toISOString(),
+        current_question_index: 0,
+        question_phase: 'open'
+    }).eq('id', currentRoomId);
+
+    if (error) {
+        console.error('Error starting quiz:', error);
+        return;
+    }
+
+    console.log('Quiz started');
+    document.getElementById('startButton').disabled = true;
+    document.getElementById('endButton').disabled = false;
 }
 
 /**
  * Complete the current question by moving player cards to options
  */
-function completeQuestion() {
+async function completeQuestion() {
     if (!currentRoomId) return;
-    database.ref('rooms/' + currentRoomId).update({
-        questionPhase: 'complete'
-    }).catch((error) => console.error('Error completing question:', error));
+    const { error } = await getSupabaseClient().from('quiz_rooms').update({
+        question_phase: 'complete'
+    }).eq('id', currentRoomId);
+
+    if (error) console.error('Error completing question:', error);
 }
 
 /**
  * Reveal the correct answer
  */
-function revealAnswer() {
+async function revealAnswer() {
     if (!currentRoomId) return;
 
-    // Fetch latest room data and ensure questions are loaded, then score answers
-    database.ref('rooms/' + currentRoomId).once('value').then((snapshot) => {
-        const roomData = snapshot.val();
-        const currentIndex = (roomData && roomData.currentQuestionIndex) || 0;
-        const category = (roomData && roomData.category) || currentCategory;
+    const client = getSupabaseClient();
+    const { data: roomRow, error: readError } = await client.from('quiz_rooms').select('*').eq('id', currentRoomId).maybeSingle();
+    if (readError) {
+        console.error('Error fetching room data for reveal:', readError);
+        return;
+    }
 
-        // ensure we have questions loaded
-        const ensureQuestions = quizQuestions.length ? Promise.resolve() : loadQuestionsForHost(category);
+    const roomData = normalizeRoomData(roomRow);
+    const currentIndex = (roomData && roomData.currentQuestionIndex) || 0;
+    const category = (roomData && roomData.category) || currentCategory;
 
-        ensureQuestions.then(() => {
-            const question = quizQuestions[currentIndex];
-            const correctAnswerIndex = question ? question.correctAnswer : null;
+    await loadQuestionsForHost(category);
 
-            const updates = {
-                questionPhase: 'revealed'
+    const question = quizQuestions[currentIndex];
+    const correctAnswerIndex = question ? question.correctAnswer : null;
+
+    const players = getPlayersFromRoom(roomData);
+    const nextPlayers = { ...players };
+
+    Object.keys(players).forEach((playerId) => {
+        const p = players[playerId] || {};
+        const alreadyScored = p.scores && (p.scores[currentIndex] !== undefined);
+        if (!alreadyScored) {
+            const isCorrect = typeof p.currentAnswer === 'number' && p.currentAnswer === correctAnswerIndex;
+            nextPlayers[playerId] = {
+                ...p,
+                scores: {
+                    ...(p.scores || {}),
+                    [currentIndex]: isCorrect ? 1 : 0
+                },
+                score: (p.score || 0) + (isCorrect ? 1 : 0)
             };
+        }
+    });
 
-            const players = (roomData && roomData.players) || {};
-            Object.keys(players).forEach((playerId) => {
-                const p = players[playerId] || {};
-                const alreadyScored = p.scores && (p.scores[currentIndex] !== undefined);
-                if (!alreadyScored) {
-                    const isCorrect = typeof p.currentAnswer === 'number' && p.currentAnswer === correctAnswerIndex;
-                    updates[`players/${playerId}/scores/${currentIndex}`] = isCorrect ? 1 : 0;
-                    updates[`players/${playerId}/score`] = (p.score || 0) + (isCorrect ? 1 : 0);
-                }
-            });
+    const { error } = await client.from('quiz_rooms').update({
+        question_phase: 'revealed',
+        players: nextPlayers
+    }).eq('id', currentRoomId);
 
-            database.ref('rooms/' + currentRoomId).update(updates)
-              .catch((error) => console.error('Error revealing answer:', error));
-        }).catch((err) => console.error('Error loading questions for scoring:', err));
-    }).catch((error) => console.error('Error fetching room data for reveal:', error));
+    if (error) console.error('Error revealing answer:', error);
 }
 
 /**
  * Advance to the next question or finish quiz
  */
-function nextQuestion() {
+async function nextQuestion() {
     if (!currentRoomId) return;
-    database.ref('rooms/' + currentRoomId).once('value').then((snapshot) => {
-        const roomData = snapshot.val();
-        if (!roomData) return;
 
-        const nextIndex = (roomData.currentQuestionIndex || 0) + 1;
-        const isLastQuestion = nextIndex >= quizQuestions.length;
+    const client = getSupabaseClient();
+    const { data: roomRow, error } = await client.from('quiz_rooms').select('*').eq('id', currentRoomId).maybeSingle();
+    if (error || !roomRow) {
+        console.error('Error loading room data for next question:', error);
+        return;
+    }
 
-        if (isLastQuestion) {
-            endSession();
-            return;
-        }
+    const roomData = normalizeRoomData(roomRow);
+    const nextIndex = (roomData.currentQuestionIndex || 0) + 1;
+    const isLastQuestion = nextIndex >= quizQuestions.length;
 
-        const playerResets = {};
-        const players = roomData.players || {};
-        Object.keys(players).forEach((playerId) => {
-            playerResets[`players/${playerId}/hasSubmitted`] = false;
-            playerResets[`players/${playerId}/currentAnswer`] = null;
-        });
+    if (isLastQuestion) {
+        endSession();
+        return;
+    }
 
-        const updates = {
-            currentQuestionIndex: nextIndex,
-            questionPhase: 'open',
-            ...playerResets
+    const nextPlayers = { ...(roomData.players || {}) };
+    Object.keys(nextPlayers).forEach((playerId) => {
+        nextPlayers[playerId] = {
+            ...nextPlayers[playerId],
+            hasSubmitted: false,
+            currentAnswer: null
         };
-
-        database.ref('rooms/' + currentRoomId).update(updates)
-          .catch((error) => console.error('Error advancing question:', error));
     });
+
+    const { updateError } = await client.from('quiz_rooms').update({
+        current_question_index: nextIndex,
+        question_phase: 'open',
+        players: nextPlayers
+    }).eq('id', currentRoomId);
+
+    if (updateError) console.error('Error advancing question:', updateError);
 }
 
 /**
  * End the quiz session
  */
-function endSession() {
+async function endSession() {
     if (!currentRoomId) {
         alert('No room to end');
         return;
     }
 
-    database.ref('rooms/' + currentRoomId).update({
-      status: 'ended',
-      endedAt: new Date().toISOString()
-    })
-    .then(() => {
-      console.log('Quiz ended');
-      displayResults();
-    })
-    .catch((error) => {
-      console.error('Error ending quiz:', error);
-    });
+    const { error } = await getSupabaseClient().from('quiz_rooms').update({
+        status: 'ended',
+        ended_at: new Date().toISOString()
+    }).eq('id', currentRoomId);
+
+    if (error) {
+        console.error('Error ending quiz:', error);
+        return;
+    }
+
+    console.log('Quiz ended');
+    displayResults();
 }
 
 /**
@@ -421,17 +505,6 @@ function displayResults() {
     document.getElementById('quizSection').style.display = 'none';
     document.getElementById('resultsSection').style.display = 'block';
     loadQuestionsForReview();
-    showSupportPopup();
-}
-
-function showSupportPopup() {
-    const popup = document.getElementById('supportPopup');
-    if (popup) popup.classList.add('visible');
-}
-
-function hideSupportPopup() {
-    const popup = document.getElementById('supportPopup');
-    if (popup) popup.classList.remove('visible');
 }
 
 /**
@@ -454,9 +527,8 @@ function loadQuestionsForReview() {
  */
 function displayQuestionsReview(questions) {
     let html = '';
-    
+
     questions.forEach((question, index) => {
-        const correctAnswer = question.options[question.correctAnswer];
         html += `
             <div class="question-review">
                 <div class="question-text">Q${index + 1}: ${question.question}</div>
@@ -471,15 +543,32 @@ function displayQuestionsReview(questions) {
             </div>
         `;
     });
-    
+
     document.getElementById('resultsContent').innerHTML = html;
 }
 
 /**
  * Reset the room to create a new one
  */
-function resetRoom() {
-    database.ref('rooms/' + currentRoomId).remove();
+async function resetRoom() {
+    if (!currentRoomId) {
+        currentRoomId = null;
+        currentCategory = null;
+        quizStarted = false;
+        quizQuestions = [];
+
+        document.getElementById('creationSection').style.display = 'block';
+        document.getElementById('roomInfo').style.display = 'none';
+        document.getElementById('playersSection').style.display = 'none';
+        document.getElementById('quizSection').style.display = 'none';
+        document.getElementById('resultsSection').style.display = 'none';
+        document.getElementById('categorySelect').value = '';
+        document.getElementById('playersList').innerHTML = '<div class="no-players">Waiting for players to join...</div>';
+        return;
+    }
+
+    const { error } = await getSupabaseClient().from('quiz_rooms').delete().eq('id', currentRoomId);
+    if (error) console.error('Error resetting room:', error);
 
     currentRoomId = null;
     currentCategory = null;
@@ -504,23 +593,6 @@ function goBack() {
     }
 
     window.location.href = 'index.html';
-}
-
-/**
- * Simulate a player joining (for testing)
- */
-function simulatePlayerJoin(playerName) {
-    if (!currentRoomId) return;
-    
-    const playerId = 'player_' + Date.now();
-    const playerData = {
-        name: playerName,
-        joinedAt: new Date().toISOString(),
-        completedQuestions: 0,
-        answers: []
-    };
-
-    // database.ref('rooms/' + currentRoomId + '/players/' + playerId).set(playerData);
 }
 
 function escapeHtml(value) {
