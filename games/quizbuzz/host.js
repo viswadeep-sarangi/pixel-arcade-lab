@@ -132,6 +132,7 @@ async function createRoom() {
         alert('Error creating room. Please try again.');
         return;
     }
+    console.log('host.js > createRoom(): Room created successfully:', roomData);
 
     showRoomInfo();
     await listenForRoomUpdates();
@@ -150,16 +151,19 @@ function showRoomInfo() {
 async function listenForRoomUpdates() {
     if (!currentRoomId) return;
 
-    const client = getQuizbuzzClient();
+    const client = getSupabaseClient(); 
     if (!client) return;
 
     if (roomSubscription) {
+        console.log('host.js > listenForRoomUpdates(): Removing existing room subscription for room ID:', currentRoomId);
         client.removeChannel(roomSubscription);
         roomSubscription = null;
     }
 
+    console.log('host.js > listenForRoomUpdates(): Subscribing to room updates for room ID:', currentRoomId);
     roomSubscription = client.channel(`room:${currentRoomId}`);
 
+    console.log('host.js > listenForRoomUpdates(): Setting up listeners for quiz_rooms and quiz_players tables for room ID:', currentRoomId);
     roomSubscription.on('postgres_changes', {
         event: '*',
         schema: 'quizbuzz',
@@ -178,14 +182,17 @@ async function listenForRoomUpdates() {
         await refreshRoomAndPlayers();
     });
 
+    console.log('host.js > listenForRoomUpdates(): Subscribing to the channel for room ID:', currentRoomId);
     roomSubscription.subscribe();
     await refreshRoomAndPlayers();
 }
 
 async function refreshRoomAndPlayers() {
+    console.log('host.js > refreshRoomAndPlayers(): Refreshing room and player data for room ID:', currentRoomId);
     const client = getQuizbuzzClient();
     if (!client) return;
 
+    console.log('host.js > refreshRoomAndPlayers(): Fetching room and player data from Supabase for room ID:', currentRoomId);
     const [{ data: roomRow, error: roomError }, { data: playerRows, error: playerError }] = await Promise.all([
         client.from('quiz_rooms').select('*').eq('room_id', currentRoomId).maybeSingle(),
         client.from('quiz_players').select('*').eq('room_id', currentRoomId)
