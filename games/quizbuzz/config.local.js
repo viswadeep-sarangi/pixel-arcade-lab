@@ -7,7 +7,7 @@
  */
 
 const supabaseConfigLocal = {
-  url: "https://bqqlugrxriixcorlbmaw.supabase.co/rest/v1/",
+  url: "https://bqqlugrxriixcorlbmaw.supabase.co",
   anonKey: "sb_publishable_FWJ_OkEnb7gNPUQV7ICqzw_RdF4zJhZ"
 };
 
