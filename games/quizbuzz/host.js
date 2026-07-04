@@ -13,6 +13,7 @@ let currentPlayers = {};
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     hostId = 'host_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    console.log('host.js: Host ID generated:', hostId);
     populateCategorySelect();
 });
 
@@ -88,7 +89,10 @@ function populateCategorySelect() {
 }
 
 async function createRoom() {
-    if (!ensureSupabaseReady()) return;
+    if (!ensureSupabaseReady()){
+        console.error('host.js > createRoom(): Supabase client is not ready. Cannot create room. Returning early.');
+        return;
+    } 
 
     const category = document.getElementById('categorySelect').value;
     if (!category) {
@@ -99,6 +103,7 @@ async function createRoom() {
     currentRoomId = 'ROOM_' + Math.random().toString(36).substr(2, 8).toUpperCase();
     currentCategory = category;
     quizStarted = false;
+    console.log('host.js > createRoom(): Creating room with ID:', currentRoomId, 'Category:', category, 'Host ID:', hostId);
 
     const roomData = {
         room_id: currentRoomId,
@@ -110,7 +115,7 @@ async function createRoom() {
         created_at: new Date().toISOString()
     };
 
-    const { error } = await getSupabaseClient().from('quiz_rooms').upsert(roomData, { onConflict: 'room_id' });
+    const { error } = await getSupabaseClient().schema('quizbuzz').from('quiz_rooms').upsert(roomData, { onConflict: 'room_id' });
     if (error) {
         console.error('Error creating room:', error);
         alert('Error creating room. Please try again.');
