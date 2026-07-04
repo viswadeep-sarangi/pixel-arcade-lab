@@ -21,6 +21,11 @@ function getSupabaseClient() {
     return window.supabaseClient || null;
 }
 
+function getQuizbuzzClient() {
+    const client = getSupabaseClient();
+    return client ? client.schema('quizbuzz') : null;
+}
+
 function ensureSupabaseReady() {
     const client = getSupabaseClient();
     if (!client) {
@@ -115,7 +120,13 @@ async function createRoom() {
         created_at: new Date().toISOString()
     };
 
-    const { error } = await getSupabaseClient().schema('quizbuzz').from('quiz_rooms').upsert(roomData, { onConflict: 'room_id' });
+    const client = getQuizbuzzClient();
+    if (!client) {
+        console.error('host.js > createRoom(): Quizbuzz client is not available.');
+        return;
+    }
+
+    const { error } = await client.from('quiz_rooms').upsert(roomData, { onConflict: 'room_id' });
     if (error) {
         console.error('Error creating room:', error);
         alert('Error creating room. Please try again.');
@@ -139,7 +150,7 @@ function showRoomInfo() {
 async function listenForRoomUpdates() {
     if (!currentRoomId) return;
 
-    const client = getSupabaseClient();
+    const client = getQuizbuzzClient();
     if (!client) return;
 
     if (roomSubscription) {
@@ -151,7 +162,7 @@ async function listenForRoomUpdates() {
 
     roomSubscription.on('postgres_changes', {
         event: '*',
-        schema: 'public',
+        schema: 'quizbuzz',
         table: 'quiz_rooms',
         filter: `room_id=eq.${currentRoomId}`
     }, async () => {
@@ -160,7 +171,7 @@ async function listenForRoomUpdates() {
 
     roomSubscription.on('postgres_changes', {
         event: '*',
-        schema: 'public',
+        schema: 'quizbuzz',
         table: 'quiz_players',
         filter: `room_id=eq.${currentRoomId}`
     }, async () => {
@@ -172,7 +183,7 @@ async function listenForRoomUpdates() {
 }
 
 async function refreshRoomAndPlayers() {
-    const client = getSupabaseClient();
+    const client = getQuizbuzzClient();
     if (!client) return;
 
     const [{ data: roomRow, error: roomError }, { data: playerRows, error: playerError }] = await Promise.all([
@@ -363,7 +374,10 @@ async function startQuiz() {
         return;
     }
 
-    const { error } = await getSupabaseClient().from('quiz_rooms').update({
+    const client = getQuizbuzzClient();
+    if (!client) return;
+
+    const { error } = await client.from('quiz_rooms').update({
         status: 'started',
         started_at: new Date().toISOString(),
         current_question_index: 0,
@@ -381,7 +395,10 @@ async function startQuiz() {
 
 async function completeQuestion() {
     if (!currentRoomId) return;
-    const { error } = await getSupabaseClient().from('quiz_rooms').update({
+    const client = getQuizbuzzClient();
+    if (!client) return;
+
+    const { error } = await client.from('quiz_rooms').update({
         question_phase: 'complete'
     }).eq('room_id', currentRoomId);
     if (error) console.error('Error completing question:', error);
@@ -459,7 +476,9 @@ async function revealAnswer() {
 async function nextQuestion() {
     if (!currentRoomId) return;
 
-    const client = getSupabaseClient();
+    const client = getQuizbuzzClient();
+    if (!client) return;
+
     const [{ data: roomRow, error: roomError }, { data: playerRows, error: playerError }] = await Promise.all([
         client.from('quiz_rooms').select('*').eq('room_id', currentRoomId).maybeSingle(),
         client.from('quiz_players').select('*').eq('room_id', currentRoomId)
@@ -507,7 +526,10 @@ async function endSession() {
         return;
     }
 
-    const { error } = await getSupabaseClient().from('quiz_rooms').update({
+    const client = getQuizbuzzClient();
+    if (!client) return;
+
+    const { error } = await client.from('quiz_rooms').update({
         status: 'ended',
         ended_at: new Date().toISOString()
     }).eq('room_id', currentRoomId);
@@ -578,7 +600,7 @@ async function resetRoom() {
         return;
     }
 
-    const client = getSupabaseClient();
+    const client = getQuizbuzzClient();
     if (!client) {
         currentRoomId = null;
         currentCategory = null;

@@ -6,7 +6,7 @@ Quiz Buzz now uses Supabase for its real-time multiplayer room state.
 
 1. Go to https://supabase.com and create a new project.
 2. Open the SQL Editor in Supabase.
-3. Run the SQL from [supabase-schema.sql](supabase-schema.sql).
+3. Run the SQL from [supabase-schema.sql](supabase-schema.sql). It creates the quizbuzz schema and the quiz game tables inside that schema.
 
 ## 2. Configure local credentials
 

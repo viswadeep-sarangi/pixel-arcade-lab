@@ -40,7 +40,7 @@ games/quizbuzz/
 ## 🚀 Quick Start
 
 1. Create a Supabase project.
-2. Run the SQL from [supabase-schema.sql](supabase-schema.sql).
+2. Run the SQL from [supabase-schema.sql](supabase-schema.sql). It creates the quizbuzz schema and all quiz game tables there.
 3. Copy [config.example.js](config.example.js) to [config.local.js](config.local.js).
 4. Add your Supabase URL and anon key to [config.local.js](config.local.js).
 5. Open [index.html](index.html) and start using the app.
@@ -84,7 +84,7 @@ const supabaseConfigLocal = {
 ## 🛠️ Troubleshooting
 
 - If the app cannot connect, verify the Supabase URL and anon key.
-- If rooms do not update, confirm that the SQL schema was created successfully.
+- If rooms do not update, confirm that the quizbuzz schema and its tables were created successfully.
 - If players cannot join, check that the room exists in Supabase.
 
 

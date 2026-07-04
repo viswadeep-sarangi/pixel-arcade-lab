@@ -1,4 +1,6 @@
-create table if not exists public.quiz_rooms (
+create schema if not exists quizbuzz;
+
+create table if not exists quizbuzz.quiz_rooms (
   room_id text primary key,
   category text,
   host_id text,
@@ -10,7 +12,7 @@ create table if not exists public.quiz_rooms (
   ended_at timestamptz
 );
 
-create table if not exists public.quiz_players (
+create table if not exists quizbuzz.quiz_players (
   id bigserial primary key,
   player_id text not null,
   room_id text not null,
@@ -23,7 +25,7 @@ create table if not exists public.quiz_players (
   unique (player_id)
 );
 
-create table if not exists public.quiz_player_answers (
+create table if not exists quizbuzz.quiz_player_answers (
   id bigserial primary key,
   player_id text not null,
   room_id text not null,
@@ -33,21 +35,21 @@ create table if not exists public.quiz_player_answers (
   unique (player_id, room_id, question_index)
 );
 
-alter table public.quiz_rooms enable row level security;
-alter table public.quiz_players enable row level security;
-alter table public.quiz_player_answers enable row level security;
+alter table quizbuzz.quiz_rooms enable row level security;
+alter table quizbuzz.quiz_players enable row level security;
+alter table quizbuzz.quiz_player_answers enable row level security;
 
-create policy if not exists "Allow anon read/write access" on public.quiz_rooms
+create policy if not exists "Allow anon read/write access" on quizbuzz.quiz_rooms
   for all
   using (true)
   with check (true);
 
-create policy if not exists "Allow anon read/write access" on public.quiz_players
+create policy if not exists "Allow anon read/write access" on quizbuzz.quiz_players
   for all
   using (true)
   with check (true);
 
-create policy if not exists "Allow anon read/write access" on public.quiz_player_answers
+create policy if not exists "Allow anon read/write access" on quizbuzz.quiz_player_answers
   for all
   using (true)
   with check (true);

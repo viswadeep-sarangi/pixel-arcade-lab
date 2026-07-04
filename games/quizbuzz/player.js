@@ -15,6 +15,11 @@ function getSupabaseClient() {
     return window.supabaseClient || null;
 }
 
+function getQuizbuzzClient() {
+    const client = getSupabaseClient();
+    return client ? client.schema('quizbuzz') : null;
+}
+
 function ensureSupabaseReady() {
     const client = getSupabaseClient();
     if (!client) {
@@ -81,7 +86,9 @@ async function joinRoom() {
     playerName = name;
     playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
-    const client = getSupabaseClient();
+    const client = getQuizbuzzClient();
+    if (!client) return;
+
     const { data: roomRow, error } = await client.from('quiz_rooms').select('*').eq('room_id', roomId).maybeSingle();
     if (error || !roomRow) {
         console.error('Error joining room:', error);
@@ -121,7 +128,7 @@ function showWaitingScreen() {
 async function listenForRoomUpdates() {
     if (!currentRoomId) return;
 
-    const client = getSupabaseClient();
+    const client = getQuizbuzzClient();
     if (!client) return;
 
     if (roomSubscription) {
@@ -133,7 +140,7 @@ async function listenForRoomUpdates() {
 
     roomSubscription.on('postgres_changes', {
         event: '*',
-        schema: 'public',
+        schema: 'quizbuzz',
         table: 'quiz_rooms',
         filter: `room_id=eq.${currentRoomId}`
     }, async () => {
@@ -142,7 +149,7 @@ async function listenForRoomUpdates() {
 
     roomSubscription.on('postgres_changes', {
         event: '*',
-        schema: 'public',
+        schema: 'quizbuzz',
         table: 'quiz_players',
         filter: `room_id=eq.${currentRoomId}`
     }, async () => {
@@ -154,7 +161,7 @@ async function listenForRoomUpdates() {
 }
 
 async function refreshRoomState() {
-    const client = getSupabaseClient();
+    const client = getQuizbuzzClient();
     if (!client) return;
 
     const [{ data: roomRow, error: roomError }, { data: playerRows, error: playerError }] = await Promise.all([
@@ -314,7 +321,10 @@ async function submitAnswer() {
         completed_questions: currentQuestionIndex + 1
     };
 
-    const { error } = await getSupabaseClient().from('quiz_players').upsert(playerUpdate, { onConflict: 'player_id' });
+    const client = getQuizbuzzClient();
+    if (!client) return;
+
+    const { error } = await client.from('quiz_players').upsert(playerUpdate, { onConflict: 'player_id' });
     if (error) {
         console.error('Error submitting answer:', error);
         return;
@@ -332,7 +342,10 @@ function showEndScreen() {
 
 async function goBack() {
     if (currentRoomId && playerId) {
-        await getSupabaseClient().from('quiz_players').delete().eq('player_id', playerId);
+        const client = getQuizbuzzClient();
+        if (client) {
+            await client.from('quiz_players').delete().eq('player_id', playerId);
+        }
     }
     window.location.href = 'index.html';
 }
