@@ -3,7 +3,9 @@ window.supabaseClient = null;
 
 if (typeof supabaseConfigLocal !== 'undefined') {
   supabaseConfig = supabaseConfigLocal;
+  console.log('supabase-config.js: Nice! supabaseConfig is '+ supabaseConfig)
 } else {
+  console.log('supabase-config.js: Problem! supabaseConfigLocal is '+ supabaseConfigLocal)
   console.warn('⚠️  Supabase config not loaded. Did you create config.local.js?');
   console.warn('1. Copy config.example.js to config.local.js');
   console.warn('2. Add your Supabase URL and anon key to config.local.js');
@@ -12,6 +14,7 @@ if (typeof supabaseConfigLocal !== 'undefined') {
     url: '',
     anonKey: ''
   };
+  console.log('supabase-config.js: supabaseConfig is now emptied'+ supabaseConfig)
 }
 
 const requiredSupabaseConfigKeys = ['url', 'anonKey'];

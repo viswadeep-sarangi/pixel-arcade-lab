@@ -18,7 +18,7 @@ function getSupabaseClient() {
 function ensureSupabaseReady() {
     const client = getSupabaseClient();
     if (!client) {
-        alert('Supabase is not configured. Please add your Supabase URL and anon key to config.local.js.');
+        alert('Player: Supabase is not configured. Please add your Supabase URL and anon key to config.local.js.');
         return false;
     }
     return true;
