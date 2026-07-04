@@ -7,51 +7,43 @@ async function loadLeaderboard() {
 
     document.getElementById('leaderboardContent').textContent = 'Loading...';
 
-    const { data, error } = await client.from('quiz_rooms').select('players');
+    const { data, error } = await client.from('quiz_players').select('*');
     if (error) {
         console.error('Error loading leaderboard:', error);
         document.getElementById('leaderboardContent').textContent = `Error loading leaderboard: ${error.message}`;
         return;
     }
 
-    const totalsByName = {};
-    const rooms = data || [];
+    const rows = (data || []).map((player) => ({
+        name: player.name || 'Unknown',
+        score: Number(player.score || 0),
+        completedQuestions: Number(player.completed_questions || 0)
+    }));
 
-    rooms.forEach((room) => {
-        const players = room.players || {};
-        Object.keys(players).forEach((pid) => {
-            const p = players[pid] || {};
-            const name = p.name || ('player_' + pid);
-            let score = 0;
-            if (typeof p.score === 'number') {
-                score = p.score;
-            } else if (p.scores) {
-                score = Object.values(p.scores).reduce((s, v) => s + (Number(v) || 0), 0);
-            }
-
-            if (!totalsByName[name]) totalsByName[name] = 0;
-            totalsByName[name] += score;
-        });
-    });
-
-    const rows = Object.keys(totalsByName).map((name) => ({ name, score: totalsByName[name] }));
-    rows.sort((a, b) => b.score - a.score);
+    rows.sort((a, b) => b.score - a.score || b.completedQuestions - a.completedQuestions || a.name.localeCompare(b.name));
 
     if (rows.length === 0) {
         document.getElementById('leaderboardContent').innerHTML = '<div>No players found yet.</div>';
         return;
     }
 
-    const html = ['<div class="leaderboard-list">', '<div class="leaderboard-row"><div>Name</div><div>Correct Answers</div></div>'];
+    const html = ['<div class="leaderboard-list">', '<div class="leaderboard-row"><div>Name</div><div>Score</div><div>Completed</div></div>'];
     rows.forEach((r) => {
-        html.push(`<div class="leaderboard-row"><div>${r.name}</div><div>${r.score}</div></div>`);
+        html.push(`<div class="leaderboard-row"><div>${escapeHtml(r.name)}</div><div>${r.score}</div><div>${r.completedQuestions}</div></div>`);
     });
     html.push('</div>');
 
     document.getElementById('leaderboardContent').innerHTML = html.join('\n');
 }
 
-// auto-load
+function escapeHtml(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 loadLeaderboard();
-// refresh every 20 seconds
 setInterval(loadLeaderboard, 20000);

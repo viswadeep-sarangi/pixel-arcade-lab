@@ -1,61 +1,66 @@
-# name: Deploy Pixel Arcade Lab to GitHub Pages
+name: Deploy Pixel Arcade Lab to GitHub Pages (Disabled Placeholder)
 
-# on:
-#   push:
-#     branches: [ main ]
+on:
+  workflow_dispatch:
+  # Future deployment trigger (kept for later use):
+  # push:
+  #   branches: [ main ]
 
-# jobs:
-#   deploy:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v2
-      
-#       - name: Create Supabase config.local.js files
-#         env:
-#           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-#           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-#         run: |
-#           for game_dir in games/quizbuzz games/lietome; do
-#             cat > "$game_dir/config.local.js" << EOF
-#           const supabaseConfigLocal = {
-#             url: "${{ env.SUPABASE_URL }}",
-#             anonKey: "${{ env.SUPABASE_ANON_KEY }}"
-#           };
-#           EOF
-#           done
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder pass step
+        run: echo "CI/CD is currently disabled. This workflow intentionally succeeds without deploying."
 
-#       - name: Debug show generated config
-#         run: |
-#           echo "--- games/quizbuzz contents ---"
-#           ls -la games/quizbuzz || true
-#           echo "--- games/lietome contents ---"
-#           ls -la games/lietome || true
-#           echo "--- generated config files ---"
-#           ls -la games/quizbuzz/config.local.js games/lietome/config.local.js || true
-
-#       - name: Verify generated config.local.js files
-#         run: |
-#           for config_file in games/quizbuzz/config.local.js games/lietome/config.local.js; do
-#             if [ ! -f "$config_file" ]; then
-#               echo "ERROR: $config_file was not created" >&2
-#               exit 1
-#             fi
-#             grep -q '^const supabaseConfigLocal' "$config_file"
-#           done
-
-#       - name: Prepare publish directory
-#         run: |
-#           rm -rf deploy
-#           mkdir deploy
-#           rsync -a --exclude='.git' --exclude='.github' ./ deploy
-#           # Remove copied .gitignore so generated secret files are not ignored during git add
-#           rm -f deploy/.gitignore || true
-#           ls -la deploy/games/quizbuzz | sed -n '1,20p'
-#           ls -la deploy/games/lietome | sed -n '1,20p'
-
-#       - name: Deploy
-#         uses: peaceiris/actions-gh-pages@v3
-#         with:
-#           github_token: ${{ secrets.GH_PAGE_DEPLOY_GITHUB_TOKEN }}
-#           publish_dir: deploy/
-#           # cname: pixel.deepundeep.com
+      # Future deployment logic retained below for later reuse.
+      # - uses: actions/checkout@v2
+      #
+      # - name: Create Supabase config.local.js files
+      #   env:
+      #     SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      #     SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      #   run: |
+      #     for game_dir in games/quizbuzz games/lietome; do
+      #       cat > "$game_dir/config.local.js" << EOF
+      #     const supabaseConfigLocal = {
+      #       url: "${{ env.SUPABASE_URL }}",
+      #       anonKey: "${{ env.SUPABASE_ANON_KEY }}"
+      #     };
+      #     EOF
+      #     done
+      #
+      # - name: Debug show generated config
+      #   run: |
+      #     echo "--- games/quizbuzz contents ---"
+      #     ls -la games/quizbuzz || true
+      #     echo "--- games/lietome contents ---"
+      #     ls -la games/lietome || true
+      #     echo "--- generated config files ---"
+      #     ls -la games/quizbuzz/config.local.js games/lietome/config.local.js || true
+      #
+      # - name: Verify generated config.local.js files
+      #   run: |
+      #     for config_file in games/quizbuzz/config.local.js games/lietome/config.local.js; do
+      #       if [ ! -f "$config_file" ]; then
+      #         echo "ERROR: $config_file was not created" >&2
+      #         exit 1
+      #       fi
+      #       grep -q '^const supabaseConfigLocal' "$config_file"
+      #     done
+      #
+      # - name: Prepare publish directory
+      #   run: |
+      #     rm -rf deploy
+      #     mkdir deploy
+      #     rsync -a --exclude='.git' --exclude='.github' ./ deploy
+      #     rm -f deploy/.gitignore || true
+      #     ls -la deploy/games/quizbuzz | sed -n '1,20p'
+      #     ls -la deploy/games/lietome | sed -n '1,20p'
+      #
+      # - name: Deploy
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   with:
+      #     github_token: ${{ secrets.GH_PAGE_DEPLOY_GITHUB_TOKEN }}
+      #     publish_dir: deploy/
+      #     # cname: pixel.deepundeep.com
