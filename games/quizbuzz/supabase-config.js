@@ -1,6 +1,5 @@
 let supabaseConfig = null;
 window.supabaseClient = null;
-window.supabase = null;
 
 if (typeof supabaseConfigLocal !== 'undefined') {
   supabaseConfig = supabaseConfigLocal;
@@ -17,6 +16,12 @@ if (typeof supabaseConfigLocal !== 'undefined') {
 
 const requiredSupabaseConfigKeys = ['url', 'anonKey'];
 const missingSupabaseConfigKeys = requiredSupabaseConfigKeys.filter((key) => !supabaseConfig[key]);
+
+if (typeof supabaseConfigLocal !== 'undefined') {
+  console.log('✅ Supabase config.local.js loaded successfully.');
+  console.log('   url prefix:', String(supabaseConfig.url || '').slice(0, 5));
+  console.log('   anonKey prefix:', String(supabaseConfig.anonKey || '').slice(0, 5));
+}
 
 if (missingSupabaseConfigKeys.length === 0 && window.supabase && typeof window.supabase.createClient === 'function') {
   window.supabaseClient = window.supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey);
