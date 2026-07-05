@@ -117,7 +117,7 @@ async function joinRoom() {
 
     console.log('player.js > joinRoom(): Attempting to upsert player data:', playerData);
 
-    const { error: playerError } = await client.from('quiz_players').insert(playerData);
+    const { error: playerError } = await client.from('quiz_players').upsert(playerData, { onConflict: 'player_id' });
     if (playerError) {
         console.error('Error joining room:', playerError);
         alert('Error joining room. Please try again.');
@@ -182,11 +182,11 @@ async function refreshRoomState() {
     ]);
 
     if (roomError) {
-        console.error('Error loading room data:', roomError);
+        console.error('Error loading room data:', roomError,'\n', roomRow);
         return;
     }
     if (playerError) {
-        console.error('Error loading player data:', playerError);
+        console.error('Error loading player data:', playerError,'\n', playerRows);
         return;
     }
 
