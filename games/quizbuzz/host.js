@@ -414,7 +414,7 @@ async function completeQuestion() {
 async function revealAnswer() {
     if (!currentRoomId) return;
 
-    const client = getSupabaseClient();
+    const client = getQuizbuzzClient();
     const [{ data: roomRow, error: roomError }, { data: playerRows, error: playerError }] = await Promise.all([
         client.from('quiz_rooms').select('*').eq('room_id', currentRoomId).maybeSingle(),
         client.from('quiz_players').select('*').eq('room_id', currentRoomId)
