@@ -117,7 +117,7 @@ async function joinRoom() {
 
     console.log('player.js > joinRoom(): Attempting to upsert player data:', playerData);
 
-    const { error: playerError } = await client.from('quiz_players').upsert(playerData, { onConflict: 'player_id' });
+    const { error: playerError } = await client.from('quiz_players').upsert(playerData, { onConflict: 'player_id, room_id' });
     if (playerError) {
         console.error('Error joining room:', playerError);
         alert('Error joining room. Please try again.');
@@ -336,7 +336,7 @@ async function submitAnswer() {
     const client = getQuizbuzzClient();
     if (!client) return;
 
-    const { error } = await client.from('quiz_players').upsert(playerUpdate, { onConflict: 'player_id' });
+    const { error } = await client.from('quiz_players').upsert(playerUpdate, { onConflict: 'player_id, room_id' });
     if (error) {
         console.error('Error submitting answer:', error);
         return;
