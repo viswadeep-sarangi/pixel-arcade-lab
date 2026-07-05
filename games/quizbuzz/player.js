@@ -80,7 +80,10 @@ async function joinRoom() {
         return;
     }
 
-    if (!ensureSupabaseReady()) return;
+    if (!ensureSupabaseReady()){
+        console.log('player.js > joinRoom(): Supabase client is not ready. Cannot join room.');
+        return;
+    }
 
     currentRoomId = roomId;
     playerName = name;
@@ -89,12 +92,17 @@ async function joinRoom() {
     const client = getQuizbuzzClient();
     if (!client) return;
 
+    console.log('player.js > joinRoom(): Attempting to join room with ID:', currentRoomId, 'as player:', playerName, 'with player ID:', playerId);
+
     const { data: roomRow, error } = await client.from('quiz_rooms').select('*').eq('room_id', roomId).maybeSingle();
     if (error || !roomRow) {
         console.error('Error joining room:', error);
+        console.log('player.js > joinRoom(): Room not found for ID:', roomId,'\n', roomRow);
         alert('Room not found. Please check the Room ID.');
         return;
     }
+
+    console.log('player.js > joinRoom(): Found room for ID:', roomId, '\n', roomRow);
 
     const playerData = {
         player_id: playerId,
@@ -107,12 +115,16 @@ async function joinRoom() {
         current_answer: null
     };
 
+    console.log('player.js > joinRoom(): Attempting to upsert player data:', playerData);
+
     const { error: playerError } = await client.from('quiz_players').upsert(playerData, { onConflict: 'player_id' });
     if (playerError) {
         console.error('Error joining room:', playerError);
         alert('Error joining room. Please try again.');
         return;
     }
+
+    console.log('player.js > joinRoom(): Successfully joined room with ID:', currentRoomId, 'as player:', playerName, 'with player ID:', playerId);
 
     showWaitingScreen();
     await listenForRoomUpdates();
