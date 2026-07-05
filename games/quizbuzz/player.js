@@ -140,7 +140,7 @@ function showWaitingScreen() {
 async function listenForRoomUpdates() {
     if (!currentRoomId) return;
 
-    const client = getQuizbuzzClient();
+    const client = getSupabaseClient();
     if (!client) return;
 
     if (roomSubscription) {
