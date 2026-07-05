@@ -336,7 +336,7 @@ async function submitAnswer() {
     const client = getQuizbuzzClient();
     if (!client) return;
 
-    const { error } = await client.from('quiz_players').upsert(playerUpdate, { onConflict: 'player_id, room_id' });
+    const { error } = await client.from('quiz_players').update(playerUpdate).eq('player_id', playerId).eq('room_id', currentRoomId);
     if (error) {
         console.error('Error submitting answer:', error);
         return;
