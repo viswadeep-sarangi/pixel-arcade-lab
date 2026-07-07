@@ -7,32 +7,37 @@ async function loadLeaderboard() {
 
     document.getElementById('leaderboardContent').textContent = 'Loading...';
 
-    const { data, error } = await client.from('quiz_players').select('*');
+    const quizbuzzClient = client.schema('quizbuzz');
+    const { data, error } = await quizbuzzClient.from('quiz_leaderboard').select('*');
     if (error) {
         console.error('Error loading leaderboard:', error);
         document.getElementById('leaderboardContent').textContent = `Error loading leaderboard: ${error.message}`;
         return;
     }
 
-    const rows = (data || []).map((player) => ({
-        name: player.name || 'Unknown',
-        score: Number(player.score || 0),
-        completedQuestions: Number(player.completed_questions || 0)
+    const rows = (data || []).map((entry) => ({
+        name: entry.name || 'Unknown',
+        totalScore: Number(entry.total_score || 0),
+        roomsPlayed: Number(entry.rooms_played || 0)
     }));
 
-    rows.sort((a, b) => b.score - a.score || b.completedQuestions - a.completedQuestions || a.name.localeCompare(b.name));
-
     if (rows.length === 0) {
-        document.getElementById('leaderboardContent').innerHTML = '<div>No players found yet.</div>';
+        document.getElementById('leaderboardContent').innerHTML = '<div>No leaderboard data found yet.</div>';
         return;
     }
 
-    const html = ['<div class="leaderboard-list">', '<div class="leaderboard-row"><div>Name</div><div>Score</div><div>Completed</div></div>'];
-    rows.forEach((r) => {
-        html.push(`<div class="leaderboard-row"><div>${escapeHtml(r.name)}</div><div>${r.score}</div><div>${r.completedQuestions}</div></div>`);
-    });
-    html.push('</div>');
+    const html = [
+        '<div class="leaderboard-list">',
+        '<table style="width:100%; border-collapse:collapse;">',
+        '<thead><tr><th style="text-align:left; padding:0.5rem 0; border-bottom:2px solid #f0f0f0;">Name</th><th style="text-align:left; padding:0.5rem 0; border-bottom:2px solid #f0f0f0;">Total Score</th><th style="text-align:left; padding:0.5rem 0; border-bottom:2px solid #f0f0f0;">Rooms Played</th></tr></thead>',
+        '<tbody>'
+    ];
 
+    rows.forEach((row) => {
+        html.push(`<tr><td style="padding:0.75rem 0; border-bottom:1px solid #f0f0f0;">${escapeHtml(row.name)}</td><td style="padding:0.75rem 0; border-bottom:1px solid #f0f0f0;">${row.totalScore}</td><td style="padding:0.75rem 0; border-bottom:1px solid #f0f0f0;">${row.roomsPlayed}</td></tr>`);
+    });
+
+    html.push('</tbody></table></div>');
     document.getElementById('leaderboardContent').innerHTML = html.join('\n');
 }
 
