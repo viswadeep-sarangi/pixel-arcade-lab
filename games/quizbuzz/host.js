@@ -515,8 +515,14 @@ async function nextQuestion() {
     }));
 
     if (playerUpdates.length) {
-        const { error } = await client.from('quiz_players').upsert(playerUpdates, { onConflict: 'player_id' });
-        if (error) console.error('Error resetting players for next question:', error);
+        const updateResults = await Promise.all(playerUpdates.map((playerUpdate) =>
+            client.from('quiz_players').update(playerUpdate).eq('player_id', playerUpdate.player_id).eq('room_id', currentRoomId)
+        ));
+
+        const updateError = updateResults.find((result) => result.error);
+        if (updateError) {
+            console.error('Error resetting players for next question:', updateError.error);
+        }
     }
 
     const { error: updateError } = await client.from('quiz_rooms').update({
