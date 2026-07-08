@@ -104,19 +104,7 @@ form.addEventListener('submit', async (event) => {
       throw categoryError;
     }
 
-    const { data: latestQuestions, error: latestError } = await quizbuzzClient
-      .from('quiz_questions')
-      .select('id')
-      .order('id', { ascending: false })
-      .limit(1);
-
-    if (latestError) {
-      throw latestError;
-    }
-
-    const nextId = latestQuestions?.[0]?.id ? Number(latestQuestions[0].id) + 1 : 1;
-    const questionsToInsert = parsedQuestions.map((question, index) => ({
-      id: nextId + index,
+    const questionsToInsert = parsedQuestions.map((question) => ({
       category_id: categoryId,
       question: question.question,
       option_1: question.option_1,
