@@ -548,67 +548,6 @@
           "correctAnswer": 3
         }
       ]
-    },
-    {
-      "topic": "Serial Killers",
-      "author": "Unknown",
-      "questions": [
-        {
-          "id": 46,
-          "question": "Which serial killer was known as “The Milwaukee Cannibal”?",
-          "options": [
-            "Ted Bundy",
-            "Jeffrey Dahmer",
-            "John Wayne Gacy",
-            "Richard Ramirez"
-          ],
-          "correctAnswer": 1
-        },
-        {
-          "id": 47,
-          "question": "Which killer buried many of his victims under his house and dressed as a clown at parties?",
-          "options": [
-            "Ed Gein",
-            "Charles Manson",
-            "John Wayne Gacy",
-            "Dennis Rader"
-          ],
-          "correctAnswer": 2
-        },
-        {
-          "id": 48,
-          "question": "Which serial killer made furniture and decorations from human skin and bones?",
-          "options": [
-            "Ed Gein",
-            "Jeffrey Dahmer",
-            "Ted Bundy",
-            "Albert Fish"
-          ],
-          "correctAnswer": 0
-        },
-        {
-          "id": 49,
-          "question": "Which killer claimed to hear a demon dog telling him to murder people?",
-          "options": [
-            "David Berkowitz",
-            "Ted Bundy",
-            "Richard Ramirez",
-            "Ed Kemper"
-          ],
-          "correctAnswer": 0
-        },
-        {
-          "id": 50,
-          "question": "Which serial killer confessed to killing women across several U.S. states while pretending to be injured to lure victims?",
-          "options": [
-            "Gary Ridgway",
-            "Jeffrey Dahmer",
-            "Ted Bundy",
-            "Dennis Nilsen"
-          ],
-          "correctAnswer": 2
-        }
-      ]
     }
   ]
 }
