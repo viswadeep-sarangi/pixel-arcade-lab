@@ -140,12 +140,32 @@
             padding: 1rem;
         }
         .results-section {
-            background: white;
+            background: linear-gradient(135deg, #ff9800 0%, #f5576c 100%);
+            color: white;
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: none;
             margin-top: 2rem;
+        }
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .results-header h2 {
+            color: white;
+            margin: 0;
+        }
+        .leaderboard-button {
+            background: #ff9800;
+            color: white;
+        }
+        .leaderboard-button:hover {
+            background: #f57c00;
         }
         .question-review {
             background: #f5f5f5;
@@ -371,11 +391,13 @@
 
         <!-- Results Section -->
         <div class="results-section" id="resultsSection">
-            <h2>Quiz Results</h2>
+            <div class="results-header">
+                <h2>Quiz Results</h2>
+                <button class="leaderboard-button" onclick="window.location.href='leaderboard.html'">View Leaderboard</button>
+            </div>
             <div id="resultsContent"></div>
             <div class="button-group">
                 <button onclick="resetRoom()">Create Another Room</button>
-                <button onclick="window.location.href='leaderboard.html'">View Leaderboard</button>
                 <button class="back-button" onclick="goBack()">Back to Home</button>
             </div>
         </div>
