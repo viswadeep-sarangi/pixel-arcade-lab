@@ -7,23 +7,58 @@
     <link rel="stylesheet" href="styles.css">
     <style>
         .container { max-width: 900px; margin: 2rem auto; padding: 2rem; }
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .leaderboard-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
         .leaderboard-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .leaderboard-list { margin-top: 1rem; }
         .leaderboard-row { display:flex; justify-content:space-between; padding:0.5rem 0; border-bottom:1px solid #f0f0f0; }
         .leaderboard-row:first-child { font-weight: bold; }
-        .refresh { background:#667eea; color:#fff; border:none; padding:0.5rem 1rem; border-radius:6px; cursor:pointer; }
+        .refresh, .back-button {
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .refresh {
+            background:#667eea;
+            color:#fff;
+        }
+        .back-button {
+            background:#f5576c;
+            color:#fff;
+        }
+        .back-button:hover {
+            background:#e1435d;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <div class="leaderboard-header">
             <h1>🏆 Leaderboard</h1>
-            <button class="refresh" onclick="loadLeaderboard()">Refresh</button>
+            <div class="leaderboard-actions">
+                <button class="refresh" onclick="loadLeaderboard()">Refresh</button>
+                <button class="back-button" onclick="window.location.href='index.html'">← Back</button>
+            </div>
         </div>
         <div class="leaderboard-card">
             <div id="leaderboardContent">Loading...</div>
         </div>
-        <div style="margin-top:1rem;"><a href="index.html">← Back</a></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
