@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Quiz</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        .container {
+            width: min(700px, 100%);
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .header h1 {
+            margin: 0;
+            color: #f5576c;
+            font-size: 1.8rem;
+        }
+        .back-button {
+            background: #f5576c;
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        form {
+            display: grid;
+            gap: 1rem;
+        }
+        label {
+            display: grid;
+            gap: 0.4rem;
+            font-weight: 600;
+            color: #333;
+        }
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #f4b6c2;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .file-box {
+            padding: 0.9rem;
+            border: 2px dashed #f5576c;
+            border-radius: 8px;
+            background: #fff7f8;
+        }
+        .file-box small {
+            display: block;
+            margin-top: 0.35rem;
+            color: #777;
+        }
+        .submit-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.85rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .submit-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        .status-message {
+            min-height: 1.2rem;
+            font-weight: 600;
+            color: #444;
+        }
+        .status-message.error {
+            color: #c62828;
+        }
+        .status-message.success {
+            color: #2e7d32;
+        }
+        .hint {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Create Quiz</h1>
+            <button class="back-button" type="button" onclick="window.location.href='index.html'">← Back</button>
+        </div>
+        <p class="hint">Create a quiz category and upload a CSV file with the required question columns.</p>
+        <form id="createQuizForm">
+            <label for="topic">Topic
+                <input id="topic" name="topic" type="text" placeholder="e.g. Science Trivia" required>
+            </label>
+            <label for="author">Author
+                <input id="author" name="author" type="text" placeholder="Your name" required>
+            </label>
+            <label class="file-box" for="csvFile">Upload CSV
+                <input id="csvFile" name="csvFile" type="file" accept=".csv,text/csv" required>
+                <small>Required columns: question, option_1, option_2, option_3, option_4, correct_answer</small>
+            </label>
+            <div id="fileName" class="hint">No file selected</div>
+            <button class="submit-button" type="submit">Create Quiz</button>
+            <div id="statusMessage" class="status-message"></div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.local.js"></script>
+    <script src="supabase-config.js"></script>
+    <script type="module" src="create-quiz.js"></script>
+</body>
+</html>
