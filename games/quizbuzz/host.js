@@ -9,6 +9,7 @@ let categoryAuthors = {};
 let roomSubscription = null;
 let currentRoomData = null;
 let currentPlayers = {};
+let categoryLookup = {};
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
@@ -72,25 +73,48 @@ function mapPlayerRows(rows) {
     return players;
 }
 
-function populateCategorySelect() {
-    fetch('questions.json')
-        .then(response => response.json())
-        .then(data => {
-            const select = document.getElementById('categorySelect');
-            if (!select) return;
-            select.innerHTML = '<option value="">-- Choose a Category --</option>';
-            const cats = data.categories || [];
-            cats.forEach(cat => {
-                const opt = document.createElement('option');
-                opt.value = cat.topic;
-                opt.textContent = `${cat.topic} by ${cat.author || 'Unknown'}`;
-                select.appendChild(opt);
-                categoryAuthors[cat.topic] = cat.author || '';
-            });
-        })
-        .catch(err => {
-            console.error('Error loading categories:', err);
-        });
+function getCategoryDisplayLabel(categoryId) {
+    const categoryRecord = categoryLookup[categoryId];
+    if (categoryRecord) {
+        return `${categoryRecord.topic} by ${categoryRecord.author || 'Unknown'}`;
+    }
+    return String(categoryId || '');
+}
+
+async function populateCategorySelect() {
+    const client = getQuizbuzzClient();
+    if (!client) {
+        console.error('Host: Quizbuzz client is not available while loading categories.');
+        return;
+    }
+
+    const { data, error } = await client
+        .from('quiz_categories')
+        .select('*')
+        .order('topic', { ascending: true });
+
+    if (error) {
+        console.error('Error loading categories:', error);
+        return;
+    }
+
+    const select = document.getElementById('categorySelect');
+    if (!select) return;
+
+    select.innerHTML = '<option value="">-- Choose a Category --</option>';
+    categoryAuthors = {};
+    categoryLookup = {};
+
+    (data || []).forEach((cat) => {
+        const topic = cat.topic;
+        const author = cat.author || '';
+        const opt = document.createElement('option');
+        opt.value = cat.category_id;
+        opt.textContent = `${topic} by ${author || 'Unknown'}`;
+        select.appendChild(opt);
+        categoryAuthors[cat.category_id] = `${topic} by ${author || 'Unknown'}`;
+        categoryLookup[cat.category_id] = cat;
+    });
 }
 
 async function createRoom() {
@@ -99,21 +123,21 @@ async function createRoom() {
         return;
     } 
 
-    const category = document.getElementById('categorySelect').value;
-    if (!category) {
+    const categoryId = document.getElementById('categorySelect').value;
+    if (!categoryId) {
         alert('Please select a category');
         return;
     }
 
     currentRoomId = 'ROOM_' + Math.random().toString(36).substr(2, 8).toUpperCase();
-    currentCategory = category;
+    currentCategory = categoryId;
     quizStarted = false;
-    console.log('host.js > createRoom(): Creating room with ID:', currentRoomId, 'Category:', category, 'Host ID:', hostId);
+    console.log('host.js > createRoom(): Creating room with ID:', currentRoomId, 'Category:', categoryId, 'Host ID:', hostId);
 
     const roomData = {
         room_id: currentRoomId,
         host_id: hostId,
-        category,
+        category: categoryId,
         status: 'waiting',
         current_question_index: 0,
         question_phase: 'waiting',
@@ -144,8 +168,7 @@ function showRoomInfo() {
     document.getElementById('playersSection').style.display = 'block';
     document.getElementById('quizSection').style.display = 'none';
     document.getElementById('roomIdDisplay').textContent = currentRoomId;
-    const author = categoryAuthors[currentCategory] || '';
-    document.getElementById('categoryDisplay').textContent = author ? `${currentCategory} by ${author}` : currentCategory;
+    document.getElementById('categoryDisplay').textContent = getCategoryDisplayLabel(currentCategory);
 }
 
 async function listenForRoomUpdates() {
@@ -269,17 +292,48 @@ function updateRoomUI(roomData, players) {
     renderHostQuestion(roomData, players);
 }
 
-function loadQuestionsForHost(category) {
-    return fetch('questions.json')
-        .then(response => response.json())
-        .then(data => {
-            const categoryData = data.categories.find(cat => cat.topic === category);
-            quizQuestions = categoryData ? categoryData.questions : [];
-        })
-        .catch(error => {
-            console.error('Error loading questions:', error);
+async function loadQuestionsForHost(categoryId) {
+    const client = getQuizbuzzClient();
+    if (!client) {
+        quizQuestions = [];
+        return;
+    }
+
+    const categoryRecord = categoryLookup[categoryId] || null;
+    if (!categoryRecord?.category_id) {
+        const { data: categoryRow, error: categoryError } = await client
+            .from('quiz_categories')
+            .select('*')
+            .eq('category_id', categoryId)
+            .maybeSingle();
+
+        if (categoryError || !categoryRow) {
+            console.error('Error loading category for questions:', categoryError);
             quizQuestions = [];
-        });
+            return;
+        }
+
+        categoryLookup[categoryId] = categoryRow;
+    }
+
+    const resolvedCategory = categoryLookup[categoryId];
+    const { data, error } = await client
+        .from('quiz_questions')
+        .select('*')
+        .eq('category_id', resolvedCategory.category_id)
+        .order('id', { ascending: true });
+
+    if (error) {
+        console.error('Error loading questions:', error);
+        quizQuestions = [];
+        return;
+    }
+
+    quizQuestions = (data || []).map((row) => ({
+        question: row.question,
+        options: [row.option_1, row.option_2, row.option_3, row.option_4],
+        correctAnswer: Number(row.correct_answer)
+    }));
 }
 
 function renderHostQuestion(roomData, players) {
@@ -562,16 +616,10 @@ function displayResults() {
     loadQuestionsForReview();
 }
 
-function loadQuestionsForReview() {
-    fetch('questions.json')
-        .then(response => response.json())
-        .then(data => {
-            const categoryData = data.categories.find(cat => cat.topic === currentCategory);
-            if (categoryData) {
-                displayQuestionsReview(categoryData.questions);
-            }
-        })
-        .catch(error => console.error('Error loading questions:', error));
+async function loadQuestionsForReview() {
+    if (!currentCategory) return;
+    await loadQuestionsForHost(currentCategory);
+    displayQuestionsReview(quizQuestions);
 }
 
 function displayQuestionsReview(questions) {

@@ -10,6 +10,7 @@ let quizStarted = false;
 let currentRoomData = null;
 let currentPlayers = {};
 let roomSubscription = null;
+let categoryLookup = {};
 
 function getSupabaseClient() {
     return window.supabaseClient || null;
@@ -219,18 +220,49 @@ async function refreshRoomState() {
     }
 }
 
-function loadQuizQuestions(category = null) {
-    return fetch('questions.json')
-        .then(response => response.json())
-        .then(data => {
-            const selectedCategory = category || 'Geography';
-            const categoryData = data.categories.find(cat => cat.topic === selectedCategory);
-            quizQuestions = categoryData ? categoryData.questions : [];
-        })
-        .catch(error => {
-            console.error('Error loading questions:', error);
+async function loadQuizQuestions(categoryId = null) {
+    const client = getQuizbuzzClient();
+    if (!client || !categoryId) {
+        quizQuestions = [];
+        return;
+    }
+
+    const categoryRecord = categoryLookup[categoryId] || null;
+
+    if (!categoryRecord?.category_id) {
+        const { data: categoryRow, error: categoryError } = await client
+            .from('quiz_categories')
+            .select('*')
+            .eq('category_id', categoryId)
+            .maybeSingle();
+
+        if (categoryError || !categoryRow) {
+            console.error('Error loading category for questions:', categoryError);
             quizQuestions = [];
-        });
+            return;
+        }
+
+        categoryLookup[categoryId] = categoryRow;
+    }
+
+    const resolvedCategory = categoryLookup[categoryId];
+    const { data, error } = await client
+        .from('quiz_questions')
+        .select('*')
+        .eq('category_id', resolvedCategory.category_id)
+        .order('id', { ascending: true });
+
+    if (error) {
+        console.error('Error loading questions:', error);
+        quizQuestions = [];
+        return;
+    }
+
+    quizQuestions = (data || []).map((row) => ({
+        question: row.question,
+        options: [row.option_1, row.option_2, row.option_3, row.option_4],
+        correctAnswer: Number(row.correct_answer)
+    }));
 }
 
 function showQuizScreen() {
