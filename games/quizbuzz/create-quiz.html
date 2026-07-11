@@ -132,9 +132,7 @@
             font-weight: 600;
         }
         .csv-example-head {
-            display: grid;
-            justify-items: start;
-            gap: 0.45rem;
+            display: block;
             margin-bottom: 0.6rem;
         }
         .csv-example-head strong {
@@ -155,6 +153,9 @@
         .template-button:hover {
             background: #f57c00;
         }
+        .template-button-row {
+            margin-top: -0.1rem;
+        }
     </style>
 </head>
 <body>
@@ -171,10 +172,12 @@
             <label for="author">Author
                 <input id="author" name="author" type="text" placeholder="Your name" required>
             </label>
+            <div class="template-button-row">
+                <button class="template-button" id="downloadTemplateButton" type="button">Download Questions CSV Template</button>
+            </div>
             <div class="csv-example" aria-label="CSV example">
                 <div class="csv-example-head">
-                    <strong>Example CSV format</strong>
-                    <button class="template-button" id="downloadTemplateButton" type="button">Download Template</button>
+                    <strong>Example Questions CSV</strong>
                 </div>
                 <table>
                     <thead>
