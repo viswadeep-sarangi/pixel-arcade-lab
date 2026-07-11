@@ -104,6 +104,32 @@
             font-size: 0.95rem;
             line-height: 1.5;
         }
+        .csv-example {
+            margin-top: 0.6rem;
+            padding: 0.8rem;
+            background: #f9f9f9;
+            border: 1px solid #f2d0d6;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #444;
+            overflow-x: auto;
+        }
+        .csv-example table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .csv-example th,
+        .csv-example td {
+            border: 1px solid #e8c7ce;
+            padding: 0.45rem 0.55rem;
+            text-align: left;
+            vertical-align: top;
+        }
+        .csv-example th {
+            background: #fff2f4;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -125,6 +151,47 @@
                 <small>Required columns: question, option_1, option_2, option_3, option_4, correct_answer</small>
             </label>
             <div id="fileName" class="hint">No file selected</div>
+            <div class="csv-example" aria-label="CSV example">
+                <strong>Example CSV format</strong>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>question</th>
+                            <th>option_1</th>
+                            <th>option_2</th>
+                            <th>option_3</th>
+                            <th>option_4</th>
+                            <th>correct_answer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>What is 2+2?</td>
+                            <td>3</td>
+                            <td>4</td>
+                            <td>5</td>
+                            <td>6</td>
+                            <td>B</td>
+                        </tr>
+                        <tr>
+                            <td>What is the capital of France?</td>
+                            <td>Berlin</td>
+                            <td>Paris</td>
+                            <td>Rome</td>
+                            <td>Madrid</td>
+                            <td>B</td>
+                        </tr>
+                        <tr>
+                            <td>Which planet is known as the Red Planet?</td>
+                            <td>Mars</td>
+                            <td>Venus</td>
+                            <td>Jupiter</td>
+                            <td>Saturn</td>
+                            <td>A</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <button class="submit-button" type="submit">Create Quiz</button>
             <div id="statusMessage" class="status-message"></div>
         </form>

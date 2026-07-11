@@ -56,6 +56,15 @@ function parseCsvText(text) {
   return rows;
 }
 
+function normalizeCorrectAnswer(value) {
+  const normalized = String(value || '').trim().toLowerCase();
+  if (normalized === 'a') return 0;
+  if (normalized === 'b') return 1;
+  if (normalized === 'c') return 2;
+  if (normalized === 'd') return 3;
+  return null;
+}
+
 function validateQuizCsv(text) {
   const rows = parseCsvText(text);
 
@@ -110,9 +119,9 @@ function validateQuizCsv(text) {
       errors.push(`Row ${index + 2}: option_4 is required.`);
     }
 
-    const correctAnswerNumber = Number(correctAnswerText);
-    if (!Number.isInteger(correctAnswerNumber) || correctAnswerNumber < 0 || correctAnswerNumber > 3) {
-      errors.push(`Row ${index + 2}: correct_answer must be an integer between 0 and 3.`);
+    const correctAnswerNumber = normalizeCorrectAnswer(correctAnswerText);
+    if (correctAnswerNumber === null) {
+      errors.push(`Row ${index + 2}: correct_answer must be a single letter: A, B, C, or D.`);
     }
 
     if (!errors.length || errors[errors.length - 1].includes(`Row ${index + 2}`) === false) {
@@ -152,8 +161,9 @@ if (typeof module !== 'undefined' && module.exports) {
     REQUIRED_COLUMNS,
     parseCsvText,
     validateQuizCsv,
-    generateCategoryId
+    generateCategoryId,
+    normalizeCorrectAnswer
   };
 }
 
-export { REQUIRED_COLUMNS, parseCsvText, validateQuizCsv, generateCategoryId };
+export { REQUIRED_COLUMNS, parseCsvText, validateQuizCsv, generateCategoryId, normalizeCorrectAnswer };
