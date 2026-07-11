@@ -65,7 +65,7 @@ csvInput.addEventListener('change', async (event) => {
 
     parsedQuestions = validation.rows;
     csvValidationError = '';
-    setStatus(`CSV ready: ${parsedQuestions.length} question(s) loaded.`);
+    setStatus(`Found ${parsedQuestions.length} question(s). Create Quiz now.`);
   } catch (error) {
     parsedQuestions = [];
     csvValidationError = error.message || 'Unable to read the selected CSV file.';
