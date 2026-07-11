@@ -12,6 +12,15 @@ const downloadTemplateButton = document.getElementById('downloadTemplateButton')
 let parsedQuestions = [];
 let csvValidationError = '';
 
+function getCsvReadyMessage(questionCount) {
+  const hasTopic = topicInput.value.trim().length > 0;
+  const hasAuthor = authorInput.value.trim().length > 0;
+  if (hasTopic && hasAuthor) {
+    return `Found ${questionCount} question(s). Create Quiz now.`;
+  }
+  return `Found ${questionCount} question(s). Add Topic and Author to continue.`;
+}
+
 function setStatus(message, isError = false) {
   statusMessage.textContent = message || '';
   statusMessage.className = 'status-message';
@@ -65,11 +74,23 @@ csvInput.addEventListener('change', async (event) => {
 
     parsedQuestions = validation.rows;
     csvValidationError = '';
-    setStatus(`Found ${parsedQuestions.length} question(s). Create Quiz now.`);
+    setStatus(getCsvReadyMessage(parsedQuestions.length));
   } catch (error) {
     parsedQuestions = [];
     csvValidationError = error.message || 'Unable to read the selected CSV file.';
     setStatus(csvValidationError, true);
+  }
+});
+
+topicInput.addEventListener('input', () => {
+  if (parsedQuestions.length && !csvValidationError) {
+    setStatus(getCsvReadyMessage(parsedQuestions.length));
+  }
+});
+
+authorInput.addEventListener('input', () => {
+  if (parsedQuestions.length && !csvValidationError) {
+    setStatus(getCsvReadyMessage(parsedQuestions.length));
   }
 });
 
