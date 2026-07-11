@@ -609,37 +609,72 @@ async function endSession() {
     displayResults();
 }
 
-function displayResults() {
+async function displayResults() {
     document.getElementById('playersSection').style.display = 'none';
     document.getElementById('quizSection').style.display = 'none';
     document.getElementById('resultsSection').style.display = 'block';
-    loadQuestionsForReview();
-}
 
-async function loadQuestionsForReview() {
-    if (!currentCategory) return;
-    await loadQuestionsForHost(currentCategory);
-    displayQuestionsReview(quizQuestions);
-}
+    const client = getQuizbuzzClient();
+    if (!client || !currentRoomId) {
+        document.getElementById('resultsContent').innerHTML = '<div class="no-players">No results available.</div>';
+        return;
+    }
 
-function displayQuestionsReview(questions) {
-    let html = '';
+    const { data: roomRow, error: roomError } = await client
+        .from('quiz_rooms')
+        .select('*')
+        .eq('room_id', currentRoomId)
+        .maybeSingle();
 
-    questions.forEach((question, index) => {
-        html += `
-            <div class="question-review">
-                <div class="question-text">Q${index + 1}: ${question.question}</div>
-                <div class="answer-options">
-                    ${question.options.map((option, optIndex) => `
-                        <div class="answer-option ${optIndex === question.correctAnswer ? 'correct-answer' : ''}">
-                            ${String.fromCharCode(65 + optIndex)}. ${option}
-                            ${optIndex === question.correctAnswer ? ' ✓ (Correct)' : ''}
-                        </div>
-                    `).join('')}
-                </div>
+    if (roomError || !roomRow) {
+        document.getElementById('resultsContent').innerHTML = '<div class="no-players">Unable to load results.</div>';
+        return;
+    }
+
+    const [{ data: playerRows, error: playerError }, { data: answerRows, error: answerError }] = await Promise.all([
+        client.from('quiz_players').select('*').eq('room_id', currentRoomId),
+        client.from('quiz_player_answers').select('*').eq('room_id', currentRoomId)
+    ]);
+
+    if (playerError || answerError) {
+        document.getElementById('resultsContent').innerHTML = '<div class="no-players">Unable to load player scores.</div>';
+        return;
+    }
+
+    const answerScores = (answerRows || []).reduce((accumulator, row) => {
+        const playerId = row.player_id;
+        const points = Number(row.score_for_question || 0);
+        if (!accumulator[playerId]) {
+            accumulator[playerId] = 0;
+        }
+        accumulator[playerId] += points;
+        return accumulator;
+    }, {});
+
+    const players = (playerRows || [])
+        .map((row) => ({
+            name: row.name || 'Player',
+            score: Number(answerScores[row.player_id] || 0)
+        }))
+        .sort((left, right) => right.score - left.score);
+
+    if (!players.length) {
+        document.getElementById('resultsContent').innerHTML = '<div class="no-players">No players played this quiz.</div>';
+        return;
+    }
+
+    const html = `
+        <div class="question-review">
+            <div class="question-text">This quiz ended with these scores:</div>
+            <div class="answer-options">
+                ${players.map((player, index) => `
+                    <div class="answer-option">
+                        ${index + 1}. ${escapeHtml(player.name)} — ${player.score} point${player.score === 1 ? '' : 's'}
+                    </div>
+                `).join('')}
             </div>
-        `;
-    });
+        </div>
+    `;
 
     document.getElementById('resultsContent').innerHTML = html;
 }
