@@ -22,7 +22,7 @@
             flex-wrap: wrap;
         }
         .leaderboard-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .leaderboard-list { margin-top: 1rem; }
+        .leaderboard-list { margin-top: 1rem; overflow-x: auto; }
         .leaderboard-row { display:flex; justify-content:space-between; padding:0.5rem 0; border-bottom:1px solid #f0f0f0; }
         .leaderboard-row:first-child { font-weight: bold; }
         .refresh, .back-button {
@@ -66,6 +66,6 @@
     <script src="config.local.js"></script>
     <script src="supabase-config.js"></script>
 
-    <script src="leaderboard.js"></script>
+    <script src="leaderboard.js?v=2"></script>
 </body>
 </html>

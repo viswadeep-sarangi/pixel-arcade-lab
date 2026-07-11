@@ -8,7 +8,9 @@ async function loadLeaderboard() {
     document.getElementById('leaderboardContent').textContent = 'Loading...';
 
     const quizbuzzClient = client.schema('quizbuzz');
-    const { data, error } = await quizbuzzClient.from('quiz_leaderboard_from_answers').select('*');
+    const { data, error } = await quizbuzzClient
+        .from('quiz_leaderboard_from_answers')
+        .select('name,total_score,rooms_played,score_per_room');
     if (error) {
         console.error('Error loading leaderboard:', error);
         document.getElementById('leaderboardContent').textContent = `Error loading leaderboard: ${error.message}`;
