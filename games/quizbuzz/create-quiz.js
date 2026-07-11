@@ -7,6 +7,7 @@ const csvInput = document.getElementById('csvFile');
 const fileNameDisplay = document.getElementById('fileName');
 const statusMessage = document.getElementById('statusMessage');
 const submitButton = form.querySelector('button[type="submit"]');
+const downloadTemplateButton = document.getElementById('downloadTemplateButton');
 
 let parsedQuestions = [];
 let csvValidationError = '';
@@ -22,6 +23,21 @@ function setStatus(message, isError = false) {
 function setSubmitting(isSubmitting) {
   submitButton.disabled = isSubmitting;
   submitButton.textContent = isSubmitting ? 'Creating…' : 'Create Quiz';
+}
+
+if (downloadTemplateButton) {
+  downloadTemplateButton.addEventListener('click', () => {
+    const headers = 'question,option_a,option_b,option_c,option_d,correct_answer\n';
+    const blob = new Blob([headers], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'quiz_questions_template.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  });
 }
 
 csvInput.addEventListener('change', async (event) => {

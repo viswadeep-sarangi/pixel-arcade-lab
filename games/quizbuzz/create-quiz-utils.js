@@ -1,4 +1,4 @@
-const REQUIRED_COLUMNS = ['question', 'option_1', 'option_2', 'option_3', 'option_4', 'correct_answer'];
+const REQUIRED_COLUMNS = ['question', 'option_a', 'option_b', 'option_c', 'option_d', 'correct_answer'];
 
 function normalizeHeader(value) {
   return String(value || '').trim().toLowerCase();
@@ -97,26 +97,26 @@ function validateQuizCsv(text) {
     }
 
     const question = String(row[columnIndexes.question] || '').trim();
-    const option1 = String(row[columnIndexes.option_1] || '').trim();
-    const option2 = String(row[columnIndexes.option_2] || '').trim();
-    const option3 = String(row[columnIndexes.option_3] || '').trim();
-    const option4 = String(row[columnIndexes.option_4] || '').trim();
+    const optionA = String(row[columnIndexes.option_a] || '').trim();
+    const optionB = String(row[columnIndexes.option_b] || '').trim();
+    const optionC = String(row[columnIndexes.option_c] || '').trim();
+    const optionD = String(row[columnIndexes.option_d] || '').trim();
     const correctAnswerText = String(row[columnIndexes.correct_answer] || '').trim();
 
     if (!question) {
       errors.push(`Row ${index + 2}: question text is required.`);
     }
-    if (!option1) {
-      errors.push(`Row ${index + 2}: option_1 is required.`);
+    if (!optionA) {
+      errors.push(`Row ${index + 2}: option_a is required.`);
     }
-    if (!option2) {
-      errors.push(`Row ${index + 2}: option_2 is required.`);
+    if (!optionB) {
+      errors.push(`Row ${index + 2}: option_b is required.`);
     }
-    if (!option3) {
-      errors.push(`Row ${index + 2}: option_3 is required.`);
+    if (!optionC) {
+      errors.push(`Row ${index + 2}: option_c is required.`);
     }
-    if (!option4) {
-      errors.push(`Row ${index + 2}: option_4 is required.`);
+    if (!optionD) {
+      errors.push(`Row ${index + 2}: option_d is required.`);
     }
 
     const correctAnswerNumber = normalizeCorrectAnswer(correctAnswerText);
@@ -127,10 +127,10 @@ function validateQuizCsv(text) {
     if (!errors.length || errors[errors.length - 1].includes(`Row ${index + 2}`) === false) {
       normalizedRows.push({
         question,
-        option_1: option1,
-        option_2: option2,
-        option_3: option3,
-        option_4: option4,
+        option_1: optionA,
+        option_2: optionB,
+        option_3: optionC,
+        option_4: optionD,
         correct_answer: correctAnswerNumber
       });
     }

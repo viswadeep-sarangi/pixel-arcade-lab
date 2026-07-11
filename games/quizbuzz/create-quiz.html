@@ -130,6 +130,26 @@
             background: #fff2f4;
             font-weight: 700;
         }
+        .csv-example-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.6rem;
+        }
+        .template-button {
+            background: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.45rem 0.7rem;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .template-button:hover {
+            background: #f57c00;
+        }
     </style>
 </head>
 <body>
@@ -146,21 +166,19 @@
             <label for="author">Author
                 <input id="author" name="author" type="text" placeholder="Your name" required>
             </label>
-            <label class="file-box" for="csvFile">Upload CSV
-                <input id="csvFile" name="csvFile" type="file" accept=".csv,text/csv" required>
-                <small>Required columns: question, option_1, option_2, option_3, option_4, correct_answer</small>
-            </label>
-            <div id="fileName" class="hint">No file selected</div>
             <div class="csv-example" aria-label="CSV example">
-                <strong>Example CSV format</strong>
+                <div class="csv-example-head">
+                    <strong>Example CSV format</strong>
+                    <button class="template-button" id="downloadTemplateButton" type="button">Download Template</button>
+                </div>
                 <table>
                     <thead>
                         <tr>
                             <th>question</th>
-                            <th>option_1</th>
-                            <th>option_2</th>
-                            <th>option_3</th>
-                            <th>option_4</th>
+                            <th>option_a</th>
+                            <th>option_b</th>
+                            <th>option_c</th>
+                            <th>option_d</th>
                             <th>correct_answer</th>
                         </tr>
                     </thead>
@@ -192,6 +210,11 @@
                     </tbody>
                 </table>
             </div>
+            <label class="file-box" for="csvFile">Upload Questions CSV
+                <input id="csvFile" name="csvFile" type="file" accept=".csv,text/csv" required>
+                <small>Required columns: question, option_a, option_b, option_c, option_d, correct_answer</small>
+            </label>
+            <div id="fileName" class="hint">No file selected</div>
             <button class="submit-button" type="submit">Create Quiz</button>
             <div id="statusMessage" class="status-message"></div>
         </form>
