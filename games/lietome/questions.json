@@ -2,63 +2,603 @@
   "questions": [
     {
       "id": 1,
-      "question": "What was the best-selling color of toilet paper in the UK during the 1970s bathroom boom?",
-      "answer": "Avocado green",
-      "note": "Colored bathroom suites were fashionable, and toilet paper brands sold matching shades."
+      "question": "Which yellow boomerang is secretly a botanical berry wearing a fruit-pop-star costume?",
+      "answer": "Banana",
+      "note": "By botanical definition, bananas are true berries."
     },
     {
       "id": 2,
-      "question": "Which food was once used as a movie theater seat-cleaning test because it left such stubborn stains?",
-      "answer": "Nacho cheese",
-      "note": "Its oil and color made it a practical stain challenge for upholstery."
+      "question": "Which red freckled picnic icon is fake-berry royalty in disguise?",
+      "answer": "Strawberry",
+      "note": "Strawberries are aggregate accessory fruits, not true berries."
     },
     {
       "id": 3,
-      "question": "What did Victorian etiquette books warn guests not to do with asparagus at formal dinners?",
-      "answer": "Eat it with a knife and fork",
-      "note": "Asparagus was often considered acceptable finger food when served whole."
+      "question": "Which brainy sea noodle runs on a triple-heart plumbing system?",
+      "answer": "Octopus",
+      "note": "Octopuses have three hearts: two for gills, one for the body."
     },
     {
       "id": 4,
-      "question": "Which everyday office object was patented with a design inspired by a bent hairpin?",
-      "answer": "The paper clip",
-      "note": "Many early clip designs relied on bent wire loops."
+      "question": "Which marsupial manufactures cube poop like tiny non-rollable dice?",
+      "answer": "Wombat",
+      "note": "Wombat intestines shape feces into cubes."
     },
     {
       "id": 5,
-      "question": "What was the first product to be scanned with a retail barcode in a real shop?",
-      "answer": "A pack of Wrigley's chewing gum",
-      "note": "The scan happened in Ohio in 1974."
+      "question": "Which pantry goo can survive centuries and still be snack-compatible?",
+      "answer": "Honey",
+      "note": "Low water activity and acidity help honey resist spoilage."
     },
     {
       "id": 6,
-      "question": "Which animal was briefly used by the US military in a 1960s project to deliver listening devices?",
-      "answer": "A cat",
-      "note": "The project is often referred to as Acoustic Kitty."
+      "question": "Which magical horse is an official national animal in the real world?",
+      "answer": "Unicorn",
+      "note": "The unicorn is the national animal of Scotland."
     },
     {
       "id": 7,
-      "question": "What strange item did some 18th-century Europeans wear in tall hairstyles to keep the shape overnight?",
-      "answer": "Wire cages",
-      "note": "Elaborate hairstyles could include structural frames and padding."
+      "question": "Which smiling aquarium goblin can regrow limbs like save-scumming biology?",
+      "answer": "Axolotl",
+      "note": "Axolotls can regenerate limbs and some organs."
     },
     {
       "id": 8,
-      "question": "Which soft drink was originally marketed as a brain and nerve tonic?",
-      "answer": "Coca-Cola",
-      "note": "Early advertising leaned heavily on medicinal-sounding claims."
+      "question": "Which sea floof holds hands while napping so the ocean does not kidnap friends?",
+      "answer": "Sea otter",
+      "note": "Sea otters often hold paws while resting in rafts."
     },
     {
       "id": 9,
-      "question": "What was the original purpose of bubble wrap before it became packaging material?",
-      "answer": "Textured wallpaper",
-      "note": "It failed as decor before finding its calling as protective packaging."
+      "question": "Which iron lace tower subtly grows taller when summer cranks the thermostat?",
+      "answer": "The Eiffel Tower",
+      "note": "Thermal expansion can increase its height by several centimeters."
     },
     {
       "id": 10,
-      "question": "Which household appliance had an early model nicknamed the Puffing Billy?",
-      "answer": "The vacuum cleaner",
-      "note": "Early powered cleaners could be large, loud, and engine-like."
+      "question": "Which planet spins so lazily its day outlasts its year?",
+      "answer": "Venus",
+      "note": "One Venus rotation takes longer than one Venus orbit."
+    },
+    {
+      "id": 11,
+      "question": "Which Egyptian queen is chronologically closer to moon boots than pyramid builders?",
+      "answer": "Cleopatra",
+      "note": "Cleopatra lived much later than the Great Pyramid era."
+    },
+    {
+      "id": 12,
+      "question": "Which war ended before a long coffee order could be prepared?",
+      "answer": "The Anglo-Zanzibar War",
+      "note": "It lasted about 38 to 45 minutes in 1896."
+    },
+    {
+      "id": 13,
+      "question": "Which lunchbox "nut" is botanically a bean cousin?",
+      "answer": "Peanut",
+      "note": "Peanuts are legumes, not tree nuts."
+    },
+    {
+      "id": 14,
+      "question": "Which fancy snack "nut" is technically a seed dangling off a fake fruit?",
+      "answer": "Cashew",
+      "note": "The edible cashew is the seed attached to the cashew apple."
+    },
+    {
+      "id": 15,
+      "question": "Which spiky tropical fruit makes farmers wait roughly two years for payoff?",
+      "answer": "Pineapple",
+      "note": "Pineapples often take around 18 to 24 months to mature."
+    },
+    {
+      "id": 16,
+      "question": "Which fluffy pet has a one-way digestive storyline with no vomit chapter?",
+      "answer": "Rabbit",
+      "note": "Rabbits cannot vomit because of digestive anatomy."
+    },
+    {
+      "id": 17,
+      "question": "Which predators were already old news before Earth had trees?",
+      "answer": "Sharks",
+      "note": "Shark ancestors predate trees by tens of millions of years."
+    },
+    {
+      "id": 18,
+      "question": "Which jelly can reverse life stage like it found the biological undo button?",
+      "answer": "Turritopsis dohrnii",
+      "note": "It can revert from medusa stage back to polyp under stress."
+    },
+    {
+      "id": 19,
+      "question": "Which egg-laying mammal glows cyan under ultraviolet rave lighting?",
+      "answer": "Platypus",
+      "note": "Platypus fur shows biofluorescence under UV light."
+    },
+    {
+      "id": 20,
+      "question": "Which eucalyptus nap specialist has fingerprints suspiciously close to ours?",
+      "answer": "Koala",
+      "note": "Koala fingerprints can resemble human fingerprints."
+    },
+    {
+      "id": 21,
+      "question": "Which skyscraper-neck mammal still has only seven neck vertebrae like humans?",
+      "answer": "Giraffe",
+      "note": "Both giraffes and humans have seven neck vertebrae."
+    },
+    {
+      "id": 22,
+      "question": "Which ocean titan has arteries so large they sound architecturally unreasonable?",
+      "answer": "Blue whale",
+      "note": "Blue whales have the largest known hearts and major blood vessels."
+    },
+    {
+      "id": 23,
+      "question": "Which chill tree-hanger risks everything once a week for a bathroom trip?",
+      "answer": "Sloth",
+      "note": "Many sloths descend to the ground to defecate about weekly."
+    },
+    {
+      "id": 24,
+      "question": "Which fluttering flower visitor tastes with its feet first and asks questions later?",
+      "answer": "Butterfly",
+      "note": "Butterflies have taste receptors on their feet."
+    },
+    {
+      "id": 25,
+      "question": "Where does a cricket keep its ears if not near its tiny face?",
+      "answer": "On its front legs",
+      "note": "Crickets hear with tympanal organs on their forelegs."
+    },
+    {
+      "id": 26,
+      "question": "Which burger-side sauce was once pitched as stomach medicine?",
+      "answer": "Ketchup",
+      "note": "Nineteenth-century ketchup was marketed with medicinal claims."
+    },
+    {
+      "id": 27,
+      "question": "Which famous university started teaching before the Aztec Empire existed?",
+      "answer": "The University of Oxford",
+      "note": "Oxford teaching began centuries before the Aztec Empire."
+    },
+    {
+      "id": 28,
+      "question": "What limitation made one early alarm clock a very stubborn roommate?",
+      "answer": "It rang at only one fixed time",
+      "note": "Levi Hutchins built a clock in 1787 set only for 4:00 a.m."
+    },
+    {
+      "id": 29,
+      "question": "Which US state is both east-most and west-most because maps are weird?",
+      "answer": "Alaska",
+      "note": "Aleutian islands cross the 180th meridian, creating both extremes."
+    },
+    {
+      "id": 30,
+      "question": "Which gas giant may host diamond rain in its deep pressure-cooker atmosphere?",
+      "answer": "Saturn",
+      "note": "Models suggest carbon may compress into diamond in deep layers."
+    },
+    {
+      "id": 31,
+      "question": "Which bird can micro-sleep while still gliding over ocean highways?",
+      "answer": "Frigatebird",
+      "note": "Frigatebirds can sleep briefly during long flights."
+    },
+    {
+      "id": 32,
+      "question": "Which fearless mammal can shrug off venom doses that wreck larger animals?",
+      "answer": "Honey badger",
+      "note": "Honey badgers show resistance to some venoms."
+    },
+    {
+      "id": 33,
+      "question": "Which reptiles can winter-breathe through their rear plumbing under ice?",
+      "answer": "Some freshwater turtles",
+      "note": "Certain turtles use cloacal respiration in low-oxygen winter conditions."
+    },
+    {
+      "id": 34,
+      "question": "Which fish can identify human faces like a tiny wet bouncer?",
+      "answer": "Archerfish",
+      "note": "Archerfish have shown human-face discrimination in experiments."
+    },
+    {
+      "id": 35,
+      "question": "Which urban birds once worked as flying camera drones before drones were cool?",
+      "answer": "Pigeons",
+      "note": "Pigeon-mounted cameras were used in early aerial photography."
+    },
+    {
+      "id": 36,
+      "question": "Which country keeps an official approved baby-name list for parents?",
+      "answer": "Iceland",
+      "note": "Iceland has naming rules and an approved register system."
+    },
+    {
+      "id": 37,
+      "question": "Which mammal runs blood pressure settings that would terrify your doctor?",
+      "answer": "Giraffe",
+      "note": "Giraffes need very high pressure to move blood up the neck."
+    },
+    {
+      "id": 38,
+      "question": "Which sea genius has a donut brain wrapped around its throat pipe?",
+      "answer": "Octopus",
+      "note": "An octopus esophagus passes through a ring-like central brain area."
+    },
+    {
+      "id": 39,
+      "question": "Which microscopic tank can endure the vacuum of space in hibernation mode?",
+      "answer": "Tardigrade",
+      "note": "Tardigrades survive extremes via cryptobiosis."
+    },
+    {
+      "id": 40,
+      "question": "Which fruit wears its tiny seed-specks on the outside like sequins?",
+      "answer": "Strawberry",
+      "note": "Its exterior achenes each contain a seed."
+    },
+    {
+      "id": 41,
+      "question": "Which two star colors do we not naturally see as pure stellar colors?",
+      "answer": "Green and purple",
+      "note": "Star spectra and perception make pure green or purple stars absent."
+    },
+    {
+      "id": 42,
+      "question": "Which country wins many per-capita chocolate speedrun leaderboards?",
+      "answer": "Switzerland",
+      "note": "Switzerland often ranks very high in chocolate consumption per person."
+    },
+    {
+      "id": 43,
+      "question": "Which snack tube doubled as an urn in a famously crunchy farewell?",
+      "answer": "Pringles can",
+      "note": "Inventor Fred Baur had part of his ashes buried in one."
+    },
+    {
+      "id": 44,
+      "question": "Which painter became a superstar after mostly being ignored while alive?",
+      "answer": "Vincent van Gogh",
+      "note": "Van Gogh sold very few paintings in his lifetime."
+    },
+    {
+      "id": 45,
+      "question": "Which moon is an ice geyser chaos orb spraying water into space?",
+      "answer": "Enceladus",
+      "note": "Enceladus ejects plumes that feed Saturn's E ring."
+    },
+    {
+      "id": 46,
+      "question": "Which planet rolls around the Sun like a tipped-over bowling pin?",
+      "answer": "Uranus",
+      "note": "Uranus has an axial tilt of about 98 degrees."
+    },
+    {
+      "id": 47,
+      "question": "What smell do astronauts report on suits after a spacewalk, like cosmic barbecue?",
+      "answer": "Burnt steak or hot metal",
+      "note": "Astronauts describe a metallic or seared smell after EVA."
+    },
+    {
+      "id": 48,
+      "question": "Which continent is so extreme that native ants basically said "hard pass"?",
+      "answer": "Antarctica",
+      "note": "Ants are native to every continent except Antarctica."
+    },
+    {
+      "id": 49,
+      "question": "Which language can answer yes/no questions without separate words for yes or no?",
+      "answer": "Irish",
+      "note": "Irish often answers by repeating or negating the verb."
+    },
+    {
+      "id": 50,
+      "question": "Which city hosts a wall intentionally marinated in decades of chewing gum?",
+      "answer": "Seattle",
+      "note": "Seattle's Gum Wall is a famous sticky landmark."
+    },
+    {
+      "id": 51,
+      "question": "Which island nation lives with zero permanent rivers and lakes?",
+      "answer": "Malta",
+      "note": "Malta has no permanent rivers or lakes."
+    },
+    {
+      "id": 52,
+      "question": "Which mammal can pause pregnancy like biology hit the snooze button?",
+      "answer": "Kangaroo",
+      "note": "Some kangaroos use embryonic diapause to delay development."
+    },
+    {
+      "id": 53,
+      "question": "Which bird lays an egg so giant it feels proportionally illegal?",
+      "answer": "Kiwi",
+      "note": "A kiwi egg can be around one-fifth of female body mass."
+    },
+    {
+      "id": 54,
+      "question": "Which fruit can sting your mouth because it contains microscopic needles?",
+      "answer": "Pineapple",
+      "note": "Raphides and bromelain contribute to pineapple mouth-tingle."
+    },
+    {
+      "id": 55,
+      "question": "Which US state slogan sounds like a futuristic expedition game objective?",
+      "answer": "Alaska",
+      "note": "Its motto is "North to the Future.""
+    },
+    {
+      "id": 56,
+      "question": "Which ingredient gave Roman marine concrete its legendary stubbornness?",
+      "answer": "Volcanic ash",
+      "note": "Pozzolanic reactions improved long-term durability, even in seawater."
+    },
+    {
+      "id": 57,
+      "question": "Which tiny worker can carry loads many times heavier than itself?",
+      "answer": "Leafcutter ant",
+      "note": "Leafcutter ants can carry several multiples of body weight."
+    },
+    {
+      "id": 58,
+      "question": "Which weather trick can lead to fish apparently raining from the sky?",
+      "answer": "Waterspout-related events",
+      "note": "Strong vortices can lift small aquatic animals and drop them inland."
+    },
+    {
+      "id": 59,
+      "question": "Which ancient engineer described a coin-operated holy-water dispenser, proto-vending style?",
+      "answer": "Hero of Alexandria",
+      "note": "Hero documented mechanisms that dispensed liquid for a coin."
+    },
+    {
+      "id": 60,
+      "question": "Which nut naturally pops its shell seam like a tiny green grin?",
+      "answer": "Pistachio",
+      "note": "Ripe pistachio shells usually split open naturally."
+    },
+    {
+      "id": 61,
+      "question": "Which Arctic giant has a built-in transparent eyelid for snow and swim mode?",
+      "answer": "Polar bear",
+      "note": "Polar bears have a nictitating membrane for eye protection."
+    },
+    {
+      "id": 62,
+      "question": "Which fish can flop-walk on mud and climb mangrove roots?",
+      "answer": "Mudskipper",
+      "note": "Mudskippers are amphibious fish adapted for land movement."
+    },
+    {
+      "id": 63,
+      "question": "Which shrimp sees color with hardware that makes human eyes look budget-tier?",
+      "answer": "Mantis shrimp",
+      "note": "Mantis shrimp have very complex photoreceptor systems."
+    },
+    {
+      "id": 64,
+      "question": "Which deep-sea giant hides a parrot-like beak in arm-noodle central?",
+      "answer": "Giant squid",
+      "note": "Giant squid use a hard beak to tear prey."
+    },
+    {
+      "id": 65,
+      "question": "Which London icon name belongs to a bell, not the tower tourists point at?",
+      "answer": "Big Ben",
+      "note": "Big Ben originally names the Great Bell inside the tower."
+    },
+    {
+      "id": 66,
+      "question": "Which city was once attacked by an actual wave of molasses?",
+      "answer": "Boston",
+      "note": "A 1919 molasses tank burst caused a deadly flood."
+    },
+    {
+      "id": 67,
+      "question": "Which soda began life as a pharmacy tonic before becoming a fridge staple?",
+      "answer": "Dr Pepper",
+      "note": "Dr Pepper originated in a drugstore setting."
+    },
+    {
+      "id": 68,
+      "question": "Which orchestra instrument used "catgut" strings mostly made from sheep intestines?",
+      "answer": "Violin",
+      "note": "Traditional catgut strings were usually sheep or goat intestine."
+    },
+    {
+      "id": 69,
+      "question": "Which moon has methane rain and hydrocarbon lakes like alien weather DLC?",
+      "answer": "Titan",
+      "note": "Titan has a methane-based weather cycle."
+    },
+    {
+      "id": 70,
+      "question": "Which country has the largest stash of natural lakes on Earth?",
+      "answer": "Canada",
+      "note": "Canada contains a huge share of the world's lakes."
+    },
+    {
+      "id": 71,
+      "question": "Which extinct bird had a wingspan wide enough to embarrass small airplanes?",
+      "answer": "Argentavis",
+      "note": "Argentavis is estimated among the largest flying birds ever."
+    },
+    {
+      "id": 72,
+      "question": "Which frog can freeze partly solid in winter then reboot in spring?",
+      "answer": "Wood frog",
+      "note": "Wood frogs survive freezing using cryoprotective biochemistry."
+    },
+    {
+      "id": 73,
+      "question": "Which ancient monument keeps surviving by receiving replacement stone patchwork?",
+      "answer": "The Great Sphinx",
+      "note": "The Sphinx has undergone extensive repair and block replacement."
+    },
+    {
+      "id": 74,
+      "question": "Which bird can imitate camera shutters, alarms, and chainsaws like an audio prankster?",
+      "answer": "Lyrebird",
+      "note": "Lyrebirds are exceptional vocal mimics of natural and human sounds."
+    },
+    {
+      "id": 75,
+      "question": "Which armored marine relic has blue blood used in medical testing?",
+      "answer": "Horseshoe crab",
+      "note": "Horseshoe crab blood is blue due to hemocyanin."
+    },
+    {
+      "id": 76,
+      "question": "Which bird builds decorated dating stages and collects colorful trinkets?",
+      "answer": "Bowerbird",
+      "note": "Male bowerbirds build and decorate bowers to attract mates."
+    },
+    {
+      "id": 77,
+      "question": "Which stone often preserves fossil textures after mineral replacement over ages?",
+      "answer": "Agate",
+      "note": "Silicification can preserve biological structures in agate-like forms."
+    },
+    {
+      "id": 78,
+      "question": "Which tiny mammal has such a turbo metabolism it must eat almost constantly?",
+      "answer": "Shrew",
+      "note": "Many shrews need frequent feeding due to high metabolic rates."
+    },
+    {
+      "id": 79,
+      "question": "Which marine reptile can stretch dives by dramatically slowing heart rate?",
+      "answer": "Sea turtle",
+      "note": "Sea turtles conserve oxygen during deep or long dives."
+    },
+    {
+      "id": 80,
+      "question": "Which giant bloom smells like a villainous compost heap to attract pollinators?",
+      "answer": "Corpse flower",
+      "note": "Amorphophallus titanum emits carrion-like odor when flowering."
+    },
+    {
+      "id": 81,
+      "question": "Which river-engineer rodent can stay underwater for over 15 minutes?",
+      "answer": "Beaver",
+      "note": "Beavers are adapted for long submersion while swimming and working."
+    },
+    {
+      "id": 82,
+      "question": "Which famously mocked font was made for comic-style software speech bubbles?",
+      "answer": "Comic Sans",
+      "note": "Comic Sans was created by Vincent Connare for Microsoft."
+    },
+    {
+      "id": 83,
+      "question": "Which instrument is played by waving your hands through invisible electric fields?",
+      "answer": "Theremin",
+      "note": "Theremin pitch and volume are controlled without physical contact."
+    },
+    {
+      "id": 84,
+      "question": "Which birds can sleep with half their brain awake during travel?",
+      "answer": "Some migratory birds",
+      "note": "Unihemispheric sleep enables partial rest during vigilance."
+    },
+    {
+      "id": 85,
+      "question": "Which huge mammal can produce milk that appears pinkish under some conditions?",
+      "answer": "Hippopotamus",
+      "note": "Hippo milk can look pink due to secretions and optical effects."
+    },
+    {
+      "id": 86,
+      "question": "Which country created a government role specifically targeting loneliness?",
+      "answer": "United Kingdom",
+      "note": "The UK established a Minister for Loneliness role."
+    },
+    {
+      "id": 87,
+      "question": "Which small fish can live out of water for extended periods in damp habitat?",
+      "answer": "Mangrove killifish",
+      "note": "Mangrove killifish can survive on land in moist conditions."
+    },
+    {
+      "id": 88,
+      "question": "Which living bird owns the current wingspan world record?",
+      "answer": "Wandering albatross",
+      "note": "Wandering albatross wingspans can exceed 3.5 meters."
+    },
+    {
+      "id": 89,
+      "question": "Which mega-city uncovered and restored an urban stream as flood-control and public space?",
+      "answer": "Seoul",
+      "note": "The Cheonggyecheon restoration transformed central Seoul infrastructure."
+    },
+    {
+      "id": 90,
+      "question": "Which shark body surface is basically covered in microscopic teeth?",
+      "answer": "Their skin",
+      "note": "Dermal denticles reduce drag and protect skin."
+    },
+    {
+      "id": 91,
+      "question": "Which tropical fruit evolved to ocean-drift like a self-seeding raft capsule?",
+      "answer": "Coconut",
+      "note": "Fibrous husks and buoyancy aid long-distance sea dispersal."
+    },
+    {
+      "id": 92,
+      "question": "Which board game is older than chess and still deeply alive today?",
+      "answer": "Go",
+      "note": "Go originated in ancient China over two millennia ago."
+    },
+    {
+      "id": 93,
+      "question": "Which giant marine reptile is wrongly called a dinosaur in pop culture?",
+      "answer": "Mosasaur",
+      "note": "Mosasaurs were marine squamates, not dinosaurs."
+    },
+    {
+      "id": 94,
+      "question": "Which tree became famous in ecology lore for a debated dodo-linked germination story?",
+      "answer": "Tambalacoque",
+      "note": "The classic dodo-only germination claim is famous but disputed."
+    },
+    {
+      "id": 95,
+      "question": "Which Atlantic heat conveyor keeps Western Europe milder than latitude twins elsewhere?",
+      "answer": "The Gulf Stream",
+      "note": "North Atlantic circulation transports warm water and influences climate."
+    },
+    {
+      "id": 96,
+      "question": "Which human body part stays clear partly by having no blood vessels at all?",
+      "answer": "The cornea",
+      "note": "The cornea is avascular and gets oxygen from air and tears."
+    },
+    {
+      "id": 97,
+      "question": "Which bird earns a "bone breaker" name by dropping skeleton snacks from heights?",
+      "answer": "Bearded vulture",
+      "note": "Bearded vultures break bones by dropping them onto rocks."
+    },
+    {
+      "id": 98,
+      "question": "Which constellation includes a famous red supergiant nearing its stellar finale?",
+      "answer": "Orion",
+      "note": "Betelgeuse in Orion is a red supergiant late in its evolution."
+    },
+    {
+      "id": 99,
+      "question": "Which snow-loving microalga paints mountainsides pink as "watermelon snow"?",
+      "answer": "Chlamydomonas nivalis",
+      "note": "Blooms of this alga can color snow red-pink."
+    },
+    {
+      "id": 100,
+      "question": "Which jelly dessert ingredient comes from boiled red seaweed instead of animal gelatin?",
+      "answer": "Agar",
+      "note": "Agar is derived from red algae and used as a gelling agent."
     }
   ]
 }

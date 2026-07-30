@@ -68,6 +68,15 @@ function listenForRoomUpdates() {
         latestRoom = snapshot.val();
         if (!latestRoom) return;
 
+        const hasSelectedIds = Array.isArray(latestRoom.selectedQuestionIds) && latestRoom.selectedQuestionIds.length > 0;
+        if (latestRoom.status === 'started' && !hasSelectedIds && latestRoom.hostId === hostId && questions.length > 0) {
+            const selectedQuestionIds = shuffle(questions)
+                .slice(0, Math.min(QUESTIONS_PER_GAME, questions.length))
+                .map((question) => question.id);
+            roomRef().update({ selectedQuestionIds });
+            return;
+        }
+
         const players = latestRoom.players || {};
         renderPlayers(players);
 
