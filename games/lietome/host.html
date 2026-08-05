@@ -35,7 +35,7 @@
                     <h2>Room Ready</h2>
                     <p>Share this room ID with players:</p>
                     <div class="room-code" id="roomIdDisplay"></div>
-                    <p class="muted" style="color: rgba(255,255,255,0.82);">Firebase path: lietome/rooms</p>
+                    <p class="muted" style="color: rgba(255,255,255,0.82);">Supabase table: lietome_rooms</p>
                 </section>
 
                 <section class="panel waiting-section" id="playersSection">
@@ -92,11 +92,9 @@
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.local.js"></script>
-    <script src="firebase-config.js"></script>
+    <script src="supabase-config.js"></script>
     <script src="host.js"></script>
 </body>
 </html>

@@ -1,26 +1,107 @@
-const GAME_ROOT = 'lietome/rooms';
+const GAME_TABLE_FALLBACK = 'lietome_rooms';
 const QUESTIONS_PER_GAME = 3;
+const PATCH_RETRY_LIMIT = 6;
 
 let currentRoomId = null;
 let hostId = null;
 let questions = [];
 let latestRoom = null;
+let roomChannel = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     hostId = 'host_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
     loadQuestions();
 });
 
-function roomRef(path = '') {
-    return window.database.ref(`${GAME_ROOT}/${currentRoomId}${path}`);
+function getGameTableName() {
+    return window.supabaseTable || GAME_TABLE_FALLBACK;
 }
 
-function requireDatabase() {
-    if (!window.database) {
-        alert('Firebase is not configured. Add games/lietome/config.local.js first.');
+function requireSupabase() {
+    if (!window.supabaseClient) {
+        alert('Supabase is not configured. Add games/lietome/config.local.js first.');
         return false;
     }
     return true;
+}
+
+function cloneObject(value) {
+    return JSON.parse(JSON.stringify(value || {}));
+}
+
+function setByPath(target, path, value) {
+    const parts = String(path).split('/').filter(Boolean);
+    if (parts.length === 0) {
+        return;
+    }
+
+    let cursor = target;
+    for (let i = 0; i < parts.length - 1; i += 1) {
+        const key = parts[i];
+        if (!cursor[key] || typeof cursor[key] !== 'object') {
+            cursor[key] = {};
+        }
+        cursor = cursor[key];
+    }
+
+    cursor[parts[parts.length - 1]] = value;
+}
+
+function applyStatePatch(baseState, patch) {
+    const nextState = cloneObject(baseState);
+    Object.entries(patch).forEach(([key, value]) => {
+        if (key.includes('/')) {
+            setByPath(nextState, key, value);
+        } else {
+            nextState[key] = value;
+        }
+    });
+    return nextState;
+}
+
+async function fetchRoomRecord(roomId) {
+    const { data, error } = await window.supabaseClient
+        .from(getGameTableName())
+        .select('room_id, state, updated_at')
+        .eq('room_id', roomId)
+        .maybeSingle();
+
+    if (error) throw error;
+    return data;
+}
+
+async function fetchRoomState(roomId) {
+    const record = await fetchRoomRecord(roomId);
+    return record?.state || null;
+}
+
+async function patchRoomState(patch) {
+    for (let attempt = 0; attempt < PATCH_RETRY_LIMIT; attempt += 1) {
+        const record = await fetchRoomRecord(currentRoomId);
+        if (!record) {
+            throw new Error('Room not found while applying update.');
+        }
+
+        const nextState = applyStatePatch(record.state || {}, patch);
+        const { data, error } = await window.supabaseClient
+            .from(getGameTableName())
+            .update({
+                state: nextState,
+                updated_at: new Date().toISOString()
+            })
+            .eq('room_id', currentRoomId)
+            .eq('updated_at', record.updated_at)
+            .select('state')
+            .maybeSingle();
+
+        if (error) throw error;
+        if (data) {
+            latestRoom = data.state;
+            return data.state;
+        }
+    }
+
+    throw new Error('Could not update room after several retries.');
 }
 
 function loadQuestions() {
@@ -35,10 +116,9 @@ function loadQuestions() {
         });
 }
 
-function createRoom() {
-    if (!requireDatabase()) return;
+async function createRoom() {
+    if (!requireSupabase()) return;
 
-    currentRoomId = 'ROOM_' + Math.random().toString(36).slice(2, 8).toUpperCase();
     const roomData = {
         hostId,
         status: 'waiting',
@@ -49,48 +129,104 @@ function createRoom() {
         rounds: {}
     };
 
-    roomRef().set(roomData)
-        .then(() => {
+    for (let attempt = 0; attempt < PATCH_RETRY_LIMIT; attempt += 1) {
+        const candidateRoomId = 'ROOM_' + Math.random().toString(36).slice(2, 8).toUpperCase();
+        const now = new Date().toISOString();
+
+        const { error } = await window.supabaseClient
+            .from(getGameTableName())
+            .insert({
+                room_id: candidateRoomId,
+                state: roomData,
+                created_at: now,
+                updated_at: now
+            });
+
+        if (!error) {
+            currentRoomId = candidateRoomId;
+            latestRoom = roomData;
             document.getElementById('creationSection').style.display = 'none';
             document.getElementById('roomInfo').style.display = 'block';
             document.getElementById('playersSection').style.display = 'block';
             document.getElementById('roomIdDisplay').textContent = currentRoomId;
-            listenForRoomUpdates();
-        })
-        .catch((error) => {
-            console.error('Error creating room:', error);
-            alert('Could not create the room. Please try again.');
-        });
-}
-
-function listenForRoomUpdates() {
-    roomRef().on('value', (snapshot) => {
-        latestRoom = snapshot.val();
-        if (!latestRoom) return;
-
-        const hasSelectedIds = Array.isArray(latestRoom.selectedQuestionIds) && latestRoom.selectedQuestionIds.length > 0;
-        if (latestRoom.status === 'started' && !hasSelectedIds && latestRoom.hostId === hostId && questions.length > 0) {
-            const selectedQuestionIds = shuffle(questions)
-                .slice(0, Math.min(QUESTIONS_PER_GAME, questions.length))
-                .map((question) => question.id);
-            roomRef().update({ selectedQuestionIds });
+            await listenForRoomUpdates();
             return;
         }
 
-        const players = latestRoom.players || {};
-        renderPlayers(players);
-
-        if (latestRoom.status === 'started') {
-            document.getElementById('liveSection').style.display = 'block';
-            document.getElementById('resultsSection').style.display = 'none';
-            renderRound(latestRoom, players);
-        } else if (latestRoom.status === 'ended') {
-            document.getElementById('liveSection').style.display = 'none';
-            document.getElementById('resultsSection').style.display = 'block';
-            renderScores(players);
-            showSupportPopup();
+        if (error.code !== '23505') {
+            console.error('Error creating room:', error);
+            alert('Could not create the room. Please try again.');
+            return;
         }
-    });
+    }
+
+    alert('Could not create a unique room ID. Please try again.');
+}
+
+function handleRoomSnapshot(roomState) {
+    latestRoom = roomState;
+    if (!latestRoom) return;
+
+    const hasSelectedIds = Array.isArray(latestRoom.selectedQuestionIds) && latestRoom.selectedQuestionIds.length > 0;
+    if (latestRoom.status === 'started' && !hasSelectedIds && latestRoom.hostId === hostId && questions.length > 0) {
+        const selectedQuestionIds = shuffle(questions)
+            .slice(0, Math.min(QUESTIONS_PER_GAME, questions.length))
+            .map((question) => question.id);
+        patchRoomState({ selectedQuestionIds }).catch((error) => {
+            console.error('Error assigning selected questions:', error);
+        });
+        return;
+    }
+
+    const players = latestRoom.players || {};
+    renderPlayers(players);
+
+    if (latestRoom.status === 'started') {
+        document.getElementById('liveSection').style.display = 'block';
+        document.getElementById('resultsSection').style.display = 'none';
+        renderRound(latestRoom, players);
+    } else if (latestRoom.status === 'ended') {
+        document.getElementById('liveSection').style.display = 'none';
+        document.getElementById('resultsSection').style.display = 'block';
+        renderScores(players);
+        showSupportPopup();
+    }
+}
+
+async function listenForRoomUpdates() {
+    if (!currentRoomId || !requireSupabase()) return;
+
+    if (roomChannel) {
+        roomChannel.unsubscribe();
+        roomChannel = null;
+    }
+
+    try {
+        const state = await fetchRoomState(currentRoomId);
+        handleRoomSnapshot(state);
+    } catch (error) {
+        console.error('Error loading room state:', error);
+    }
+
+    roomChannel = window.supabaseClient
+        .channel(`lietome-host-${currentRoomId}`)
+        .on(
+            'postgres_changes',
+            {
+                event: '*',
+                schema: 'public',
+                table: getGameTableName(),
+                filter: `room_id=eq.${currentRoomId}`
+            },
+            (payload) => {
+                if (payload.eventType === 'DELETE') {
+                    handleRoomSnapshot(null);
+                    return;
+                }
+                handleRoomSnapshot(payload.new?.state || null);
+            }
+        )
+        .subscribe();
 }
 
 function showSupportPopup() {
@@ -208,40 +344,41 @@ function getActiveQuestions(room = latestRoom) {
         .filter(Boolean);
 }
 
-function startGame() {
+async function startGame() {
     if (!currentRoomId) return;
 
-    loadQuestions().then(() => {
-        if (questions.length === 0) {
-            alert('No questions found.');
-            return;
-        }
+    await loadQuestions();
+    if (questions.length === 0) {
+        alert('No questions found.');
+        return;
+    }
 
-        roomRef().once('value').then((snapshot) => {
-            const room = snapshot.val() || {};
-            const selectedQuestionIds = shuffle(questions)
-                .slice(0, Math.min(QUESTIONS_PER_GAME, questions.length))
-                .map((question) => question.id);
-            const updates = {
-                status: 'started',
-                phase: 'answer',
-                startedAt: new Date().toISOString(),
-                currentQuestionIndex: 0,
-                selectedQuestionIds
-            };
-            Object.keys(room.players || {}).forEach((playerId) => {
-                updates[`players/${playerId}/hasSubmitted`] = false;
-                updates[`players/${playerId}/hasVoted`] = false;
-                updates[`players/${playerId}/currentLie`] = null;
-                updates[`players/${playerId}/currentVote`] = null;
-                updates[`players/${playerId}/score`] = room.players[playerId].score || 0;
-            });
-            roomRef().update(updates);
+    try {
+        const room = await fetchRoomState(currentRoomId);
+        const selectedQuestionIds = shuffle(questions)
+            .slice(0, Math.min(QUESTIONS_PER_GAME, questions.length))
+            .map((question) => question.id);
+        const updates = {
+            status: 'started',
+            phase: 'answer',
+            startedAt: new Date().toISOString(),
+            currentQuestionIndex: 0,
+            selectedQuestionIds
+        };
+        Object.keys(room?.players || {}).forEach((playerId) => {
+            updates[`players/${playerId}/hasSubmitted`] = false;
+            updates[`players/${playerId}/hasVoted`] = false;
+            updates[`players/${playerId}/currentLie`] = null;
+            updates[`players/${playerId}/currentVote`] = null;
+            updates[`players/${playerId}/score`] = room.players[playerId].score || 0;
         });
-    });
+        await patchRoomState(updates);
+    } catch (error) {
+        console.error('Error starting game:', error);
+    }
 }
 
-function showAnswers() {
+async function showAnswers() {
     if (!latestRoom) return;
     const index = latestRoom.currentQuestionIndex || 0;
     const question = getActiveQuestions()[index];
@@ -261,7 +398,11 @@ function showAnswers() {
         updates[`players/${playerId}/currentVote`] = null;
     });
 
-    roomRef().update(updates).catch((error) => console.error('Error showing answers:', error));
+    try {
+        await patchRoomState(updates);
+    } catch (error) {
+        console.error('Error showing answers:', error);
+    }
 }
 
 function buildAnswerBank(question, players) {
@@ -289,15 +430,19 @@ function buildAnswerBank(question, players) {
     return shuffle(answers);
 }
 
-function showVotes() {
+async function showVotes() {
     if (!currentRoomId) return;
-    roomRef().update({
+    try {
+        await patchRoomState({
         phase: 'votes',
         votesShownAt: new Date().toISOString()
-    }).catch((error) => console.error('Error showing votes:', error));
+        });
+    } catch (error) {
+        console.error('Error showing votes:', error);
+    }
 }
 
-function revealAnswer() {
+async function revealAnswer() {
     if (!latestRoom) return;
 
     const index = latestRoom.currentQuestionIndex || 0;
@@ -330,10 +475,14 @@ function revealAnswer() {
         updates[`players/${playerId}/score`] = (player.score || 0) + points;
     });
 
-    roomRef().update(updates).catch((error) => console.error('Error revealing answer:', error));
+    try {
+        await patchRoomState(updates);
+    } catch (error) {
+        console.error('Error revealing answer:', error);
+    }
 }
 
-function nextQuestion() {
+async function nextQuestion() {
     if (!latestRoom) return;
 
     const activeQuestions = getActiveQuestions();
@@ -356,7 +505,11 @@ function nextQuestion() {
         updates[`players/${playerId}/currentVote`] = null;
     });
 
-    roomRef().update(updates).catch((error) => console.error('Error moving to next question:', error));
+    try {
+        await patchRoomState(updates);
+    } catch (error) {
+        console.error('Error moving to next question:', error);
+    }
 }
 
 function renderAnswers(round, players, phase) {
@@ -390,25 +543,42 @@ function renderScores(players) {
     `).join('') || '<p class="muted">No players joined.</p>';
 }
 
-function endGame() {
+async function endGame() {
     if (!currentRoomId) return;
-    roomRef().update({
+    try {
+        await patchRoomState({
         status: 'ended',
         phase: 'ended',
         endedAt: new Date().toISOString()
-    }).catch((error) => console.error('Error ending game:', error));
+        });
+    } catch (error) {
+        console.error('Error ending game:', error);
+    }
 }
 
-function resetRoom() {
-    if (currentRoomId) {
-        roomRef().remove();
+async function resetRoom() {
+    if (currentRoomId && requireSupabase()) {
+        await window.supabaseClient
+            .from(getGameTableName())
+            .delete()
+            .eq('room_id', currentRoomId);
     }
+
+    if (roomChannel) {
+        roomChannel.unsubscribe();
+        roomChannel = null;
+    }
+
     currentRoomId = null;
     latestRoom = null;
     window.location.reload();
 }
 
 function goBack() {
+    if (roomChannel) {
+        roomChannel.unsubscribe();
+        roomChannel = null;
+    }
     window.location.href = 'index.html';
 }
 

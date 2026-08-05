@@ -1,20 +1,16 @@
 /**
- * FIREBASE CONFIGURATION - EXAMPLE FILE
+ * SUPABASE CONFIGURATION - EXAMPLE FILE
  *
- * Copy this file to config.local.js and fill in your Firebase web app details.
+ * Copy this file to config.local.js and fill in your Supabase project details.
  * config.local.js is ignored by git.
  */
 
-const firebaseConfigLocal = {
-  apiKey: "AIzaSyC...",
-  authDomain: "your-project-id.firebaseapp.com",
-  databaseURL: "https://your-project-id-default-rtdb.firebaseio.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project-id.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abc123def456ghi789"
+const supabaseConfigLocal = {
+  url: "https://your-project-ref.supabase.co",
+  anonKey: "eyJhbGciOi...",
+  tableName: "lietome_rooms"
 };
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = firebaseConfigLocal;
+  module.exports = supabaseConfigLocal;
 }
